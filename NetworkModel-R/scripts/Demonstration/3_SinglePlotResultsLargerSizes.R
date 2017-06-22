@@ -111,33 +111,16 @@ taskVarMean$NormVarMean <- NA
 taskVarMean$NormVarMean[taskVarMean$Source == "Experiment"] <- taskVarMean$SD[taskVarMean$Source == "Experiment"] / expSizeSixteen
 taskVarMean$NormVarMean[taskVarMean$Source == "Model"] <- taskVarMean$SD[taskVarMean$Source == "Model"] / modSizeSixteen
 
+# Prep for broken axis plot
+taskVarMean <- as.data.frame(taskVarMean)
+taskVarMeans <- as.data.frame(taskVarMeans)
+taskVarMean$mask <- 0
+taskVarMean$mask[taskVarMean$n > 90] <- 1
+taskVarMeans$mask <- 0
+taskVarMeans$mask[taskVarMeans$n > 90] <- 1
+
 
 # Plot variance and mean by group size
-gg_var <- ggplot() +
-  geom_point(data = taskVarMean, 
-             aes(x = n, y = SD, colour = Source),
-             size = 0.5,
-             alpha = 0.4,
-             position = position_dodge(width = 1)) +
-  theme_classic() +
-  xlab("Group Size") +
-  ylab("Behavioral Variation (SD)") +
-  scale_x_continuous(breaks = unique(taskVarMean$n)) +
-  scale_y_continuous(breaks = seq(0, 1, 0.025)) +
-  # Mean and SE portion of plot
-  geom_errorbar(data = taskVarMeans, 
-                aes(x = n, ymin = SDMean - SDSE, ymax = SDMean + SDSE, colour = Source, width = 1.5),
-                position = position_dodge(width = 1)) +
-  geom_point(data = taskVarMeans, 
-             aes(x = n, y = SDMean, colour = Source),
-             size = 2,
-             position = position_dodge(width = 1)) +
-  geom_line(data = taskVarMeans,
-            aes(x = n, y = SDMean, colour = Source),
-            position = position_dodge(width = 1)) +
-  scale_fill_manual(values = compPalette) +
-  scale_colour_manual(values = compPalette) +
-  theme(legend.position = "none")
 
 gg_varNorm <- ggplot() +
   geom_hline(data = taskVarMean, 
@@ -166,7 +149,11 @@ gg_varNorm <- ggplot() +
             position = position_dodge(width = 1)) +
   scale_fill_manual(values = compPalette) +
   scale_colour_manual(values = compPalette) +
-  theme(legend.position = "none")
+  theme(legend.position = "none",
+        strip.text = element_blank(),
+        strip.background = element_blank(),
+        panel.spacing = unit(0.25, "cm")) +
+  facet_grid(. ~ mask, space = "free", scale = "free")
 
 
 gg_mean <- ggplot() +
@@ -212,6 +199,7 @@ taskCorrTot <- taskCorrTot %>%
   select(n, TaskMean, Source) %>% 
   rbind(yukoCorr) %>% 
   mutate(Source = as.factor(Source))
+taskCorrTot <- as.data.frame(taskCorrTot)
 
 # Calculate means and SE
 taskCorrMeans <- taskCorrTot %>% 
@@ -220,6 +208,19 @@ taskCorrMeans <- taskCorrTot %>%
             SpecSE = sd(TaskMean) / sqrt(length(TaskMean)),
             SpecCI = 1.96 * SpecSE)
 
+# Set for broken axis
+addrows <- data.frame(Source = rep("Model", 2),
+                      n = c(37, 95),
+                      SpecMean = c(0.6673539, 0.6885347),
+                      SpecSE = c(NA, NA),
+                      SpecCI = c(NA, NA))
+taskCorrMeans <- as.data.frame(taskCorrMeans)
+taskCorrMeans <- rbind(taskCorrMeans, addrows)
+taskCorrMeans$mask <- 0
+taskCorrMeans$mask[taskCorrMeans$n > 90] <- 1
+taskCorrTot$mask <- 0
+taskCorrTot$mask[taskCorrTot$n > 90] <- 1
+
 # Plot
 gg_corr <- ggplot() +
   geom_hline(data = taskCorrTot, 
@@ -227,7 +228,7 @@ gg_corr <- ggplot() +
              colour = "grey30") +
   geom_point(data = taskCorrTot, 
              aes(x = n, y = TaskMean, fill = Source, colour = Source), 
-             size = 0.5, 
+             size = 0.5,
              position = position_dodge(width = 1),
              alpha = 0.4) +
   theme_classic() +
@@ -235,20 +236,24 @@ gg_corr <- ggplot() +
        y = "Specialization") +
   scale_x_continuous(breaks = unique(taskCorrTot$n)) +
   scale_y_continuous(breaks = seq(-1, 1, 0.2)) +
+  scale_size_manual(values = c(2, 2, 2, 2, 2, 2, 2, -1, -1, 2)) +
   scale_fill_manual(values = compPalette) +
   scale_colour_manual(values = compPalette) +
-  theme(legend.position = "none") +
+  theme(legend.position = "none",
+        strip.text = element_blank(),
+        strip.background = element_blank(),
+        panel.spacing = unit(0.25, "cm")) +
   # Mean and SE portion of plot
   geom_errorbar(data = taskCorrMeans, 
                 aes(x = n, ymin = SpecMean - SpecSE, ymax = SpecMean + SpecSE, colour = Source, width = 1.5),
                 position = position_dodge(width = 1)) +
   geom_point(data = taskCorrMeans, 
-             aes(x = n, y = SpecMean, colour = Source, fill = Source),
-             position = position_dodge(width = 1),
-             size = 2) +
+             aes(x = n, y = SpecMean, colour = Source, fill = Source, size = as.factor(n)),
+             position = position_dodge(width = 1)) +
   geom_line(data = taskCorrMeans,
             aes(x = n, y = SpecMean,  colour = Source),
-            position = position_dodge(width = 1))
+            position = position_dodge(width = 1)) +
+  facet_grid(. ~ mask, scales = "free", space = "free")
 
 ####################
 # Plot all
