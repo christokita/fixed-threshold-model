@@ -149,7 +149,7 @@ allFixedProbCorr <- fixedprob_01 %>%
 
 # Set pallete
 fixedProbpalette <- c("grey45", "#FFB84F", "#E81715", "#F55632", "#FD792C")
-fillPalette <- c("#ffffff","#FFB84F", "#E81715", "#F55632", "#FD792C")
+fillPalette <- c("#ffffff","#FFB84F", "#E81715", "#F55632", "#ffffff")
 
 # Plot with experimental data
 gg_fixedProb <- ggplot(data = allFixedProbCorr) +
@@ -171,7 +171,7 @@ gg_fixedProb <- ggplot(data = allFixedProbCorr) +
                                  expression(paste(sigma, " = 0.1, ", eta, " = 7")), 
                                  expression(paste(sigma, " = 0.25, ", eta, " = 7")),
                                  expression(paste(sigma, " = 0.3, ", eta, " = 2")))) +
-  scale_shape_manual(values = c(21, 21, 21, 21, 24),
+  scale_shape_manual(values = c(21, 22, 21, 25, 24),
                      labels = c("Experiment", 
                                 expression(paste(sigma, " = 0.05, ", eta, " = 7")),
                                 expression(paste(sigma, " = 0.1, ", eta, " = 7")), 
@@ -187,7 +187,7 @@ gg_fixedProb <- ggplot(data = allFixedProbCorr) +
   geom_point(aes(x = n, y = SpecMean, colour = Set, fill = Set, shape = Set),
              position = position_dodge(width = 0.5),
              size = 1.5) +
-  theme(legend.position = "right",
+  theme(legend.position = "none",
         legend.justification = c(1, 1),
         legend.title = element_blank(),
         legend.key.height = unit(0.3, "cm"),
@@ -201,7 +201,7 @@ gg_fixedProb <- ggplot(data = allFixedProbCorr) +
         axis.title = element_text(size = 6, margin = margin(0, 0, 0, 0)),
         axis.ticks.length = unit(-0.1, "cm"))
 
-svg("output/MSFigures/FixedProbSpecializationFitswithlegend.svg", width = 2.65, height = 2.05)
+svg("output/MSFigures/FixedProbSpecializationFits.svg", width = 2.65, height = 2.05)
 gg_fixedProb
 dev.off()
 
