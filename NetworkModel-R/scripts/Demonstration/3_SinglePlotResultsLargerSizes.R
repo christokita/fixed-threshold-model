@@ -114,6 +114,17 @@ taskVarMean$NormVarMean[taskVarMean$Source == "Model"] <- taskVarMean$SD[taskVar
 # Prep for broken axis plot
 taskVarMean <- as.data.frame(taskVarMean)
 taskVarMeans <- as.data.frame(taskVarMeans)
+addrows <- data.frame(n = c(37, 95),
+                      Source = rep("Model", 2),
+                      MeanMean = c(0.2996409, 0.2996395),
+                      MeanSE = c(NA, NA),
+                      SDMean = c(0.1257388, 0.1282122),
+                      SDSE= c(NA, NA),
+                      NormMean = c(0.8669811, 0.8669778),
+                      NormMeanSE = c(NA, NA),
+                      NormVarMean = c(1.059927, 1.080777),
+                      NormVarMeanSE= c(NA, NA))
+taskVarMeans <- rbind(taskVarMeans, addrows)
 taskVarMean$mask <- 0
 taskVarMean$mask[taskVarMean$n > 90] <- 1
 taskVarMeans$mask <- 0
@@ -136,13 +147,13 @@ gg_varNorm <- ggplot() +
   ylab("Behavioral Variation (SD)\nRelative to Group Size 16") +
   scale_x_continuous(breaks = unique(taskVarMean$n)) +
   scale_y_continuous(breaks = seq(0, 3, 0.5)) +
+  scale_size_manual(values = c(2, 2, 2, 2, 2, 2, 2, 2, -1, -1, 2)) +
   # Mean and SE portion of plot
   geom_errorbar(data = taskVarMeans, 
                 aes(x = n, ymin = NormVarMean - NormVarMeanSE, ymax = NormVarMean + NormVarMeanSE, colour = Source, width = 1.5),
                 position = position_dodge(width = 1)) +
   geom_point(data = taskVarMeans, 
-             aes(x = n, y = NormVarMean, colour = Source),
-             size = 2,
+             aes(x = n, y = NormVarMean, colour = Source, size = as.factor(n)),
              position = position_dodge(width = 1)) +
   geom_line(data = taskVarMeans,
             aes(x = n, y = NormVarMean, colour = Source),
@@ -170,20 +181,24 @@ gg_mean <- ggplot() +
   ylab("Behavioral Mean Relative to Group Size 1") +
   scale_x_continuous(breaks = unique(taskVarMean$n)) +
   scale_y_continuous(breaks = seq(0, 1.5, 0.05)) +
+  scale_size_manual(values = c(2, 2, 2, 2, 2, 2, 2, 2, -1, -1, 2)) +
   # Mean and SE portion of plot
   geom_errorbar(data = taskVarMeans, 
                 aes(x = n, ymin = NormMean - NormMeanSE, ymax = NormMean + NormMeanSE, colour = Source, width = 1.5),
                 position = position_dodge(width = 1)) +
   geom_point(data = taskVarMeans, 
-             aes(x = n, y = NormMean, colour = Source),
-             size = 2,
+             aes(x = n, y = NormMean, colour = Source, size = as.factor(n)),
              position = position_dodge(width = 1)) +
   geom_line(data = taskVarMeans,
             aes(x = n, y = NormMean, colour = Source),
             position = position_dodge(width = 1)) +
   scale_fill_manual(values = compPalette) +
   scale_colour_manual(values = compPalette) +
-  theme(legend.position = "none")
+  theme(legend.position = "none",
+        strip.text = element_blank(),
+        strip.background = element_blank(),
+        panel.spacing = unit(0.25, "cm")) +
+  facet_grid(. ~ mask, space = "free", scale = "free")
 
 ####################
 # Task Rank Correlation
