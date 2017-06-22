@@ -1,0 +1,18 @@
+{
+    "contents" : "# \n# Threshold Voter Model\n\nrm(list = ls())\n\nsource(\"scripts/__Util_ThreshVoterFunctions.R\")\n\n# Set parameters\nN <- 100\ngens <- 50\nnetPower <- 1.5\nprobOfUpdate <- 1\nThresh1 <- 0.5\nThresh2 <- 0.5\nThreshSD <- 0.2\nfolderName <- \"N100_Threshold_NoSelf\"\n\n# Run Simulation\nsimulateThreshold(N = N,\n                  gens = gens,\n                  netPower = netPower,\n                  probOfUpdate = probOfUpdate,\n                  Thresh1 = Thresh1,\n                  Thresh2 = Thresh2,\n                  ThreshSD = ThreshSD,\n                  folderName = folderName)\n",
+    "created" : 1487361080481.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2911409555",
+    "id" : "D2E5908F",
+    "lastKnownWriteTime" : 1487369429,
+    "path" : "~/Documents/Research/Tarnita Lab/Evolution of DOL/Network Model/scripts/2_ThresholdVoter.R",
+    "project_path" : "scripts/2_ThresholdVoter.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

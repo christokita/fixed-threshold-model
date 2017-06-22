@@ -1,0 +1,25 @@
+{
+    "contents" : "",
+    "created" : 1487362166986.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "7E3F6964",
+    "lastKnownWriteTime" : 8589869056,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "l3pt5yvekh",
+        "caption" : "probState",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=probState&cache_key=l3pt5yvekh",
+        "displayedObservations" : "100",
+        "environment" : "",
+        "object" : "probState",
+        "totalObservations" : "100",
+        "variables" : "1"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}

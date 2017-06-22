@@ -1,0 +1,25 @@
+Fixed Threshold Parameter Space Exploration
+
+####################
+# Set global variables
+####################
+# Initial paramters: Free to change
+# Base parameters
+Ns             <- c(2, 16) #vector of number of individuals to simulate
+m              <- 2 #number of tasks
+gens           <- 10000 #number of generations to run simulation 
+corrStep       <- 200 #number of time steps for calculation of correlation 
+reps           <- 100 #number of replications per simulation (for ensemble) !!Change!!
+
+# Threshold Parameters
+ThreshM        <- c(10, 10) #population threshold means 
+sigmas         <- c(0, 0.01, 0.02, 0.03, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5)
+InitialStim    <- c(0, 0) #intital vector of stimuli
+StimRates      <- c(0.6, 0.6) #vector of stimuli increase rates  
+threshSlopes   <- c(1, 2, 5, 10, 15, 20, 25, 30) #exponent parameter for threshold curve shape  
+alpha          <- m #efficiency of task performance
+quitP          <- 0.2 #probability of quitting task once active
+
+# Social Network Parameters
+p              <- 0 #probability of interacting with individual in other states
+q              <- 1 #probability of interacting with individual in same state relative to others
