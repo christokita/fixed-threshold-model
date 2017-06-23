@@ -226,7 +226,7 @@ gg_corrtime <- ggplot(data = Corrs,
   geom_line(alpha = 0.6) +
   theme_classic() +
   scale_y_continuous(limits = c(-1, 1), breaks = seq(-1, 1, 0.5)) +
-  scale_colour_manual(values = c("#F00924", "#4C0E78")) +
+  # scale_colour_manual(values = c("#F00924", "#4C0E78")) +
   xlab("Timestep") +
   facet_grid(replicate ~ n) +
   ggtitle(paste("Fixed Thresholds, Sigma =", sigma[1])) +
