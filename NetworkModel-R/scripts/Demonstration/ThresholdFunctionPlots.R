@@ -74,31 +74,33 @@ sigma03 <- data.frame(x = seq(0,20, length = 1000),
 sigmas <- rbind(sigma01, sigma03, sigma005)
 sigmas$sigma <- factor(sigmas$sigma, levels = c("sigma == 0.05", "sigma == 0.1", "sigma == 0.3"))
 
-gg_sig <- ggplot(data = sigmas, aes(x = x, y = y, group = sigma)) +
-  geom_line(colour = "#74a9cf") +
+gg_sig <- ggplot(data = sigmas, aes(x = x, y = y, group = sigma, colour = sigma)) +
+  geom_line() +
   theme_bw() +
   scale_y_continuous(expand = c(0,0), limits = c(0, 0.85)) +
+  scale_colour_manual(values = c("#08519c", "#4292c6", "#9ecae1"), 
+                      labels = c(expression(paste(sigma, " = 0.05")),
+                                 expression(paste(sigma, " = 0.1")),
+                                 expression(paste(sigma, " = 0.3")))) +
   xlab(expression(theta[j])) +
   ylab("Frequency") +
-  panel.grid = element_blank(),
-panel.border = element_rect(fill = NA, size = 1),
-legend.position = c(0.96, 0.30),
-legend.justification = c(1, 1),
-legend.title = element_blank(),
-legend.key.height = unit(0.3, "cm"),
-legend.key.width= unit(0.4, "cm"),
-legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.1, "cm"),
-legend.text = element_text(size = 6),
-legend.text.align = 0,
-axis.text.x = element_text(size = 8),
-axis.title = element_text(size = 10)) +
-  facet_grid(. ~ sigma, 
-             labeller = label_parsed,
-             scales = "free")
+  theme(panel.grid = element_blank(),
+        panel.border = element_rect(fill = NA, size = 1),
+        legend.position = c(0.96, 1.01),
+        legend.justification = c(1, 1),
+        legend.title = element_blank(),
+        legend.key.height = unit(0.3, "cm"),
+        legend.key.width= unit(0.4, "cm"),
+        legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.1, "cm"),
+        legend.text = element_text(size = 6),
+        legend.background = element_rect(fill = NA, colour = NA),
+        legend.text.align = 0,
+        axis.text.x = element_text(size = 8),
+        axis.title = element_text(size = 10))
   
 gg_sig
 
-ggsave(file = "output/OtherFigures/SigmaDistributionExamples.png", width = 4, height = 2, units = "in", dpi = 800)
+ggsave(file = "output/OtherFigures/SigmaDistributionExamples.png", width = 2, height = 2, units = "in", dpi = 800)
 
 
 # Plot - type 2
