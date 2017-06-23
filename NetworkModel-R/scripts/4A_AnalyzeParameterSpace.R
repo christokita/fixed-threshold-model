@@ -13,7 +13,7 @@ library(RColorBrewer)
 # Prep and Plot
 ####################
 # load
-load("output/ParameterExploration/Rdata/FixedDelta08_SigmaSlopeExploration.Rdata")
+load("output/ParameterExploration/Rdata/FixedDelta06_SigmaSlopeExploration.Rdata")
 improve <- improve %>% 
   mutate(relativePercInc = (PercIncrease - 1.220554) / 1.220554,
          relativeSlope   = (SlopeIncrease - 0.02322321) / 0.02322321, 
@@ -126,12 +126,12 @@ gg_slope <- ggplot(spec.fit, aes(x = sigma, y = threshSlope, fill = spec)) +
   xlab(expression(sigma)) +
   ylab(expression(eta)) +
   theme(legend.position = "right", 
-        legend.title = element_text(size = 7),
-        legend.key.height = unit(0.3, "cm"),
+        legend.title = element_text(size = 10),
+        legend.key.height = unit(0.5, "cm"),
         legend.key.width= unit(0.4, "cm"),
         legend.key = element_rect(colour = "black", size = 0.5),
         legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
-        legend.text = element_text(size = 6),
+        legend.text = element_text(size = 8),
         axis.text = element_text(size = 8),
         axis.title = element_text(size = 10),
         axis.ticks = element_line(size = 0.5),
@@ -280,8 +280,8 @@ gg_large <- ggplot(spec.fit, aes(x = sigma, y = threshSlope, fill = spec)) +
                        oob = squish) +
   xlab(expression(sigma)) +
   ylab(expression(eta)) +
-  theme(legend.position = "none",
-        legend.justification = c(1, 1),
+  theme(legend.position = "right",
+        # legend.justification = c(1, 1),
         legend.background = element_rect(color = "black", size = 0.2, linetype = "solid"),
         legend.title = element_text(size = 4, face = "bold"),
         legend.key.size = unit(0.15, "cm"),
@@ -331,7 +331,7 @@ gg_fit <- ggplot(spec.fit, aes(x = sigma, y = threshSlope, fill = spec)) +
   theme_bw() +
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_continuous(expand = c(0, 0), breaks = c(0, 2, seq(10, 30, 10))) +
-  scale_fill_gradientn(name = "Total Fit",
+  scale_fill_gradientn(name = "Overall\nFit",
                        colors = colPal,
                        #values = c(0, 0.5, 1),
                        breaks = c(0, 0.25, 0.5, 0.75, 1),
@@ -342,19 +342,19 @@ gg_fit <- ggplot(spec.fit, aes(x = sigma, y = threshSlope, fill = spec)) +
   xlab(expression(sigma)) +
   ylab(expression(eta)) +
   theme(legend.position = "right", 
-        legend.title = element_text(size = 7),
-        legend.key.height = unit(0.3, "cm"),
+        legend.title = element_text(size = 10),
+        legend.key.height = unit(0.5, "cm"),
         legend.key.width= unit(0.4, "cm"),
         legend.key = element_rect(colour = "black", size = 0.5),
         legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
-        legend.text = element_text(size = 6),
+        legend.text = element_text(size = 8),
         axis.text = element_text(size = 8),
         axis.title = element_text(size = 10),
         axis.ticks = element_line(size = 0.5),
         panel.border = element_rect(fill = NA, size = 1))
 
 
-ggsave(paste0("output/ParameterExploration/Plot/", filename, "_fit.png"), width = 2.7, height = 2, units = "in", dpi = 600)
+ggsave(paste0("output/ParameterExploration/Plot/", filename, "_fit.png"), width = 2.8, height = 2, units = "in", dpi = 600)
 
 
 ##### Difference of Fit Between Delta 08 and Delta 06 #####
@@ -378,20 +378,20 @@ gg_diff <- ggplot(diff.fit, aes(x = sigma, y = threshSlope, fill = spec)) +
   xlab(expression(sigma)) +
   ylab(expression(eta)) +
   theme(legend.position = "right", 
-        legend.title = element_text(size = 7),
-        legend.key.height = unit(0.3, "cm"),
+        legend.title = element_text(size = 8),
+        legend.key.height = unit(0.5, "cm"),
         legend.key.width= unit(0.4, "cm"),
         legend.key = element_rect(colour = "black", size = 0.5),
         legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
-        legend.text = element_text(size = 6),
+        legend.text = element_text(size = 8),
         axis.text = element_text(size = 8),
         axis.title = element_text(size = 10),
         axis.ticks = element_line(size = 0.5),
         panel.border = element_rect(fill = NA, size = 1))
 
-ggsave("output/ParameterExploration/Plot/Fixed_0806DifferenceOfFit.png", width = 2.9, height = 2, units = "in", dpi = 600)
+ggsave("output/ParameterExploration/Plot/Fixed_0806DifferenceOfFit.png", width = 3, height = 2, units = "in", dpi = 600)
 
 
-png("output/ParameterExploration/Plot/DifferenceOfFitDelta08Comparison.png", width = 5.4, height = 2, units = "in", res = 800)
+png("output/ParameterExploration/Plot/DifferenceOfFitDelta08Comparison.png", width = 5.5, height = 2, units = "in", res = 800)
 multiplot(gg_fit, gg_diff, cols = 2)
 dev.off()

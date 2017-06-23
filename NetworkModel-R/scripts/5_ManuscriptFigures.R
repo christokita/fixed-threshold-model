@@ -149,7 +149,7 @@ allFixedProbCorr <- fixedprob_01 %>%
 
 # Set pallete
 fixedProbpalette <- c("grey45", "#FFB84F", "#E81715", "#F55632", "#FD792C")
-fillPalette <- c("#ffffff","#FFB84F", "#E81715", "#F55632", "#ffffff")
+fillPalette <- c("#ffffff","#FFB84F", "#E81715", "#F55632", "#FD792C")
 
 # Plot with experimental data
 gg_fixedProb <- ggplot(data = allFixedProbCorr) +

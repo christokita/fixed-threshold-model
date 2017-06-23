@@ -12,18 +12,18 @@ source("scripts/__Util__MASTER.R")
 ####################
 # Initial paramters: Free to change
 # Base parameters
-Ns             <- c(2, 16) #vector of number of individuals to simulate
+Ns             <- c(2, 4, 6, 8, 12, 16, 32, 100) #vector of number of individuals to simulate
 m              <- 2 #number of tasks
 gens           <- 10000 #number of generations to run simulation 
 corrStep       <- 200 #number of time steps for calculation of correlation 
-reps           <- 2 #number of replications per simulation (for ensemble) !!Change!!
+reps           <- 20 #number of replications per simulation (for ensemble) !!Change!!
 
 # Threshold Parameters
 ThreshM        <- c(10, 10) #population threshold means 
-ThreshSD       <- ThreshM * 0.3 #population threshold standard deviations !!Change!!
+ThreshSD       <- ThreshM * 0.1 #population threshold standard deviations !!Change!!
 InitialStim    <- c(0, 0) #intital vector of stimuli
 StimRates      <- c(0.6, 0.6) #vector of stimuli increase rates  
-threshSlope    <- 2 #exponent parameter for threshold curve shape  
+threshSlope    <- 7 #exponent parameter for threshold curve shape  
 alpha          <- m #efficiency of task performance
 quitP          <- 0.2 #probability of quitting task once active
 
