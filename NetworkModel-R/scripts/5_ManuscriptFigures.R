@@ -201,7 +201,8 @@ gg_fixedProb <- ggplot(data = allFixedProbCorr) +
         axis.title = element_text(size = 6, margin = margin(0, 0, 0, 0)),
         axis.ticks.length = unit(-0.1, "cm"))
 
-svg("output/MSFigures/FixedProbSpecializationFits.svg", width = 2.65, height = 2.05)
+# svg("output/MSFigures/FixedProbSpecializationFits.svg", width = 2.65, height = 2.05)
+svg("output/MSFigures/FixedProbSpecializationFits.svg", width = 2.71, height = 2.05)
 gg_fixedProb
 dev.off()
 
