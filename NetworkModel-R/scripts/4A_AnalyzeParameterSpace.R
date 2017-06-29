@@ -13,7 +13,7 @@ library(RColorBrewer)
 # Prep and Plot
 ####################
 # load
-load("output/ParameterExploration/Rdata/FixedDelta06_SigmaSlopeExploration.Rdata")
+load("output/ParameterExploration/Rdata/FixedDelta08_SigmaSlopeExploration.Rdata")
 improve <- improve %>% 
   mutate(relativePercInc = (PercIncrease - 1.220554) / 1.220554,
          relativeSlope   = (SlopeIncrease - 0.02322321) / 0.02322321, 
@@ -358,9 +358,18 @@ ggsave(paste0("output/ParameterExploration/Plot/", filename, "_fit.png"), width 
 
 
 ##### Difference of Fit Between Delta 08 and Delta 06 #####
+# Find difference using tested parameter points
+improve$DiffFit <- abs(improve$fit) - abs(improve1$fit)
+
+spec.loess <- loess(DiffFit ~ sigma * threshSlope, data = improve, degree = 2, span = 0.1)
+diff.fit <- expand.grid(list(sigma = seq(0, max(improve$sigma), (max(improve$sigma) - min(improve$sigma)) / 1000),
+                             threshSlope = seq(1, max(improve$threshSlope), (max(improve$threshSlope) - min(improve$threshSlope)) / 1000)))
+z <- predict(spec.loess, newdata = diff.fit)
+diff.fit$spec <- as.numeric(z)
+
 # Find relative difference from data fit at delta 08 relative to delta 06
-diff.fit <- spec.fit
-diff.fit$spec <- (abs(spec.fit$spec) - abs(spec.fit1$spec))
+# diff.fit <- spec.fit
+# diff.fit$spec <- (abs(spec.fit$spec) - abs(spec.fit1$spec))
 
 # Graph 
 gg_diff <- ggplot(diff.fit, aes(x = sigma, y = threshSlope, fill = spec)) +
