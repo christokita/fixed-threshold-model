@@ -276,8 +276,8 @@ gg_corr <- ggplot() +
 
 
 # MultiPlot
-png(filename = paste0("output/_ComprehnsivePlots/", filename, ".png"), width = 8, height = 8, units = "in", res = 800)
-multiplot(gg_dist, gg_mean,  gg_corr, gg_varNorm, cols = 2)  
+png(filename = paste0("output/_ComprehnsivePlots/", filename, ".png"), width = 16, height = 4, units = "in", res = 800)
+multiplot(gg_dist, gg_mean,  gg_corr, gg_varNorm, cols = 4)  
 dev.off()
 
 
