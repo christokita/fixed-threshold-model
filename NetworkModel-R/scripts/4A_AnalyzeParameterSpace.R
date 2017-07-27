@@ -13,7 +13,7 @@ library(RColorBrewer)
 # Prep and Plot
 ####################
 # load
-load("output/ParameterExploration/Rdata/FixedDelta08_SigmaSlopeExploration.Rdata")
+load("output/ParameterExploration/Rdata/FixedDelta06_SigmaSlopeExploration.Rdata")
 improve <- improve %>% 
   mutate(relativePercInc = (PercIncrease - 1.220554) / 1.220554,
          relativeSlope   = (SlopeIncrease - 0.02322321) / 0.02322321, 
