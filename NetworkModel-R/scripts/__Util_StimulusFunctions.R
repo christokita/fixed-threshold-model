@@ -28,8 +28,8 @@ seedStimuls <- function(InitialSVector, RateVector, gens) {
 ####################
 globalStimUpdate <- function(stimulus, delta, alpha, Ni, n) {
   # Calculate
-  s <- stimulus + delta - ( alpha * ( Ni / n ))
-  # s <- stimulus + (alpha * (delta ) * (n / m)) - (Ni * alpha)
+  # s <- stimulus + delta - ( alpha * ( Ni / n ))
+  s <- stimulus + (alpha * (delta ) * (n / m)) - (Ni * alpha)
   # If negative, make zero
   if(s < 0.0001) {
     s <- 0
