@@ -26,10 +26,22 @@ seedStimuls <- function(InitialSVector, RateVector, gens) {
 ####################
 # Stimulus Level
 ####################
+# Frequency dependent
 globalStimUpdate <- function(stimulus, delta, alpha, Ni, n) {
   # Calculate
-  # s <- stimulus + delta - ( alpha * ( Ni / n ))
+  s <- stimulus + delta - ( alpha * ( Ni / n ))
+  # If negative, make zero
+  if(s < 0.0001) {
+    s <- 0
+  }
+  return(s)
+}
+
+# Density dependent (per capita)
+globalStimUpdate_PerCap <- function(stimulus, delta, alpha, Ni, n, m, quitP) {
+  # Calculate
   s <- stimulus + (alpha * (delta ) * (n / m)) - (Ni * alpha)
+  # s <- stimulus + (alpha * (delta ) * (1 / (1 + quitP)) * (n / m)) - (Ni * alpha)
   # If negative, make zero
   if(s < 0.0001) {
     s <- 0
