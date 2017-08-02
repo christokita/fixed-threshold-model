@@ -13,7 +13,7 @@ library(RColorBrewer)
 # Prep and Plot
 ####################
 # load
-load("output/ParameterExploration/Rdata/FixedDelta06_SigmaSlopeExploration.Rdata")
+load("output/ParameterExploration/Rdata/PerCapitaStim_WorkloadFormulation.Rdata")
 improve <- improve %>% 
   mutate(relativePercInc = (PercIncrease - 1.220554) / 1.220554,
          relativeSlope   = (SlopeIncrease - 0.02322321) / 0.02322321, 
@@ -23,7 +23,7 @@ improve <- improve %>%
   mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
 
 # Set file names
-filename <- "FixedDelta08"
+filename <- "PerCapitaWorkload"
 
 # Exp data: % increase = 1.220554
 # Exp data: Slope = 0.02322321
