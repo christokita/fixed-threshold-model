@@ -13,7 +13,7 @@ library(RColorBrewer)
 # Prep and Plot
 ####################
 # load
-load("output/ParameterExploration/Rdata/PerCapitaStim_WorkloadFormulation.Rdata")
+load("output/ParameterExploration/Rdata/FixedDelta06_SigmaSlopeExploration.Rdata")
 improve <- improve %>% 
   mutate(relativePercInc = (PercIncrease - 1.220554) / 1.220554,
          relativeSlope   = (SlopeIncrease - 0.02322321) / 0.02322321, 
@@ -377,7 +377,7 @@ gg_diff <- ggplot(diff.fit, aes(x = sigma, y = threshSlope, fill = spec)) +
   theme_bw() +
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_continuous(expand = c(0, 0), breaks = c(0, 2, seq(10, 30, 10))) +
-  scale_fill_gradient2(name = "Improvement\nin Fit",
+  scale_fill_gradient2(name = "Change\nin Fit",
                        low = "#4d9221", 
                        mid = "white", 
                        high = "#c51b7d", 
@@ -387,7 +387,7 @@ gg_diff <- ggplot(diff.fit, aes(x = sigma, y = threshSlope, fill = spec)) +
   xlab(expression(sigma)) +
   ylab(expression(eta)) +
   theme(legend.position = "right", 
-        legend.title = element_text(size = 8),
+        legend.title = element_text(size = 10),
         legend.key.height = unit(0.5, "cm"),
         legend.key.width= unit(0.4, "cm"),
         legend.key = element_rect(colour = "black", size = 0.5),
@@ -398,7 +398,7 @@ gg_diff <- ggplot(diff.fit, aes(x = sigma, y = threshSlope, fill = spec)) +
         axis.ticks = element_line(size = 0.5),
         panel.border = element_rect(fill = NA, size = 1))
 
-ggsave("output/ParameterExploration/Plot/Fixed_0806DifferenceOfFit.png", width = 3, height = 2, units = "in", dpi = 600)
+ggsave("output/ParameterExploration/Plot/Fixed_0806DifferenceOfFit.png", width = 2.75, height = 2, units = "in", dpi = 600)
 
 
 png("output/ParameterExploration/Plot/DifferenceOfFitDelta08Comparison.png", width = 5.5, height = 2, units = "in", res = 800)
