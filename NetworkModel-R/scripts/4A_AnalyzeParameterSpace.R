@@ -29,6 +29,7 @@ filename <- "PerCapitaWorkload"
 # Exp data: Slope = 0.02322321
 # Exp data: n16 = 0.5915000
 # Exp data: n2 = 0.2663750
+# Exp data: Increase = 0.325125
 
 #######################################################
 # Figures for main text
@@ -46,7 +47,6 @@ spec.fit$spec <- as.numeric(z)
 # start building large dataframe for calculating total fit
 totalfit <- spec.fit[ , 1:2]
 totalfit$slope.fit <- spec.fit$spec
-# Find which z are within range 0.95 - 1.05? (relative to data)
 
 # Try custom color
 # colPal <- c("#810f7c", "#8856a7", "#8c96c6", "#b3cde3", "#ffffff")
@@ -82,7 +82,8 @@ gg_abslope <- ggplot(spec.fit, aes(x = sigma, y = threshSlope, fill = spec)) +
         axis.text = element_text(size = 8),
         axis.title = element_text(size = 10),
         axis.ticks = element_line(size = 0.5),
-        panel.border = element_rect(fill = NA, size = 1))
+        panel.border = element_rect(fill = NA, size = 1)) +
+  annotate("text", x = 0.3, y = 2, label = "X")
 
 ggsave(plot = gg_abslope, filename = paste0("output/ParameterExploration/Plot/", filename, "_absoluteslope.png"), width = 2.9, height = 2, units = "in", dpi = 600)
 

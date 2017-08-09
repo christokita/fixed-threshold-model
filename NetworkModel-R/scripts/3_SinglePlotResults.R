@@ -3,12 +3,13 @@
 # Plot ensemble model outputs in single plot 
 #
 ################################################################################
-
+rm(list = ls())
 source("scripts/__Util__MASTER.R")
 source("scripts/3A_PrepPlotExperimentData.R")
 
+load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
 
-# Set variable
+# Set variable  
 filename <- "Fixed_Delta06Sigma01Eta7"
 
 # Palette without single individuals
@@ -44,12 +45,13 @@ plot_TaskMat <- as.data.frame(taskDistTot)
 gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
   geom_point(aes(colour = n), size = 0.3) +
   theme_classic() +
-  labs(x = "Group Size",
+  labs(x = "\nGroup Size",
        y = "Frequency Task 1") +
   scale_color_manual(values = palette) +
   scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
   theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank()) 
+        axis.ticks.x = element_blank(),
+        legend.position = "none") 
 
 
 
@@ -223,20 +225,22 @@ numbers <- length(unique(tallies$n))
 
 gg_tally <- ggplot(data = tallies, aes(x = t)) +
   geom_line(aes(y = MeanFreq, group = n, colour = n)) +
-  geom_smooth(method = "lm", 
-              aes(y = MeanFreq), 
-              se = FALSE, 
-              colour = "black",
-              size = 0.5) +
+  # geom_smooth(method = "lm",
+  #             aes(y = MeanFreq), 
+  #             se = FALSE, 
+  #             colour = "black",
+  #             size = 0.5) +
   theme_classic() +
   scale_color_manual(values = palette) +
   scale_y_continuous(breaks = seq(0, 1, 0.5), limits = c(0, 1)) +
-  scale_x_continuous(breaks = seq(0, 10000, 500)) +
+  scale_x_continuous(breaks = seq(0, 10000, 10000)) +
   xlab("Time") +
   ylab("Mean Proportion of Colony") +
   facet_grid(n ~ Task) +
   theme(legend.position = "none",
-        axis.text.x = element_blank())
+        # axis.text.x = element_blank(),
+        panel.spacing.x = unit(1, "lines"),
+        panel.spacing.y = unit(0.8, "lines"))
 
 
 ####################
@@ -323,12 +327,13 @@ gg_stim <- ggplot(data = stims, aes(x = t)) +
   theme_classic() +
   scale_color_manual(values = palette) +
   scale_y_continuous(breaks = seq(0, 100, 5)) +
-  scale_x_continuous(breaks = seq(0, 10000, 500)) +
+  scale_x_continuous(breaks = seq(0, 10000, 5000)) +
   xlab("Time") +
   ylab("Mean Stimulus") +
   facet_grid(n ~ Stim) +
   theme(legend.position = "none",
-        axis.text = element_blank()) 
+        # axis.text.x = element_blank(),
+        panel.spacing.x = unit(1, "lines")) 
 
 
 ####################

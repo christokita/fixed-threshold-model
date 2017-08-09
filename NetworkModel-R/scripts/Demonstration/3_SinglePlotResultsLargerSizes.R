@@ -45,12 +45,13 @@ plot_TaskMat <- as.data.frame(taskDistTot)
 gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
   geom_point(aes(colour = n), size = 0.3) +
   theme_classic() +
-  labs(x = "Group Size",
+  labs(x = "\nGroup Size",
        y = "Frequency Task 1") +
   scale_color_manual(values = palette) +
   scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
   theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank()) 
+        axis.ticks.x = element_blank(),
+        legend.position = "none") 
 
 
 
@@ -248,7 +249,7 @@ gg_corr <- ggplot() +
              alpha = 0.4) +
   theme_classic() +
   labs(x = "Group Size",
-       y = "Specialization") +
+       y = "\nSpecialization") +
   scale_x_continuous(breaks = unique(taskCorrTot$n)) +
   scale_y_continuous(breaks = seq(-1, 1, 0.2)) +
   scale_size_manual(values = c(2, 2, 2, 2, 2, 2, 2, -1, -1, 2)) +
@@ -276,8 +277,8 @@ gg_corr <- ggplot() +
 
 
 # MultiPlot
-png(filename = paste0("output/_ComprehnsivePlots/", filename, ".png"), width = 16, height = 4, units = "in", res = 800)
-multiplot(gg_dist, gg_mean,  gg_corr, gg_varNorm, cols = 4)  
+png(filename = paste0("output/_ComprehnsivePlots/", filename, ".png"), width = 8, height = 8, units = "in", res = 800)
+multiplot(gg_dist, gg_mean,  gg_corr, gg_varNorm, cols = 2)  
 dev.off()
 
 
