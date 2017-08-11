@@ -20,7 +20,7 @@ reps           <- 100 #number of replications per simulation (for ensemble) !!Ch
 
 # Threshold Parameters
 ThreshM        <- c(10, 10) #population threshold means 
-ThreshSD       <- ThreshM * 0.15 #population threshold standard deviations !!Change!!
+ThreshSD       <- ThreshM * 0.02 #population threshold standard deviations !!Change!!
 InitialStim    <- c(0, 0) #intital vector of stimuli
 StimRates      <- c(0.6, 0.6) #vector of stimuli increase rates  
 threshSlope    <- 7 #exponent parameter for threshold curve shape  
