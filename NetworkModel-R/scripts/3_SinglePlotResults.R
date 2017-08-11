@@ -10,7 +10,7 @@ source("scripts/3A_PrepPlotExperimentData.R")
 load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
 
 # Set variable  
-filename <- "Fixed_Delta06Sigma01Eta7"
+filename <- "Fixed_Delta06Sigma002Eta7"
 
 # Palette without single individuals
 #palette <- c("#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78", "#bdbdbd", "#525252")
