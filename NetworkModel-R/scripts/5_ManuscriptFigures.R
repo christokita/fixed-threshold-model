@@ -145,11 +145,14 @@ allFixedProbCorr <- fixedprob_01 %>%
             SpecSE = sd(TaskMean) / sqrt(length(TaskMean)),
             SpecCI = 1.96 * SpecSE) %>% 
   mutate(Set = paste0(Source, Sigma)) %>% 
-  mutate(Set = factor(Set, levels = c("ExperimentNA", "Model0.02", "Model0.1", "Model0.15", "Model0.3")))
+  mutate(Set = factor(Set, levels = c("ExperimentNA", "Model0.02", "Model0.1", "Model0.15", "Model0.3"))) 
+
+# Get increase in specialization
+
 
 # Set pallete
-fixedProbpalette <- c("grey45", "#F9D76E", "#E81715", "#97031B", "#FD792C")
-fillPalette <- c("#ffffff","#F9D76E", "#E81715", "#97031B", "#FD792C")
+fixedProbpalette <- c("grey45", "#F9D76E", "#F23619", "#97031B", "#FD792C")
+fillPalette <- c("#ffffff","#F9D76E", "#F23619", "#97031B", "#FD792C")
 
 # Plot with experimental data
 gg_fixedProb <- ggplot(data = allFixedProbCorr) +
