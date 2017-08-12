@@ -103,23 +103,23 @@ fixedprob_01 <-  taskCorrTot %>%
          Source = "Model") %>% 
   select(n, TaskMean, Source, Sigma) 
 
-# Load and prep fixed probabilistic sigma = 0.25
-load("output/__RData/Fixed_Delta06Sigma025Eta7.Rdata")
+# Load and prep fixed probabilistic sigma = 0.15
+load("output/__RData/Fixed_Delta06Sigma015Eta7.Rdata")
 
 taskCorrTot <- do.call("rbind", groups_taskCorr)
-fixedprob_025 <-  taskCorrTot %>% 
+fixedprob_015 <-  taskCorrTot %>% 
   mutate(TaskMean = (Task1 + Task2) / 2) %>% 
-  mutate(Sigma = 0.25, 
+  mutate(Sigma = 0.15, 
          Source = "Model") %>% 
   select(n, TaskMean, Source, Sigma)
 
-# Load and prep fixed probabilistic sigma = 0.05
-load("output/__RData/Fixed_Delta06Sigma005Eta7.Rdata")
+# Load and prep fixed probabilistic sigma = 0.02
+load("output/__RData/Fixed_Delta06Sigma002Eta7.Rdata")
 
 taskCorrTot <- do.call("rbind", groups_taskCorr)
-fixedprob_005 <-  taskCorrTot %>% 
+fixedprob_002 <-  taskCorrTot %>% 
   mutate(TaskMean = (Task1 + Task2) / 2) %>% 
-  mutate(Sigma = 0.05, 
+  mutate(Sigma = 0.02, 
          Source = "Model") %>% 
   select(n, TaskMean, Source, Sigma)
 
@@ -135,8 +135,8 @@ fixedprob_03 <-  taskCorrTot %>%
 
 # Bind into large dataframe
 allFixedProbCorr <- fixedprob_01 %>% 
-  rbind(fixedprob_005) %>% 
-  rbind(fixedprob_025) %>%
+  rbind(fixedprob_002) %>% 
+  rbind(fixedprob_015) %>%
   rbind(fixedprob_03) %>% 
   rbind(yukoCorr) %>% 
   mutate(Source = as.factor(Source)) %>% 
@@ -145,11 +145,11 @@ allFixedProbCorr <- fixedprob_01 %>%
             SpecSE = sd(TaskMean) / sqrt(length(TaskMean)),
             SpecCI = 1.96 * SpecSE) %>% 
   mutate(Set = paste0(Source, Sigma)) %>% 
-  mutate(Set = factor(Set, levels = c("ExperimentNA", "Model0.05", "Model0.1", "Model0.25", "Model0.3")))
+  mutate(Set = factor(Set, levels = c("ExperimentNA", "Model0.02", "Model0.1", "Model0.15", "Model0.3")))
 
 # Set pallete
-fixedProbpalette <- c("grey45", "#FFB84F", "#E81715", "#F55632", "#FD792C")
-fillPalette <- c("#ffffff","#FFB84F", "#E81715", "#F55632", "#FD792C")
+fixedProbpalette <- c("grey45", "#F9D76E", "#E81715", "#97031B", "#FD792C")
+fillPalette <- c("#ffffff","#F9D76E", "#E81715", "#97031B", "#FD792C")
 
 # Plot with experimental data
 gg_fixedProb <- ggplot(data = allFixedProbCorr) +
@@ -158,22 +158,23 @@ gg_fixedProb <- ggplot(data = allFixedProbCorr) +
        y = "Specialization") +
   scale_x_continuous(breaks = unique(taskCorrTot$n)) +
   scale_y_continuous(breaks = seq(-1, 1, 0.1), 
-                     limits = c(0, 0.9)) +
+                     limits = c(0, 0.85),
+                     expand = c(0, 0)) +
   scale_colour_manual(values = fixedProbpalette, 
                       labels = c("Experiment", 
-                                 expression(paste(sigma, " = 0.05, ", eta, " = 7")),
+                                 expression(paste(sigma, " = 0.02, ", eta, " = 7")),
                                  expression(paste(sigma, " = 0.1, ", eta, " = 7")), 
                                  expression(paste(sigma, " = 0.25, ", eta, " = 7")),
                                  expression(paste(sigma, " = 0.3, ", eta, " = 2")))) +
   scale_fill_manual(values = fillPalette,
                       labels = c("Experiment", 
-                                 expression(paste(sigma, " = 0.05, ", eta, " = 7")),
+                                 expression(paste(sigma, " = 0.02, ", eta, " = 7")),
                                  expression(paste(sigma, " = 0.1, ", eta, " = 7")), 
                                  expression(paste(sigma, " = 0.25, ", eta, " = 7")),
                                  expression(paste(sigma, " = 0.3, ", eta, " = 2")))) +
   scale_shape_manual(values = c(21, 22, 21, 25, 24),
                      labels = c("Experiment", 
-                                expression(paste(sigma, " = 0.05, ", eta, " = 7")),
+                                expression(paste(sigma, " = 0.02, ", eta, " = 7")),
                                 expression(paste(sigma, " = 0.1, ", eta, " = 7")), 
                                 expression(paste(sigma, " = 0.25, ", eta, " = 7")),
                                 expression(paste(sigma, " = 0.3, ", eta, " = 2")))) +
