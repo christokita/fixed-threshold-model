@@ -104,12 +104,12 @@ fixedprob_01 <-  taskCorrTot %>%
   select(n, TaskMean, Source, Sigma) 
 
 # Load and prep fixed probabilistic sigma = 0.15
-load("output/__RData/Fixed_Delta06Sigma015Eta7.Rdata")
+load("output/__RData/Fixed_Delta06Sigma005Eta25.Rdata")
 
 taskCorrTot <- do.call("rbind", groups_taskCorr)
-fixedprob_015 <-  taskCorrTot %>% 
+fixedprob_005 <-  taskCorrTot %>% 
   mutate(TaskMean = (Task1 + Task2) / 2) %>% 
-  mutate(Sigma = 0.15, 
+  mutate(Sigma = 0.05, 
          Source = "Model") %>% 
   select(n, TaskMean, Source, Sigma)
 
@@ -136,7 +136,7 @@ fixedprob_03 <-  taskCorrTot %>%
 # Bind into large dataframe
 allFixedProbCorr <- fixedprob_01 %>% 
   rbind(fixedprob_002) %>% 
-  rbind(fixedprob_015) %>%
+  rbind(fixedprob_005) %>%
   rbind(fixedprob_03) %>% 
   rbind(yukoCorr) %>% 
   mutate(Source = as.factor(Source)) %>% 
@@ -145,14 +145,14 @@ allFixedProbCorr <- fixedprob_01 %>%
             SpecSE = sd(TaskMean) / sqrt(length(TaskMean)),
             SpecCI = 1.96 * SpecSE) %>% 
   mutate(Set = paste0(Source, Sigma)) %>% 
-  mutate(Set = factor(Set, levels = c("ExperimentNA", "Model0.02", "Model0.1", "Model0.15", "Model0.3"))) 
+  mutate(Set = factor(Set, levels = c("ExperimentNA", "Model0.02", "Model0.3", "Model0.1", "Model0.05"))) 
 
 # Get increase in specialization
 
 
 # Set pallete
-fixedProbpalette <- c("grey45", "#F9D76E", "#F23619", "#97031B", "#FD792C")
-fillPalette <- c("#ffffff","#F9D76E", "#F23619", "#97031B", "#FD792C")
+fixedProbpalette <- c("grey45", "#F9D76E", "#FD792C", "#F23619", "#97031B")
+fillPalette <- c("#ffffff","#F9D76E", "#FD792C", "#F23619", "#97031B")
 
 # Plot with experimental data
 gg_fixedProb <- ggplot(data = allFixedProbCorr) +
@@ -166,21 +166,21 @@ gg_fixedProb <- ggplot(data = allFixedProbCorr) +
   scale_colour_manual(values = fixedProbpalette, 
                       labels = c("Experiment", 
                                  expression(paste(sigma, " = 0.02, ", eta, " = 7")),
-                                 expression(paste(sigma, " = 0.1, ", eta, " = 7")), 
-                                 expression(paste(sigma, " = 0.25, ", eta, " = 7")),
-                                 expression(paste(sigma, " = 0.3, ", eta, " = 2")))) +
+                                 expression(paste(sigma, " = 0.1, ", eta, " = 7")),
+                                 expression(paste(sigma, " = 0.3, ", eta, " = 2")),
+                                 expression(paste(sigma, " = 0.05, ", eta, " = 25")))) +
   scale_fill_manual(values = fillPalette,
-                      labels = c("Experiment", 
-                                 expression(paste(sigma, " = 0.02, ", eta, " = 7")),
-                                 expression(paste(sigma, " = 0.1, ", eta, " = 7")), 
-                                 expression(paste(sigma, " = 0.25, ", eta, " = 7")),
-                                 expression(paste(sigma, " = 0.3, ", eta, " = 2")))) +
+                    labels = c("Experiment", 
+                               expression(paste(sigma, " = 0.02, ", eta, " = 7")),
+                               expression(paste(sigma, " = 0.1, ", eta, " = 7")),
+                               expression(paste(sigma, " = 0.3, ", eta, " = 2")),
+                               expression(paste(sigma, " = 0.05, ", eta, " = 25")))) +
   scale_shape_manual(values = c(21, 22, 21, 25, 24),
                      labels = c("Experiment", 
                                 expression(paste(sigma, " = 0.02, ", eta, " = 7")),
-                                expression(paste(sigma, " = 0.1, ", eta, " = 7")), 
-                                expression(paste(sigma, " = 0.25, ", eta, " = 7")),
-                                expression(paste(sigma, " = 0.3, ", eta, " = 2")))) +
+                                expression(paste(sigma, " = 0.1, ", eta, " = 7")),
+                                expression(paste(sigma, " = 0.3, ", eta, " = 2")),
+                                expression(paste(sigma, " = 0.05, ", eta, " = 25")))) +
   # Mean and SE portion of plot
   geom_errorbar(aes(x = n, ymin = SpecMean - SpecSE, ymax = SpecMean + SpecSE, colour = Set, width = 1.5),
                 position = position_dodge(width = 0.5),
@@ -309,9 +309,9 @@ gg_meanCorrSpec <- ggplot(data = taskCorrSpec, aes(x = n, group = metric)) +
   theme_classic() +
   ylab("Value") +
   xlab("Group Size")
-  scale_y_continuous(limits = c(-0.1, 0.7),
-                     breaks = seq(-0.1, 1, 0.1),
-                     expand = c(0, 0)) +
+scale_y_continuous(limits = c(-0.1, 0.7),
+                   breaks = seq(-0.1, 1, 0.1),
+                   expand = c(0, 0)) +
   scale_x_continuous(breaks = unique(taskCorrSpec$n)) +
   scale_fill_manual(name = "Metric",
                     values = c("black", "white"),
@@ -354,8 +354,8 @@ gg_meanCorrSpecSide <- ggplot(data = taskCorrSpec, aes(x = n, group = metric)) +
   ylab("Value") +
   xlab("Group Size") +
   scale_y_continuous(#limits = c(-0.1, 0.7),
-                     breaks = seq(-0.1, 1, 0.1),
-                     expand = c(0.1, 0)) +
+    breaks = seq(-0.1, 1, 0.1),
+    expand = c(0.1, 0)) +
   scale_x_continuous(breaks = unique(taskCorrSpec$n)) +
   scale_fill_manual(name = "Metric",
                     values = c("black", "white"),
