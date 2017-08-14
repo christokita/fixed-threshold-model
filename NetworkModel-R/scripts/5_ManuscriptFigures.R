@@ -113,13 +113,13 @@ fixedprob_005 <-  taskCorrTot %>%
          Source = "Model") %>% 
   select(n, TaskMean, Source, Sigma)
 
-# Load and prep fixed probabilistic sigma = 0.02
-load("output/__RData/Fixed_Delta06Sigma002Eta7.Rdata")
+# Load and prep fixed probabilistic sigma = 0.03
+load("output/__RData/Fixed_Delta06Sigma003Eta3.Rdata")
 
 taskCorrTot <- do.call("rbind", groups_taskCorr)
-fixedprob_002 <-  taskCorrTot %>% 
+fixedprob_003 <-  taskCorrTot %>% 
   mutate(TaskMean = (Task1 + Task2) / 2) %>% 
-  mutate(Sigma = 0.02, 
+  mutate(Sigma = 0.03, 
          Source = "Model") %>% 
   select(n, TaskMean, Source, Sigma)
 
@@ -135,7 +135,7 @@ fixedprob_03 <-  taskCorrTot %>%
 
 # Bind into large dataframe
 allFixedProbCorr <- fixedprob_01 %>% 
-  rbind(fixedprob_002) %>% 
+  rbind(fixedprob_003) %>% 
   rbind(fixedprob_005) %>%
   rbind(fixedprob_03) %>% 
   rbind(yukoCorr) %>% 
@@ -145,7 +145,7 @@ allFixedProbCorr <- fixedprob_01 %>%
             SpecSE = sd(TaskMean) / sqrt(length(TaskMean)),
             SpecCI = 1.96 * SpecSE) %>% 
   mutate(Set = paste0(Source, Sigma)) %>% 
-  mutate(Set = factor(Set, levels = c("ExperimentNA", "Model0.02", "Model0.3", "Model0.1", "Model0.05"))) 
+  mutate(Set = factor(Set, levels = c("ExperimentNA", "Model0.03", "Model0.3", "Model0.1", "Model0.05"))) 
 
 # Get increase in specialization
 
@@ -165,21 +165,21 @@ gg_fixedProb <- ggplot(data = allFixedProbCorr) +
                      expand = c(0, 0)) +
   scale_colour_manual(values = fixedProbpalette, 
                       labels = c("Experiment", 
-                                 expression(paste(sigma, " = 0.02, ", eta, " = 7")),
-                                 expression(paste(sigma, " = 0.1, ", eta, " = 7")),
+                                 expression(paste(sigma, " = 0.03, ", eta, " = 3")),
                                  expression(paste(sigma, " = 0.3, ", eta, " = 2")),
+                                 expression(paste(sigma, " = 0.1, ", eta, " = 7")),
                                  expression(paste(sigma, " = 0.05, ", eta, " = 25")))) +
   scale_fill_manual(values = fillPalette,
                     labels = c("Experiment", 
-                               expression(paste(sigma, " = 0.02, ", eta, " = 7")),
-                               expression(paste(sigma, " = 0.1, ", eta, " = 7")),
+                               expression(paste(sigma, " = 0.03, ", eta, " = 3")),
                                expression(paste(sigma, " = 0.3, ", eta, " = 2")),
+                               expression(paste(sigma, " = 0.1, ", eta, " = 7")),
                                expression(paste(sigma, " = 0.05, ", eta, " = 25")))) +
-  scale_shape_manual(values = c(21, 22, 21, 25, 24),
+  scale_shape_manual(values = c(21, 22, 25, 21, 24),
                      labels = c("Experiment", 
-                                expression(paste(sigma, " = 0.02, ", eta, " = 7")),
-                                expression(paste(sigma, " = 0.1, ", eta, " = 7")),
+                                expression(paste(sigma, " = 0.03, ", eta, " = 3")),
                                 expression(paste(sigma, " = 0.3, ", eta, " = 2")),
+                                expression(paste(sigma, " = 0.1, ", eta, " = 7")),
                                 expression(paste(sigma, " = 0.05, ", eta, " = 25")))) +
   # Mean and SE portion of plot
   geom_errorbar(aes(x = n, ymin = SpecMean - SpecSE, ymax = SpecMean + SpecSE, colour = Set, width = 1.5),
