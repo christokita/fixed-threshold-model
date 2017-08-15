@@ -23,10 +23,16 @@ reps           <- 100 #number of replications per simulation (for ensemble) !!Ch
 
 # Threshold Parameters
 ThreshM        <- c(10, 10) #population threshold means 
-sigmas         <- c(0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.125, 0.15, 0.175, 0.2, 0.225, 0.25, 0.275, 0.3, 0.325, 0.35, 0.4, 0.45, 0.5)
+sigmas         <- seq(0, 0.5, 0.01)
+sigmasOld      <- c(0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.125, 0.15, 0.175, 0.2, 0.225, 0.25, 0.275, 0.3, 0.325, 0.35, 0.4, 0.45, 0.5)
+sigmas         <- sigmas[!sigmas %in% sigmasOld] 
+# sigmas         <- c(0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.125, 0.15, 0.175, 0.2, 0.225, 0.25, 0.275, 0.3, 0.325, 0.35, 0.4, 0.45, 0.5)
 InitialStim    <- c(0, 0) #intital vector of stimuli
 StimRates      <- c(0.6, 0.6) #vector of stimuli increase rates  
-threshSlopes   <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 17, 20, 22, 25, 27, 30) #exponent parameter for threshold curve shape  
+threshSlopes   <- seq(1, 30, 1) #exponent parameter for threshold curve shape
+threshSlopesOld<- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 17, 20, 22, 25, 27, 30) #exponent parameter for threshold curve shape
+threshSlopes   <- threshSlopes[!threshSlopes %in% threshSlopesOld]
+# threshSlopes   <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 17, 20, 22, 25, 27, 30) #exponent parameter for threshold curve shape
 alpha          <- m #efficiency of task performance
 quitP          <- 0.2 #probability of quitting task once active
 
