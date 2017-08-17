@@ -82,8 +82,7 @@ gg_abslope <- ggplot(spec.fit, aes(x = sigma, y = threshSlope, fill = spec)) +
         axis.text = element_text(size = 8),
         axis.title = element_text(size = 10),
         axis.ticks = element_line(size = 0.5),
-        panel.border = element_rect(fill = NA, size = 1)) +
-  annotate("text", x = 0.3, y = 2, label = "X")
+        panel.border = element_rect(fill = NA, size = 1))
 
 ggsave(plot = gg_abslope, filename = paste0("output/ParameterExploration/Plot/", filename, "_absoluteslope.png"), width = 2.9, height = 2, units = "in", dpi = 600)
 
