@@ -22,6 +22,15 @@ improve1 <- improve %>%
          Increase        = SlopeIncrease * 14) %>% 
   mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
 
+load("output/ParameterExploration/Rdata/FixedDelta06_SigmaSlopeExplorationEXTRA2.Rdata")
+improve2 <- improve %>% 
+  mutate(relativePercInc = (PercIncrease - 1.220554) / 1.220554,
+         relativeSlope   = (SlopeIncrease - 0.02322321) / 0.02322321, 
+         relativeLarge   = (SpecLarge - 0.5915000) / 0.5915000,
+         relativeSmall   = (SpecSmall - 0.2663750) / 0.2663750,
+         Increase        = SlopeIncrease * 14) %>% 
+  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
+
 load("output/ParameterExploration/Rdata/FixedDelta06_SigmaSlopeExploration.Rdata")
 improve <- improve %>% 
   mutate(relativePercInc = (PercIncrease - 1.220554) / 1.220554,
@@ -31,8 +40,12 @@ improve <- improve %>%
          Increase        = SlopeIncrease * 14) %>% 
   mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
 
-improve <- rbind(improve, improve1)
-rm(improve1)
+improve <- rbind(improve, improve1, improve2)
+rm(improve1, improve2)
+
+# Filter to size
+improve <- improve %>% 
+  filter(!sigma %in% c(0.075, 0.125, 0.175, 0.225, 0.275, 0.325))
 
 # Set file names
 filename <- "PerCapitaWorkload"
@@ -67,7 +80,7 @@ colPal <- c(myPalette(6), "#800026")
 
 # Graph 
 gg_abslope <- ggplot(spec.fit, aes(x = sigma, y = threshSlope, fill = spec)) +
-  geom_tile() +
+  geom_raster() +
   stat_contour(aes(z = spec), 
                size = 0.25,
                alpha = 1,
@@ -117,7 +130,7 @@ colPal <- myPalette(9)
 
 # Graph 
 gg_slope <- ggplot(spec.fit, aes(x = sigma, y = threshSlope, fill = spec)) +
-  geom_tile() +
+  geom_raster() +
   stat_contour(aes(z = spec), 
                size = 0.15,
                alpha = 1,
@@ -161,16 +174,16 @@ myPalette <- colorRampPalette(brewer.pal(6, "YlOrRd"))
 colPal <- c(myPalette(6), "#800026")
 
 # Graph 
-gg_abslopeHeat <- ggplot(improve, aes(x = sigma, y = threshSlope, z = Increase height = 1, width = 0.1)) +
-  geom_tile(aes(fill = Increase)) +
-  stat_contour(#aes(z = Increase),
+gg_abslopeHeat <- ggplot(improve, aes(x = sigma, y = threshSlope, fill = Increase)) +
+  geom_raster() +
+  stat_contour(aes(z = Increase),
                size = 0.25,
                alpha = 1,
-               colour = "white",
+               colour = "green",
                breaks = c(0.2926124,  0.3576374)) +
   theme_bw() +
-  scale_x_continuous(expand = c(0.005, 0)) +
-  scale_y_continuous(expand = c(0.005, 0), breaks = c(0, 2, seq(10, 30, 10))) +
+  scale_x_continuous(expand = c(0.00, 0)) +
+  scale_y_continuous(expand = c(0.00, 0), breaks = c(0, 2, seq(10, 30, 10))) +
   scale_fill_gradientn(name = "Specialization\nIncrease",
                        colors = colPal,
                        breaks = seq(0, 0.5, 0.1),
