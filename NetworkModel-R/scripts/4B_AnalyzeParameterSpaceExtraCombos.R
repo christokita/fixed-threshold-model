@@ -13,16 +13,17 @@ library(RColorBrewer)
 # Prep and Plot
 ####################
 # load
-load("output/ParameterExploration/Rdata/FixedDelta06_SigmaSlopeExplorationEXTRA.Rdata")
+load("output/ParameterExploration/Rdata/FixedDelta08_SigmaSlopeExplorationEXTRA.Rdata")
 improve1 <- improve %>% 
   mutate(relativePercInc = (PercIncrease - 1.220554) / 1.220554,
          relativeSlope   = (SlopeIncrease - 0.02322321) / 0.02322321, 
          relativeLarge   = (SpecLarge - 0.5915000) / 0.5915000,
          relativeSmall   = (SpecSmall - 0.2663750) / 0.2663750,
          Increase        = SlopeIncrease * 14) %>% 
+  filter(sigma != 0.35) %>% 
   mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
 
-load("output/ParameterExploration/Rdata/FixedDelta06_SigmaSlopeExplorationEXTRA2.Rdata")
+load("output/ParameterExploration/Rdata/FixedDelta08_SigmaSlopeExplorationEXTRA2.Rdata")
 improve2 <- improve %>% 
   mutate(relativePercInc = (PercIncrease - 1.220554) / 1.220554,
          relativeSlope   = (SlopeIncrease - 0.02322321) / 0.02322321, 
@@ -31,7 +32,7 @@ improve2 <- improve %>%
          Increase        = SlopeIncrease * 14) %>% 
   mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
 
-load("output/ParameterExploration/Rdata/FixedDelta06_SigmaSlopeExploration.Rdata")
+load("output/ParameterExploration/Rdata/FixedDelta08_SigmaSlopeExploration.Rdata")
 improve <- improve %>% 
   mutate(relativePercInc = (PercIncrease - 1.220554) / 1.220554,
          relativeSlope   = (SlopeIncrease - 0.02322321) / 0.02322321, 
@@ -48,7 +49,7 @@ improve <- improve %>%
   filter(!sigma %in% c(0.075, 0.125, 0.175, 0.225, 0.275, 0.325))
 
 # Set file names
-filename <- "PerCapitaWorkload"
+filename <- "Delta08"
 
 # Exp data: % increase = 1.220554
 # Exp data: Slope = 0.02322321
@@ -174,13 +175,19 @@ myPalette <- colorRampPalette(brewer.pal(6, "YlOrRd"))
 colPal <- c(myPalette(6), "#800026")
 
 # Graph 
-gg_abslopeHeat <- ggplot(improve, aes(x = sigma, y = threshSlope, fill = Increase)) +
-  geom_raster() +
-  stat_contour(aes(z = Increase),
-               size = 0.25,
-               alpha = 1,
-               colour = "green",
-               breaks = c(0.2926124,  0.3576374)) +
+gg_abslopeHeat <- ggplot() +
+  geom_raster(data = improve, 
+              aes(x = sigma, 
+                  y = threshSlope, 
+                  fill = fit)) +
+  # stat_contour(data = spec.fit,
+  #              aes(x = sigma, 
+  #                   y = threshSlope,
+  #                   z = spec),
+  #              size = 0.25,
+  #              alpha = 1,
+  #              colour = "white",
+  #              breaks = c(0.2926124,  0.3576374)) +
   theme_bw() +
   scale_x_continuous(expand = c(0.00, 0)) +
   scale_y_continuous(expand = c(0.00, 0), breaks = c(0, 2, seq(10, 30, 10))) +
@@ -198,7 +205,7 @@ gg_abslopeHeat <- ggplot(improve, aes(x = sigma, y = threshSlope, fill = Increas
                        oob = squish) +
   xlab(expression(sigma)) +
   ylab(expression(eta)) +
-  theme(legend.position = "right", 
+  theme(legend.position = "none", 
         legend.title = element_text(size = 7),
         legend.key.height = unit(0.3, "cm"),
         legend.key.width= unit(0.4, "cm"),
@@ -211,6 +218,8 @@ gg_abslopeHeat <- ggplot(improve, aes(x = sigma, y = threshSlope, fill = Increas
         panel.border = element_rect(fill = NA, size = 1))
 
 gg_abslopeHeat
+
+ggsave(plot = gg_abslopeHeat, filename = paste0("output/ParameterExploration/Plot/", filename, "_Heatabsoluteslope.png"), width = 2.7, height = 2, units = "in", dpi = 600)
 
 
 
