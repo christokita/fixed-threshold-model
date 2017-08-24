@@ -110,7 +110,7 @@ z <- predict(spec.loess, newdata = spec.fit)
 spec.fit$spec <- as.numeric(z)
 
 # Graph 
-gg_abslopeHeat <- ggplot() +
+gg_abslope <- ggplot() +
   geom_raster(data = improve06, 
               aes(x = sigma, 
                   y = threshSlope, 
@@ -202,9 +202,9 @@ gg_relslope <- ggplot() +
   scale_fill_gradientn(name = "Fit to Data",
                        colors = colPal,
                        #values = rescale(x = c(0, 0.01, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.5, 0.6)),
-                       breaks = seq(-0.5, 0.5, 0.25),
+                       breaks = seq(-1, 1, 0.5),
                        colours = colPal,
-                       limits = c(-0.5, 0.5),
+                       limits = c(-1, 1),
                        oob = squish) +
   xlab(expression(sigma)) +
   ylab(expression(eta)) +
@@ -249,9 +249,9 @@ gg_small <- ggplot() +
   scale_fill_gradientn(name = "Fit to Data",
                        colors = colPal,
                        #values = rescale(x = c(0, 0.01, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.5, 0.6)),
-                       breaks = seq(-0.5, 0.5, 0.25),
+                       breaks = seq(-1, 1, 0.5),
                        colours = colPal,
-                       limits = c(-0.5, 0.5),
+                       limits = c(-1, 1),
                        oob = squish) +
   xlab(expression(sigma)) +
   ylab(expression(eta)) +
@@ -296,19 +296,19 @@ gg_large <- ggplot() +
   scale_fill_gradientn(name = "Fit to Data",
                        colors = colPal,
                        #values = rescale(x = c(0, 0.01, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.5, 0.6)),
-                       breaks = seq(-0.5, 0.5, 0.25),
+                       breaks = seq(-1, 1, 0.5),
                        colours = colPal,
-                       limits = c(-0.5, 0.5),
+                       limits = c(-1, 1),
                        oob = squish) +
   xlab(expression(sigma)) +
   ylab(expression(eta)) +
-  theme(legend.position = "none",
-        legend.title = element_text(size = 7),
-        legend.key.height = unit(0.3, "cm"),
+  theme(legend.position = "right",
+        legend.title = element_text(size = 10),
+        legend.key.height = unit(0.5, "cm"),
         legend.key.width= unit(0.4, "cm"),
         legend.key = element_rect(colour = "black", size = 0.5),
         legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
-        legend.text = element_text(size = 6),
+        legend.text = element_text(size = 8),
         axis.text = element_text(size = 8),
         axis.title = element_text(size = 10),
         axis.ticks = element_line(size = 0.5),
@@ -319,7 +319,7 @@ gg_large <- ggplot() +
 
 ##### Plot All Relative Plots #####
 # output
-png(paste0("output/ParameterExploration/Plot/", filename, "_SlopeandSize.png"), width = 6, height = 2, units = "in", res = 800)
+png("output/ParameterExploration/Plot/Delta06_SlopeandSizeWithLegend.png", width = 6, height = 2, units = "in", res = 800)
 multiplot(gg_relslope, gg_small, gg_large, cols = 3)
 dev.off()
 
@@ -358,6 +358,8 @@ gg_fit06 <- ggplot(improve06, aes(x = sigma, y = threshSlope, fill = fit)) +
         panel.border = element_rect(fill = NA, size = 1))
 gg_fit06
 
+ggsave("output/ParameterExploration/Plot/Delta06_fit.png", width = 2.8, height = 2, units = "in", dpi = 600)
+
 
 ##### Total Fit - Delta 08 #####
 # Graph 
@@ -388,6 +390,9 @@ gg_fit08 <- ggplot(improve08, aes(x = sigma, y = threshSlope, fill = fit)) +
         axis.ticks = element_line(size = 0.5),
         panel.border = element_rect(fill = NA, size = 1))
 gg_fit08
+
+
+ggsave("output/ParameterExploration/Plot/Delta08_fit.png", width = 2.8, height = 2, units = "in", dpi = 600)
 
 
 ##### Change in Fit #####
@@ -423,3 +428,5 @@ gg_diff <- ggplot(diff_improve, aes(x = sigma, y = threshSlope, fill = fit)) +
         axis.ticks = element_line(size = 0.5),
         panel.border = element_rect(fill = NA, size = 1))
 gg_diff
+
+ggsave("output/ParameterExploration/Plot/Fixed_0806DifferenceOfFit.png", width = 2.75, height = 2, units = "in", dpi = 600)

@@ -12,27 +12,7 @@ source("scripts/__Util__MASTER.R")
 library(RColorBrewer)
 library(scales)
 
-
-##### Delta 06 #####
 # load
-load("output/ParameterExploration/Rdata/FixedDelta06_SigmaSlopeExplorationEXTRA.Rdata")
-improve1 <- improve %>% 
-  mutate(relativePercInc = (PercIncrease - 1.220554) / 1.220554,
-         relativeSlope   = (SlopeIncrease - 0.02322321) / 0.02322321, 
-         relativeLarge   = (SpecLarge - 0.5915000) / 0.5915000,
-         relativeSmall   = (SpecSmall - 0.2663750) / 0.2663750,
-         Increase        = SlopeIncrease * 14) %>% 
-  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
-
-load("output/ParameterExploration/Rdata/FixedDelta06_SigmaSlopeExplorationEXTRA2.Rdata")
-improve2 <- improve %>% 
-  mutate(relativePercInc = (PercIncrease - 1.220554) / 1.220554,
-         relativeSlope   = (SlopeIncrease - 0.02322321) / 0.02322321, 
-         relativeLarge   = (SpecLarge - 0.5915000) / 0.5915000,
-         relativeSmall   = (SpecSmall - 0.2663750) / 0.2663750,
-         Increase        = SlopeIncrease * 14) %>% 
-  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
-
 load("output/ParameterExploration/Rdata/FixedDelta06_SigmaSlopeExploration.Rdata")
 improve <- improve %>% 
   mutate(relativePercInc = (PercIncrease - 1.220554) / 1.220554,
@@ -42,55 +22,43 @@ improve <- improve %>%
          Increase        = SlopeIncrease * 14) %>% 
   mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
 
-improve06 <- rbind(improve, improve1, improve2)
-rm(improve, improve1, improve2)
-
-# Filter to size
-improve06 <- improve06 %>% 
-  filter(!sigma %in% c(0.075, 0.125, 0.175, 0.225, 0.275, 0.325))
-
 
 ##### Absolute Slope #####
-# Colors
+# Fit surface
+spec.loess <- loess(Increase ~ sigma * threshSlope, data = improve, degree = 2, span = 0.1)
+spec.fit <- expand.grid(list(sigma = seq(0, max(improve$sigma), (max(improve$sigma) - min(improve$sigma)) / 1000), 
+                             threshSlope = seq(1, max(improve$threshSlope), (max(improve$threshSlope) - min(improve$threshSlope)) / 1000)))
+z <- predict(spec.loess, newdata = spec.fit)
+
+spec.fit$spec <- as.numeric(z)
+
+# start building large dataframe for calculating total fit
+totalfit <- spec.fit[ , 1:2]
+totalfit$slope.fit <- spec.fit$spec
+# Find which z are within range 0.95 - 1.05? (relative to data)
+
+# Try custom color
+# colPal <- c("#810f7c", "#8856a7", "#8c96c6", "#b3cde3", "#ffffff")
 myPalette <- colorRampPalette(brewer.pal(6, "YlOrRd"))
 colPal <- c(myPalette(6), "#800026")
 
-# Fit surface
-spec.loess <- loess(Increase ~ sigma * threshSlope, data = improve06, degree = 2, span = 0.1)
-spec.fit <- expand.grid(list(sigma = seq(0, max(improve06$sigma), (max(improve06$sigma) - min(improve06$sigma)) / 1000), 
-                             threshSlope = seq(1, max(improve06$threshSlope), (max(improve06$threshSlope) - min(improve06$threshSlope)) / 1000)))
-z <- predict(spec.loess, newdata = spec.fit)
-spec.fit$spec <- as.numeric(z)
-
 # Graph 
-gg_abslope <- ggplot() +
-  geom_raster(data = improve06, 
-              aes(x = sigma, 
-                  y = threshSlope, 
-                  fill = Increase)) +
-  stat_contour(data = spec.fit,
-               aes(x = sigma,
-                   y = threshSlope,
-                   z = spec),
-               size = 0.3,
+gg_abslope <- ggplot(spec.fit, aes(x = sigma, y = threshSlope, fill = spec)) +
+  geom_tile() +
+  stat_contour(aes(z = spec), 
+               size = 0.25,
                alpha = 1,
                colour = "white",
                breaks = c(0.2926124,  0.3576374)) +
   theme_bw() +
-  scale_x_continuous(expand = c(0.00, 0)) +
-  scale_y_continuous(expand = c(0.00, 0), breaks = c(1, seq(10, 30, 10))) +
-  scale_fill_gradientn(name = "Specialization\nIncrease",
+  scale_x_continuous(expand = c(0.005, 0)) +
+  scale_y_continuous(expand = c(0.005, 0), breaks = c(0, 2, seq(10, 30, 10))) +
+  scale_fill_gradientn(name = "Specialization Increase",
                        colors = colPal,
                        breaks = seq(0, 0.5, 0.1),
                        colours = colPal,
                        limits = c(0, 0.5),
                        oob = squish) +
-  scale_colour_gradientn(name = "Specialization\nIncrease",
-                         colors = colPal,
-                         breaks = seq(0, 0.5, 0.1),
-                         colours = colPal,
-                         limits = c(0, 0.5),
-                         oob = squish) +
   xlab(expression(sigma)) +
   ylab(expression(eta)) +
   theme(legend.position = "none", 
