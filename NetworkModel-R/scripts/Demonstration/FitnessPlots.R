@@ -103,3 +103,96 @@ gg_taskEx
 
 ggsave(filename = "output/FitnessPlots/TasksOverTimeExample.png", width = 5, height = 4, units = "in", dpi = 600)
 
+
+####################
+# Sample stimuli over time
+####################
+# Unlist
+tallies <- unlist(groups_taskTally, recursive = FALSE)
+tallies <- do.call("rbind", tallies)
+
+# Normalize and Summarise by "day" (i.e., time window)
+tallyFluct <- tallies %>% 
+  mutate(Task1 = Task1 / n,
+         Task2 = Task2 / n,
+         Inactive = Inactive / n,
+         n = factor(n),
+         Set = paste0(n, "-", replicate),
+         Window = t %/% 200) %>% 
+  group_by(n, Set, Window) %>% 
+  summarise(Task1 = mean(Task1),
+            Task2 = mean(Task2),
+            Inactive = mean(Inactive)) %>% 
+  mutate(Task1Diff = NA,
+         Task2Diff = NA,
+         InactiveDiff = NA)
+
+# Loop through rows to calculate absolute difference
+for (i in 2:nrow(tallyFluct)) {
+  tallyFluct$Task1Diff[i] <- abs(tallyFluct$Task1[i] - tallyFluct$Task1[i - 1])
+  tallyFluct$Task2Diff[i] <- abs(tallyFluct$Task2[i] - tallyFluct$Task2[i - 1])
+  tallyFluct$InactiveDiff[i] <- abs(tallyFluct$Inactive[i] - tallyFluct$Inactive[i - 1])
+}
+
+# Loop through sets to set the difference for the first row of each new set to be NA
+sets <- unique(tallyFluct$Set)
+
+for (set in sets) {
+  index <- min(which(tallyFluct$Set == set))
+  tallyFluct$Task1Diff[index] <- NA
+  tallyFluct$Task2Diff[index] <- NA
+  tallyFluct$InactiveDiff[index] <- NA
+}
+
+# Summarise by colony/set
+tallyFluct <- tallyFluct %>% 
+  group_by(n, Set) %>% 
+  summarise(Task1Fluct = mean(Task1Diff, na.rm = TRUE),
+            Task2Fluct = mean(Task2Diff, na.rm = TRUE),
+            InactiveFluct = mean(InactiveDiff, na.rm = TRUE))
+
+# Summarise by n
+tallySumFluct <- tallyFluct %>% 
+  group_by(n) %>% 
+  summarise(Task1FluctMean = mean(Task1Fluct, na.rm = TRUE),
+            Task1FluctSE = sd(Task1Fluct, na.rm = TRUE) / sqrt(length(Task1Fluct)),
+            Task2FluctMean = mean(Task2Fluct, na.rm = TRUE),
+            Task2FluctSE = sd(Task2Fluct, na.rm = TRUE) / sqrt(length(Task2Fluct)),
+            InactiveFluctMean = mean(InactiveFluct, na.rm = TRUE),
+            InactiveFluctSE = sd(InactiveFluct, na.rm = TRUE) / sqrt(length(InactiveFluct)))
+
+
+# Plot
+palette <- c("#83343E", "#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78", "#bdbdbd", "#525252")
+
+
+gg_fluct <- ggplot() +
+  geom_point(data = tallyFluct, 
+             aes(x = n, y = Task1Fluct),
+             fill = "grey50", 
+             colour = "grey50", 
+             size = 0.5, 
+             position = position_dodge(width = 1),
+             alpha = 0.4) +
+  theme_classic() +
+  labs(x = "Group Size",
+       y = "Average Fluctuation\nIn Task Performance") +
+  # scale_x_continuous(breaks = unique(tallyFluct$n)) +
+  scale_y_continuous(breaks = seq(0, 0.1, 0.02)) +
+  scale_fill_manual(values = palette) +
+  scale_colour_manual(values = palette) +
+  theme(legend.position = "none") +
+  # Mean and SE portion of plot
+  geom_errorbar(data = tallySumFluct, 
+                aes(x = n, 
+                    ymin = Task1FluctMean - Task1FluctSE, 
+                    ymax = Task1FluctMean + Task1FluctSE, 
+                    colour = n, 
+                    width = 0.5)) +
+  geom_point(data = tallySumFluct, 
+             aes(x = n, y = Task1FluctMean, colour = n, fill = n),
+             size = 2)
+
+gg_fluct
+
+
