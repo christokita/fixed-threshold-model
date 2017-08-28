@@ -20,7 +20,8 @@ improve <- improve %>%
          relativeLarge   = (SpecLarge - 0.5915000) / 0.5915000,
          relativeSmall   = (SpecSmall - 0.2663750) / 0.2663750,
          Increase        = SlopeIncrease * 14) %>% 
-  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
+  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3,
+         fitRMSE = sqrt( (relativeLarge^2 + relativeSmall^2 + relativeSlope^2) / 3 ))
 
 # Set file names
 filename <- "PerCapitaWorkload"
