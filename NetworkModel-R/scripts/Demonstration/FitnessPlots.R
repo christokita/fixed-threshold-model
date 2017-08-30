@@ -105,7 +105,7 @@ ggsave(filename = "output/FitnessPlots/TasksOverTimeExample.png", width = 5, hei
 
 
 ####################
-# Sample stimuli over time
+# Stimuli Fluctuation
 ####################
 # Unlist
 tallies <- unlist(groups_taskTally, recursive = FALSE)
