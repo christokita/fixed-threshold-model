@@ -22,7 +22,8 @@ improve1 <- improve %>%
          relativeLarge   = (SpecLarge - 0.5915000) / 0.5915000,
          relativeSmall   = (SpecSmall - 0.2663750) / 0.2663750,
          Increase        = SlopeIncrease * 14) %>% 
-  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
+  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3,
+         fitRMSE = sqrt( (relativeLarge^2 + relativeSmall^2 + relativeSlope^2) / 3 ))
 
 load("output/ParameterExploration/Rdata/FixedDelta06_SigmaSlopeExplorationEXTRA2.Rdata")
 improve2 <- improve %>% 
@@ -31,7 +32,8 @@ improve2 <- improve %>%
          relativeLarge   = (SpecLarge - 0.5915000) / 0.5915000,
          relativeSmall   = (SpecSmall - 0.2663750) / 0.2663750,
          Increase        = SlopeIncrease * 14) %>% 
-  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
+  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3,
+         fitRMSE = sqrt( (relativeLarge^2 + relativeSmall^2 + relativeSlope^2) / 3 ))
 
 load("output/ParameterExploration/Rdata/FixedDelta06_SigmaSlopeExploration.Rdata")
 improve <- improve %>% 
@@ -40,7 +42,8 @@ improve <- improve %>%
          relativeLarge   = (SpecLarge - 0.5915000) / 0.5915000,
          relativeSmall   = (SpecSmall - 0.2663750) / 0.2663750,
          Increase        = SlopeIncrease * 14) %>% 
-  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
+  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3,
+         fitRMSE = sqrt( (relativeLarge^2 + relativeSmall^2 + relativeSlope^2) / 3 ))
 
 improve06 <- rbind(improve, improve1, improve2)
 rm(improve, improve1, improve2)
@@ -59,7 +62,8 @@ improve1 <- improve %>%
          relativeLarge   = (SpecLarge - 0.5915000) / 0.5915000,
          relativeSmall   = (SpecSmall - 0.2663750) / 0.2663750,
          Increase        = SlopeIncrease * 14) %>% 
-  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
+  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3,
+         fitRMSE = sqrt( (relativeLarge^2 + relativeSmall^2 + relativeSlope^2) / 3 ))
 
 load("output/ParameterExploration/Rdata/FixedDelta08_SigmaSlopeExplorationEXTRA2.Rdata")
 improve2 <- improve %>% 
@@ -68,7 +72,8 @@ improve2 <- improve %>%
          relativeLarge   = (SpecLarge - 0.5915000) / 0.5915000,
          relativeSmall   = (SpecSmall - 0.2663750) / 0.2663750,
          Increase        = SlopeIncrease * 14) %>% 
-  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
+  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3,
+         fitRMSE = sqrt( (relativeLarge^2 + relativeSmall^2 + relativeSlope^2) / 3 ))
 
 load("output/ParameterExploration/Rdata/FixedDelta08_SigmaSlopeExploration.Rdata")
 improve <- improve %>% 
@@ -77,7 +82,8 @@ improve <- improve %>%
          relativeLarge   = (SpecLarge - 0.5915000) / 0.5915000,
          relativeSmall   = (SpecSmall - 0.2663750) / 0.2663750,
          Increase        = SlopeIncrease * 14) %>% 
-  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3)
+  mutate(fit = (abs(relativeLarge) + abs(relativeSmall) + abs(relativeSlope)) / 3,
+         fitRMSE = sqrt( (relativeLarge^2 + relativeSmall^2 + relativeSlope^2) / 3 ))
 
 improve08 <- rbind(improve, improve1, improve2)
 rm(improve, improve1, improve2)
@@ -330,7 +336,7 @@ myPalette <- colorRampPalette((brewer.pal(9, "BuPu")))
 colPal <- c("#ffffff", myPalette(9))
 
 # Graph 
-gg_fit06 <- ggplot(improve06, aes(x = sigma, y = threshSlope, fill = fit)) +
+gg_fit06 <- ggplot(improve06, aes(x = sigma, y = threshSlope, fill = fitRMSE)) +
   geom_raster() +
   theme_bw() +
   scale_x_continuous(expand = c(0, 0)) +
@@ -358,12 +364,12 @@ gg_fit06 <- ggplot(improve06, aes(x = sigma, y = threshSlope, fill = fit)) +
         panel.border = element_rect(fill = NA, size = 1))
 gg_fit06
 
-ggsave("output/ParameterExploration/Plot/Delta06_fit.png", width = 2.8, height = 2, units = "in", dpi = 600)
+ggsave("output/ParameterExploration/Plot/Delta06_fitRMSE.png", width = 2.8, height = 2, units = "in", dpi = 600)
 
 
 ##### Total Fit - Delta 08 #####
 # Graph 
-gg_fit08 <- ggplot(improve08, aes(x = sigma, y = threshSlope, fill = fit)) +
+gg_fit08 <- ggplot(improve08, aes(x = sigma, y = threshSlope, fill = fitRMSE)) +
   geom_raster() +
   theme_bw() +
   scale_x_continuous(expand = c(0, 0)) +
@@ -392,7 +398,7 @@ gg_fit08 <- ggplot(improve08, aes(x = sigma, y = threshSlope, fill = fit)) +
 gg_fit08
 
 
-ggsave("output/ParameterExploration/Plot/Delta08_fit.png", width = 2.8, height = 2, units = "in", dpi = 600)
+ggsave("output/ParameterExploration/Plot/Delta08_fitRMSE.png", width = 2.8, height = 2, units = "in", dpi = 600)
 
 
 ##### Change in Fit #####
@@ -400,7 +406,7 @@ diff_improve <- improve08 %>%
   arrange(sigma, threshSlope)
 improve06 <- improve06 %>% 
   arrange(sigma, threshSlope)
-diff_improve$fit <- diff_improve$fit - improve06$fit
+diff_improve$fit <- diff_improve$fitRMSE - improve06$fitRMSE
 
 gg_diff <- ggplot(diff_improve, aes(x = sigma, y = threshSlope, fill = fit)) +
   geom_raster() +

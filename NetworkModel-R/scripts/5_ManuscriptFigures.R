@@ -58,7 +58,7 @@ colPal <- c(myPalette(6), "#800026")
 # Fit surface
 spec.loess <- loess(Increase ~ sigma * threshSlope, data = improve06, degree = 2, span = 0.1)
 spec.fit <- expand.grid(list(sigma = seq(0, max(improve06$sigma), (max(improve06$sigma) - min(improve06$sigma)) / 1000), 
-                             threshSlope = seq(0, max(improve06$threshSlope), (max(improve06$threshSlope) - min(improve06$threshSlope)) / 1000)))
+                             threshSlope = seq(1, max(improve06$threshSlope), (max(improve06$threshSlope) - min(improve06$threshSlope)) / 1000)))
 z <- predict(spec.loess, newdata = spec.fit)
 spec.fit$spec <- as.numeric(z)
 spec.fit$CloseIncrease <- ifelse(spec.fit$spec >= 0.2926124 & spec.fit$spec <= 0.3576374, 0.5, 0) 
@@ -78,13 +78,14 @@ gg_abslope <- ggplot() +
                aes(x = sigma,
                    y = threshSlope,
                    z = spec),
-               size = 0.3,
+               size = 0.35,
                # alpha = 1,
                colour = "white",
                breaks = c(0.2926124,  0.3576374)) +
   theme_bw() +
-  scale_x_continuous(expand = c(0.00, 0)) +
-  scale_y_continuous(expand = c(0.00, 0), breaks = c(1, seq(10, 30, 10))) +
+  scale_x_continuous(expand = c(0, -0.002)) +
+  scale_y_continuous(expand = c(0, -0.2), breaks = c(1, seq(10, 30, 10))) +
+  scale_alpha(range = c(0, 0.25)) +
   scale_fill_gradientn(name = "Specialization\nIncrease",
                        colors = colPal,
                        breaks = seq(0, 0.5, 0.1),
@@ -115,7 +116,7 @@ gg_abslope <- ggplot() +
 
 gg_abslope
 
-ggsave("output/MSFigures/ParameterSpaceDelta06.png", width = 2.7, height = 2, units = "in", dpi = 600)
+ggsave("output/MSFigures/ParameterSpaceDelta06wContourfill.png", width = 2.7, height = 2, units = "in", dpi = 600)
 
 
 
