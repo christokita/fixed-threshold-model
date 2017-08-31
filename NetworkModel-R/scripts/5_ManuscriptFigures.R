@@ -69,23 +69,24 @@ gg_abslope <- ggplot() +
               aes(x = sigma, 
                   y = threshSlope, 
                   fill = Increase)) +
-  geom_raster(data = spec.fit, 
-              aes(x = sigma, 
-                  y = threshSlope, 
-                  alpha = CloseIncrease),
-              fill = "white") +
   stat_contour(data = spec.fit,
                aes(x = sigma,
                    y = threshSlope,
                    z = spec),
                size = 0.35,
-               # alpha = 1,
                colour = "white",
-               breaks = c(0.2926124,  0.3576374)) +
+               breaks = c(0.2926124)) +
+  stat_contour(data = spec.fit,
+               aes(x = sigma,
+                   y = threshSlope,
+                   z = spec),
+               size = 0.35,
+               colour = "white",
+               linetype = "dashed",
+               breaks = c(0.3576374)) +
   theme_bw() +
   scale_x_continuous(expand = c(0, -0.002)) +
   scale_y_continuous(expand = c(0, -0.2), breaks = c(1, seq(10, 30, 10))) +
-  scale_alpha(range = c(0, 0.25)) +
   scale_fill_gradientn(name = "Specialization\nIncrease",
                        colors = colPal,
                        breaks = seq(0, 0.5, 0.1),
@@ -402,37 +403,38 @@ load("output/SpecializationMetrics/Rdata/FixedDelta06Sigma01Eta7100reps.Rdata")
 tallies <- unlist(groups_taskTally, recursive = FALSE)
 tallies <- do.call("rbind", tallies)
 
-# Normalize and Summarise by "day" (i.e., time window)
+# Normalize and Summarise by "day" (i.e., time window) and calculate difference
 tallyFluct <- tallies %>% 
   mutate(Task1 = Task1 / n,
          Task2 = Task2 / n,
          Inactive = Inactive / n,
          Set = paste0(n, "-", replicate),
-         Window = t %/% 200) %>% 
+         Window = t %/% 1) %>% 
   group_by(n, Set, Window) %>% 
   summarise(Task1 = mean(Task1),
             Task2 = mean(Task2),
             Inactive = mean(Inactive)) %>% 
-  mutate(Task1Diff = NA,
-         Task2Diff = NA,
-         InactiveDiff = NA)
+  mutate(Task1Diff = abs(Task1 - lag(Task1)),
+         Task2Diff = abs(Task2 - lag(Task2)),
+         InactiveDiff = abs(Inactive - lag(Inactive)),
+         BeginSet = !duplicated(Set)) 
 
-# Loop through rows to calculate absolute difference
-for (i in 2:nrow(tallyFluct)) {
-  tallyFluct$Task1Diff[i] <- abs(tallyFluct$Task1[i] - tallyFluct$Task1[i - 1])
-  tallyFluct$Task2Diff[i] <- abs(tallyFluct$Task2[i] - tallyFluct$Task2[i - 1])
-  tallyFluct$InactiveDiff[i] <- abs(tallyFluct$Inactive[i] - tallyFluct$Inactive[i - 1])
-}
+# Make sure first diff row of each new set is NA
+sets <- which(tallyFluct$BeginSet == TRUE)
+tallyFluct$Task1Diff[sets] <- NA
+tallyFluct$Task2Diff[sets] <- NA
+tallyFluct$InactiveDiff[sets] <- NA
 
-# Loop through sets to set the difference for the first row of each new set to be NA
-sets <- unique(tallyFluct$Set)
-
-for (set in sets) {
-  index <- min(which(tallyFluct$Set == set))
-  tallyFluct$Task1Diff[index] <- NA
-  tallyFluct$Task2Diff[index] <- NA
-  tallyFluct$InactiveDiff[index] <- NA
-}
+# Normalize and Summarise by "day" (i.e., time window)
+stimFluct <- stims %>% 
+  select(-delta1, -delta2) %>% 
+  mutate(Set = paste0(n, "-", replicate)) %>% 
+  group_by(n, Set) %>% 
+  summarise(s1mean = mean(s1),
+            s1var = var(s1),
+            s2mean = mean(s2),
+            s2var = var(s2)) %>% 
+  mutate(GroupSizeFactor = n) 
 
 # Summarise by colony/set
 tallyFluct <- tallyFluct %>% 
@@ -472,8 +474,8 @@ gg_fluct <- ggplot() +
   labs(x = "Group Size",
        y = "Mean Fluctuation In\nTask Performance") +
   scale_x_continuous(breaks = unique(tallyFluct$n)) +
-  scale_y_continuous(breaks = seq(0, 0.1, 0.01), 
-                     limits = c(0, 0.069),
+  scale_y_continuous(breaks = seq(0, 0.2, 0.02),
+                     limits = c(0, 0.15),
                      expand = c(0, 0)) +
   scale_fill_manual(values = palette) +
   scale_colour_manual(values = palette) +
@@ -504,7 +506,7 @@ gg_fluct <- ggplot() +
 
 gg_fluct
 
-ggsave("output/MSFigures/TaskPerformanceFluctuations.png", width = 2.82, height = 2.05, units = "in", dpi = 600)
+ggsave("output/MSFigures/TaskPerformanceFluctuationsTStep1.png", width = 2.82, height = 2.05, units = "in", dpi = 600)
 svg("output/MSFigures/TaskPerformanceFluctuations.svg", width = 2.82, height = 2.05)
 gg_fluct
 dev.off()

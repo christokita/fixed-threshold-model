@@ -435,4 +435,4 @@ gg_diff <- ggplot(diff_improve, aes(x = sigma, y = threshSlope, fill = fit)) +
         panel.border = element_rect(fill = NA, size = 1))
 gg_diff
 
-ggsave("output/ParameterExploration/Plot/Fixed_0806DifferenceOfFit.png", width = 2.75, height = 2, units = "in", dpi = 600)
+ggsave("output/ParameterExploration/Plot/Fixed_0806DifferenceOfFitRSME.png", width = 2.75, height = 2, units = "in", dpi = 600)
