@@ -318,6 +318,10 @@ load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
 stims <- unlist(groups_stim, recursive = FALSE)
 stims <- do.call("rbind", stims)
 
+#### Time steps ####
+
+
+#### Variance ####
 # Normalize and Summarise by "day" (i.e., time window)
 stimFluct <- stims %>% 
   select(-delta1, -delta2) %>% 
@@ -403,6 +407,7 @@ load("output/SpecializationMetrics/Rdata/FixedDelta06Sigma01Eta7100reps.Rdata")
 tallies <- unlist(groups_taskTally, recursive = FALSE)
 tallies <- do.call("rbind", tallies)
 
+#### Time steps ####
 # Normalize and Summarise by "day" (i.e., time window) and calculate difference
 tallyFluct <- tallies %>% 
   mutate(Task1 = Task1 / n,
