@@ -255,52 +255,52 @@ dev.off()
 ####################
 # Sample stimuli over time
 ####################
-rm(list = ls())
-source("scripts/__Util__MASTER.R")
-library(RColorBrewer)
-library(scales)
-
-# load data
-load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
-
-# Unlist
-stims <- unlist(groups_stim, recursive = FALSE)
-stims <- do.call("rbind", stims)
-
-# Select out example colonies
-stimSet <- stims %>% 
-  filter(n %in% c(2, 16)) %>% 
-  filter(replicate == 1) %>% 
-  group_by(n) %>% 
-  mutate(timestep = 0:(length(n)-1),
-         groupsize = factor(paste0("n = ", n), 
-                            levels = c("n = 2", "n = 16")))
-
-# Plot
-gg_stimEx <- ggplot(data = stimSet, aes(x = timestep, y = s1)) +
-  geom_line(size = 0.2, colour = "#4eb3d3") +
-  theme_classic() +
-  xlab("Timestep") +
-  ylab("Stimulus") +
-  scale_x_continuous(breaks = seq(0, 10000, 2500),
-                     limits = c(0, 10500),
-                     expand = c(0, 0),
-                     labels = comma) +
-  scale_y_continuous(breaks = seq(0, 20, 5), 
-                     limits = c(0, 16),
-                     expand = c(0, 0)) +
-  theme(axis.text.y = element_text(size = 6, margin = margin(5, 6, 5, -2)),
-        axis.text.x = element_text(size = 6, margin = margin(6, 5, -2, 5)),
-        axis.title = element_text(size = 6),
-        axis.ticks.length = unit(-0.1, "cm"),
-        strip.text = element_blank(),
-        strip.background = element_rect(fill = NA, colour = NA),
-        panel.spacing = unit(0.25, "cm")) +
-  facet_wrap(~ groupsize, ncol = 1, scale = "free")
-
-svg("output/MSFigures/ExampleStimulusOverTime.svg", width = 2.66, height = 2.05)
-gg_stimEx
-dev.off()
+# rm(list = ls())
+# source("scripts/__Util__MASTER.R")
+# library(RColorBrewer)
+# library(scales)
+# 
+# # load data
+# load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
+# 
+# # Unlist
+# stims <- unlist(groups_stim, recursive = FALSE)
+# stims <- do.call("rbind", stims)
+# 
+# # Select out example colonies
+# stimSet <- stims %>% 
+#   filter(n %in% c(2, 16)) %>% 
+#   filter(replicate == 1) %>% 
+#   group_by(n) %>% 
+#   mutate(timestep = 0:(length(n)-1),
+#          groupsize = factor(paste0("n = ", n), 
+#                             levels = c("n = 2", "n = 16")))
+# 
+# # Plot
+# gg_stimEx <- ggplot(data = stimSet, aes(x = timestep, y = s1)) +
+#   geom_line(size = 0.2, colour = "#4eb3d3") +
+#   theme_classic() +
+#   xlab("Timestep") +
+#   ylab("Stimulus") +
+#   scale_x_continuous(breaks = seq(0, 10000, 2500),
+#                      limits = c(0, 10500),
+#                      expand = c(0, 0),
+#                      labels = comma) +
+#   scale_y_continuous(breaks = seq(0, 20, 5), 
+#                      limits = c(0, 16),
+#                      expand = c(0, 0)) +
+#   theme(axis.text.y = element_text(size = 6, margin = margin(5, 6, 5, -2)),
+#         axis.text.x = element_text(size = 6, margin = margin(6, 5, -2, 5)),
+#         axis.title = element_text(size = 6),
+#         axis.ticks.length = unit(-0.1, "cm"),
+#         strip.text = element_blank(),
+#         strip.background = element_rect(fill = NA, colour = NA),
+#         panel.spacing = unit(0.25, "cm")) +
+#   facet_wrap(~ groupsize, ncol = 1, scale = "free")
+# 
+# svg("output/MSFigures/ExampleStimulusOverTime.svg", width = 2.66, height = 2.05)
+# gg_stimEx
+# dev.off()
 
 
 ####################
@@ -319,6 +319,46 @@ stims <- unlist(groups_stim, recursive = FALSE)
 stims <- do.call("rbind", stims)
 
 #### Time steps ####
+# Normalize and Summarise by "day" (i.e., time window) and calculate difference
+stimFluct <- stims %>% 
+  select(-delta1, -delta2) %>% 
+  mutate(Set = paste0(n, "-", replicate)) %>% 
+  group_by(Set) %>% 
+  mutate(t = 0:(length(Set)-1)) %>% 
+  mutate(Window = t %/% 200) %>% 
+  filter(t != 0) %>% 
+  group_by(n, Set, Window) %>% 
+  summarise(s1 = mean(s1, na.rm = TRUE),
+            s2 = mean(s2, na.rm = TRUE)) %>% 
+  mutate(s1Diff = abs(s1 - lag(s1)),
+         s2Diff = abs(s2 - lag(s2)),
+         BeginSet = !duplicated(Set)) 
+
+# Make sure first diff row of each new set is NA
+sets <- which(stimFluct$BeginSet == TRUE)
+stimFluct$s1Diff[sets] <- NA
+stimFluct$s2Diff[sets] <- NA
+
+# Summarise by colony/set
+stimFluct <- stimFluct %>% 
+  group_by(n, Set) %>% 
+  summarise(s1Fluct = mean(s1Diff, na.rm = TRUE),
+            s2Fluct = mean(s2Diff, na.rm = TRUE)) %>% 
+  mutate(GroupSizeFactor = factor(n, levels = sort(unique(n))))
+
+# Summarise by n
+stimSumFluct <- stimFluct %>% 
+  group_by(n, GroupSizeFactor) %>% 
+  summarise(s1FluctMean = mean(Task1Fluct, na.rm = TRUE),
+            s1FluctSE = sd(Task1Fluct, na.rm = TRUE) / sqrt(length(Task1Fluct)),
+            s2FluctMean = mean(Task2Fluct, na.rm = TRUE),
+            s2FluctSE = sd(Task2Fluct, na.rm = TRUE) / sqrt(length(Task2Fluct)),
+            InactiveFluctMean = mean(InactiveFluct, na.rm = TRUE))
+tallySumFluct <- as.data.frame(tallySumFluct)
+tallySumFluct <- tallySumFluct %>% 
+  mutate(GroupSizeFactor = factor(GroupSizeFactor, levels = sort(unique(n))))
+
+
 
 
 #### Variance ####
