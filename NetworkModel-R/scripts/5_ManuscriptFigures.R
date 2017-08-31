@@ -425,17 +425,6 @@ tallyFluct$Task1Diff[sets] <- NA
 tallyFluct$Task2Diff[sets] <- NA
 tallyFluct$InactiveDiff[sets] <- NA
 
-# Normalize and Summarise by "day" (i.e., time window)
-stimFluct <- stims %>% 
-  select(-delta1, -delta2) %>% 
-  mutate(Set = paste0(n, "-", replicate)) %>% 
-  group_by(n, Set) %>% 
-  summarise(s1mean = mean(s1),
-            s1var = var(s1),
-            s2mean = mean(s2),
-            s2var = var(s2)) %>% 
-  mutate(GroupSizeFactor = n) 
-
 # Summarise by colony/set
 tallyFluct <- tallyFluct %>% 
   group_by(n, Set) %>% 
@@ -457,6 +446,32 @@ tallySumFluct <- as.data.frame(tallySumFluct)
 tallySumFluct <- tallySumFluct %>% 
   mutate(GroupSizeFactor = factor(GroupSizeFactor, levels = sort(unique(n))))
 
+
+#### Variance ####
+# Normalize and Summarise by "day" (i.e., time window)
+tallyFluct <- tallies %>% 
+  mutate(Task1 = Task1 / n,
+         Task2 = Task2 / n,
+         Inactive = Inactive / n,
+         Set = paste0(n, "-", replicate)) %>% 
+  group_by(n, Set) %>% 
+  summarise(task1mean = mean(Task1),
+            task1var = var(Task1),
+            task2mean = mean(Task2),
+            task2var = var(Task2)) %>% 
+  mutate(GroupSizeFactor = n) %>% 
+  mutate(Task1Fluct = task1var)
+
+# Summarise by n
+tallySumFluct <- tallyFluct %>% 
+  group_by(n, GroupSizeFactor) %>% 
+  summarise(Task1FluctMean = mean(Task1Fluct, na.rm = TRUE),
+            Task1FluctSE = sd(Task1Fluct, na.rm = TRUE) / sqrt(length(Task1Fluct)))
+tallySumFluct <- as.data.frame(tallySumFluct)
+tallySumFluct <- tallySumFluct %>% 
+  mutate(GroupSizeFactor = factor(GroupSizeFactor, levels = sort(unique(n))))
+
+
 # Plot
 palette <- c("#83343E", "#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78")
 
@@ -474,8 +489,8 @@ gg_fluct <- ggplot() +
   labs(x = "Group Size",
        y = "Mean Fluctuation In\nTask Performance") +
   scale_x_continuous(breaks = unique(tallyFluct$n)) +
-  scale_y_continuous(breaks = seq(0, 0.2, 0.02),
-                     limits = c(0, 0.15),
+  scale_y_continuous(breaks = seq(0, 0.3, 0.02),
+                     limits = c(0, 0.25),
                      expand = c(0, 0)) +
   scale_fill_manual(values = palette) +
   scale_colour_manual(values = palette) +
@@ -506,7 +521,7 @@ gg_fluct <- ggplot() +
 
 gg_fluct
 
-ggsave("output/MSFigures/TaskPerformanceFluctuationsTStep1.png", width = 2.82, height = 2.05, units = "in", dpi = 600)
+ggsave("output/MSFigures/TaskPerformanceFluctuations_VARIANCE.png", width = 2.82, height = 2.05, units = "in", dpi = 600)
 svg("output/MSFigures/TaskPerformanceFluctuations.svg", width = 2.82, height = 2.05)
 gg_fluct
 dev.off()
