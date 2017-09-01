@@ -325,11 +325,11 @@ stimFluct <- stims %>%
   mutate(Set = paste0(n, "-", replicate)) %>% 
   group_by(Set) %>% 
   mutate(t = 0:(length(Set)-1)) %>% 
-  mutate(Window = t %/% 200) %>% 
+  mutate(Window = t %/% 1) %>% 
   filter(t != 0) %>% 
   group_by(n, Set, Window) %>% 
-  summarise(s1 = mean(s1, na.rm = TRUE),
-            s2 = mean(s2, na.rm = TRUE)) %>% 
+  summarise(s1 = mean(s1),
+            s2 = mean(s2)) %>% 
   mutate(s1Diff = abs(s1 - lag(s1)),
          s2Diff = abs(s2 - lag(s2)),
          BeginSet = !duplicated(Set)) 
@@ -349,13 +349,12 @@ stimFluct <- stimFluct %>%
 # Summarise by n
 stimSumFluct <- stimFluct %>% 
   group_by(n, GroupSizeFactor) %>% 
-  summarise(s1FluctMean = mean(Task1Fluct, na.rm = TRUE),
-            s1FluctSE = sd(Task1Fluct, na.rm = TRUE) / sqrt(length(Task1Fluct)),
-            s2FluctMean = mean(Task2Fluct, na.rm = TRUE),
-            s2FluctSE = sd(Task2Fluct, na.rm = TRUE) / sqrt(length(Task2Fluct)),
-            InactiveFluctMean = mean(InactiveFluct, na.rm = TRUE))
-tallySumFluct <- as.data.frame(tallySumFluct)
-tallySumFluct <- tallySumFluct %>% 
+  summarise(s1FluctMean = mean(s1Fluct, na.rm = TRUE),
+            s1FluctSE = sd(s1Fluct, na.rm = TRUE) / sqrt(length(s1Fluct)),
+            s2FluctMean = mean(s2Fluct, na.rm = TRUE),
+            s2FluctSE = sd(s2Fluct, na.rm = TRUE) / sqrt(length(s2Fluct)))
+stimSumFluct <- as.data.frame(stimSumFluct)
+stimSumFluct <- stimSumFluct %>% 
   mutate(GroupSizeFactor = factor(GroupSizeFactor, levels = sort(unique(n))))
 
 
@@ -368,18 +367,18 @@ stimFluct <- stims %>%
   mutate(Set = paste0(n, "-", replicate)) %>% 
   group_by(n, Set) %>% 
   summarise(s1mean = mean(s1),
-            s1var = var(s1),
+            s1Fluct = var(s1),
             s2mean = mean(s2),
-            s2var = var(s2)) %>% 
+            s2Fluct = var(s2)) %>% 
   mutate(GroupSizeFactor = n) 
 
 # Summarise by n
 stimSumFluct <- stimFluct %>% 
   group_by(n, GroupSizeFactor) %>% 
-  summarise(s1FluctMean = mean(s1var, na.rm = TRUE),
-            s1FluctSE = sd(s1var, na.rm = TRUE) / sqrt(length(s1var)),
-            s2FluctMean = mean(s2var, na.rm = TRUE),
-            s2FluctSE = sd(s2var, na.rm = TRUE) / sqrt(length(s2var)))
+  summarise(s1FluctMean = mean(s1Fluct, na.rm = TRUE),
+            s1FluctSE = sd(s1Fluct, na.rm = TRUE) / sqrt(length(s1Fluct)),
+            s2FluctMean = mean(s2Fluct, na.rm = TRUE),
+            s2FluctSE = sd(s2Fluct, na.rm = TRUE) / sqrt(length(s2Fluct)))
 stimSumFluct <- as.data.frame(stimSumFluct)
 stimSumFluct <- stimSumFluct %>% 
   mutate(GroupSizeFactor = factor(GroupSizeFactor, levels = sort(unique(n))))
@@ -390,7 +389,7 @@ palette <- c("#83343E", "#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "
 
 gg_stimfluct <- ggplot() +
   geom_point(data = stimFluct, 
-             aes(x = n, y = s1var),
+             aes(x = n, y = s1Fluct),
              fill = "grey50", 
              colour = "grey50", 
              size = 0.7, 
@@ -403,7 +402,7 @@ gg_stimfluct <- ggplot() +
   labs(x = "Group Size",
        y = "Variance in Task Stimulus") +
   scale_x_continuous(breaks = unique(stimFluct$n)) +
-  scale_y_continuous(breaks = seq(0, 22, 5), 
+  scale_y_continuous(breaks = seq(0, 22, 5),
                      limits = c(0, 22),
                      expand = c(0, 0)) +
   scale_fill_manual(values = palette) +
