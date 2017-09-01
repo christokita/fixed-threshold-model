@@ -555,10 +555,10 @@ gg_fluct <- ggplot() +
              stroke = 0) +
   theme_classic() +
   labs(x = "Group Size",
-       y = "Mean Fluctuation In\nTask Performance") +
+       y = "Task Performance") +
   scale_x_continuous(breaks = unique(tallyFluct$n)) +
-  scale_y_continuous(breaks = seq(0, 0.3, 0.02),
-                     limits = c(0, 0.25),
+  scale_y_continuous(breaks = seq(0, 0.5, 0.05),
+                     limits = c(0, 0.38),
                      expand = c(0, 0)) +
   scale_fill_manual(values = palette) +
   scale_colour_manual(values = palette) +
@@ -593,7 +593,15 @@ gg_fluct <- ggplot() +
         axis.text.y = element_text(size = 6, margin = margin(5, 6, 5, -2)),
         axis.text.x = element_text(size = 6, margin = margin(6, 5, -2, 5)),
         axis.title = element_text(size = 6, margin = margin(0, 0, 0, 0)),
-        axis.ticks.length = unit(-0.1, "cm"))
+        axis.ticks.length = unit(-0.1, "cm")) +
+  annotate(geom = "text", 
+           x = 15, y = 0.03, 
+           label = "Variance",
+           size = 2) +
+  annotate(geom = "text", 
+           x = 15, y = 0.315, 
+           label = "Mean",
+           size = 2)
 
 gg_fluct
 
