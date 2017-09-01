@@ -377,6 +377,8 @@ stimSumFluct <- stimFluct %>%
   group_by(n, GroupSizeFactor) %>% 
   summarise(s1FluctMean = mean(s1Fluct, na.rm = TRUE),
             s1FluctSE = sd(s1Fluct, na.rm = TRUE) / sqrt(length(s1Fluct)),
+            s1MeanMean = mean(s1mean, na.rm = TRUE),
+            s1MeanSE = sd(s1mean, na.rm = TRUE) / sqrt(length(s1mean)),
             s2FluctMean = mean(s2Fluct, na.rm = TRUE),
             s2FluctSE = sd(s2Fluct, na.rm = TRUE) / sqrt(length(s2Fluct)))
 stimSumFluct <- as.data.frame(stimSumFluct)
@@ -398,9 +400,13 @@ gg_stimfluct <- ggplot() +
   geom_line(data = stimSumFluct,
             aes(x = n, y = s1FluctMean),
             size = 0.3) +
+  geom_line(data = stimSumFluct,
+            aes(x = n, y = s1MeanMean),
+            linetype = "dashed",
+            size = 0.3) +
   theme_classic() +
   labs(x = "Group Size",
-       y = "Variance in Task Stimulus") +
+       y = "Task Stimulus") +
   scale_x_continuous(breaks = unique(stimFluct$n)) +
   scale_y_continuous(breaks = seq(0, 22, 5),
                      limits = c(0, 22),
@@ -414,6 +420,14 @@ gg_stimfluct <- ggplot() +
                     ymin = s1FluctMean - s1FluctSE, 
                     ymax = s1FluctMean + s1FluctSE, 
                     colour = GroupSizeFactor),
+                size = 0.25) +
+  geom_point(data = stimSumFluct, 
+             aes(x = n, y = s1MeanMean),
+             size = 1.5) +
+  geom_errorbar(data = stimSumFluct, 
+                aes(x = n, 
+                    ymin = s1MeanMean - s1FluctSE, 
+                    ymax = s1MeanMean + s1FluctSE),
                 size = 0.25) +
   geom_point(data = stimSumFluct, 
              aes(x = n, y = s1FluctMean, colour = GroupSizeFactor, fill = GroupSizeFactor),
@@ -430,7 +444,15 @@ gg_stimfluct <- ggplot() +
         axis.text.y = element_text(size = 6, margin = margin(5, 6, 5, -2)),
         axis.text.x = element_text(size = 6, margin = margin(6, 5, -2, 5)),
         axis.title = element_text(size = 6, margin = margin(0, 0, 0, 0)),
-        axis.ticks.length = unit(-0.1, "cm"))
+        axis.ticks.length = unit(-0.1, "cm")) +
+  annotate(geom = "text", 
+           x = 15, y = 1.5, 
+           label = "Variance",
+           size = 2) +
+  annotate(geom = "text", 
+           x = 15, y = 8.5, 
+           label = "Mean",
+           size = 2)
 
 gg_stimfluct
 
@@ -510,7 +532,9 @@ tallyFluct <- tallies %>%
 tallySumFluct <- tallyFluct %>% 
   group_by(n, GroupSizeFactor) %>% 
   summarise(Task1FluctMean = mean(Task1Fluct, na.rm = TRUE),
-            Task1FluctSE = sd(Task1Fluct, na.rm = TRUE) / sqrt(length(Task1Fluct)))
+            Task1FluctSE = sd(Task1Fluct, na.rm = TRUE) / sqrt(length(Task1Fluct)),
+            Task1MeanMean = mean(task1mean, na.rn = TRUE),
+            Task1MeanSE = sd(task1mean, na.rm = TRUE), sqrt(length(task1mean)))
 tallySumFluct <- as.data.frame(tallySumFluct)
 tallySumFluct <- tallySumFluct %>% 
   mutate(GroupSizeFactor = factor(GroupSizeFactor, levels = sort(unique(n))))
@@ -548,6 +572,14 @@ gg_fluct <- ggplot() +
                 size = 0.25) +
   geom_point(data = tallySumFluct, 
              aes(x = n, y = Task1FluctMean, colour = GroupSizeFactor, fill = GroupSizeFactor),
+             size = 1.5) +
+  geom_errorbar(data = tallySumFluct, 
+                aes(x = n, 
+                    ymin = Task1MeanMean - Task1MeanSE, 
+                    ymax = Task1MeanMean + Task1MeanSE),
+                size = 0.25) +
+  geom_point(data = tallySumFluct, 
+             aes(x = n, y = Task1MeanMean),
              size = 1.5) +
   theme(legend.position = "none",
         legend.justification = c(1, 1),
