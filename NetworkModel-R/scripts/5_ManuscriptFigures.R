@@ -366,6 +366,7 @@ gg_stimfluct <- ggplot() +
              aes(x = n, y = s1Fluct),
              fill = "grey50", 
              colour = "grey50", 
+             position = position_jitter(width = 0.1),
              size = 0.7, 
              alpha = 0.4,
              stroke = 0) +
@@ -480,7 +481,7 @@ gg_fluct <- ggplot() +
              fill = "grey50", 
              colour = "grey50", 
              size = 0.7, 
-             position = position_jitter(width = 0.2),
+             position = position_jitter(width = 0.1),
              alpha = 0.4,
              stroke = 0) +
   theme_classic() +
