@@ -503,7 +503,7 @@ tallyFluct <- tallyFluct %>%
 tallySumFluct <- tallyFluct %>% 
   group_by(n, GroupSizeFactor) %>% 
   summarise(Task1FluctMean = mean(Task1Fluct, na.rm = TRUE),
-            Task1FluctSE = sd(Task1Fluct, na.rm = TRUE) / sqrt(length(Task1Fluct)),
+            Task1FluctSE = sd(Task1Fluct) / sqrt(length(Task1Fluct)),
             Task2FluctMean = mean(Task2Fluct, na.rm = TRUE),
             Task2FluctSE = sd(Task2Fluct, na.rm = TRUE) / sqrt(length(Task2Fluct)),
             InactiveFluctMean = mean(InactiveFluct, na.rm = TRUE),
