@@ -109,15 +109,15 @@ gg_abslope <- ggplot() +
         legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
         legend.text = element_text(size = 6),
         legend.title = element_blank(),
-        axis.text.y = element_text(size = 6, margin = margin(5, 2, 5, -2)),
-        axis.text.x = element_text(size = 6, margin = margin(2, 5, -2, 5)),
-        axis.title = element_text(size = 9),
+        axis.text.y = element_text(size = 8, margin = margin(5, 2, 5, -2)),
+        axis.text.x = element_text(size = 8, margin = margin(2, 5, -2, 5)),
+        axis.title = element_text(size = 11),
         axis.ticks.length = unit(0, "cm"),
         panel.border = element_rect(fill = "NA", size = 1))
 
 gg_abslope
 
-ggsave("output/MSFigures/ParameterSpaceDelta06wContourfill.png", width = 2.7, height = 2, units = "in", dpi = 600)
+ggsave("output/MSFigures/ParameterSpaceDelta06wContourfillLargerAxisTitle.png", width = 2.8, height = 2.05, units = "in", dpi = 600)
 
 
 
@@ -239,16 +239,16 @@ gg_fixedProb <- ggplot(data = allFixedProbCorr) +
         legend.key.height = unit(0.3, "cm"),
         legend.key.width= unit(0.4, "cm"),
         legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
-        legend.text = element_text(size = 6),
+        legend.text = element_text(size = 8),
         legend.text.align = 0,
         # legend.box.background = element_rect(),
-        axis.text.y = element_text(size = 6, margin = margin(5, 6, 5, -2)),
-        axis.text.x = element_text(size = 6, margin = margin(6, 5, -2, 5)),
-        axis.title = element_text(size = 6, margin = margin(0, 0, 0, 0)),
+        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2)),
+        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5)),
+        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         axis.ticks.length = unit(-0.1, "cm"))
 
 # svg("output/MSFigures/FixedProbSpecializationFits.svg", width = 2.65, height = 2.05)
-svg("output/MSFigures/FixedProbSpecializationFits.svg", width = 2.71, height = 2.05)
+svg("output/MSFigures/FixedProbSpecializationFits.svg", width = 2.8, height = 2.07)
 gg_fixedProb
 dev.off()
 
@@ -325,7 +325,7 @@ stimFluct <- stims %>%
   mutate(Set = paste0(n, "-", replicate)) %>% 
   group_by(Set) %>% 
   mutate(t = 0:(length(Set)-1)) %>% 
-  mutate(Window = t %/% 1) %>% 
+  mutate(Window = t %/% 200) %>% 
   filter(t != 0) %>% 
   group_by(n, Set, Window) %>% 
   summarise(s1 = mean(s1),
@@ -357,34 +357,6 @@ stimSumFluct <- as.data.frame(stimSumFluct)
 stimSumFluct <- stimSumFluct %>% 
   mutate(GroupSizeFactor = factor(GroupSizeFactor, levels = sort(unique(n))))
 
-
-
-
-#### Variance ####
-# Normalize and Summarise by "day" (i.e., time window)
-stimFluct <- stims %>% 
-  select(-delta1, -delta2) %>% 
-  mutate(Set = paste0(n, "-", replicate)) %>% 
-  group_by(n, Set) %>% 
-  summarise(s1mean = mean(s1),
-            s1Fluct = var(s1),
-            s2mean = mean(s2),
-            s2Fluct = var(s2)) %>% 
-  mutate(GroupSizeFactor = n) 
-
-# Summarise by n
-stimSumFluct <- stimFluct %>% 
-  group_by(n, GroupSizeFactor) %>% 
-  summarise(s1FluctMean = mean(s1Fluct, na.rm = TRUE),
-            s1FluctSE = sd(s1Fluct, na.rm = TRUE) / sqrt(length(s1Fluct)),
-            s1MeanMean = mean(s1mean, na.rm = TRUE),
-            s1MeanSE = sd(s1mean, na.rm = TRUE) / sqrt(length(s1mean)),
-            s2FluctMean = mean(s2Fluct, na.rm = TRUE),
-            s2FluctSE = sd(s2Fluct, na.rm = TRUE) / sqrt(length(s2Fluct)))
-stimSumFluct <- as.data.frame(stimSumFluct)
-stimSumFluct <- stimSumFluct %>% 
-  mutate(GroupSizeFactor = factor(GroupSizeFactor, levels = sort(unique(n))))
-
 # Plot
 palette <- c("#83343E", "#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78")
 
@@ -397,13 +369,9 @@ gg_stimfluct <- ggplot() +
              size = 0.7, 
              alpha = 0.4,
              stroke = 0) +
-  geom_line(data = stimSumFluct,
-            aes(x = n, y = s1FluctMean),
-            size = 0.3) +
-  geom_line(data = stimSumFluct,
-            aes(x = n, y = s1MeanMean),
-            linetype = "dashed",
-            size = 0.3) +
+  # geom_line(data = stimSumFluct,
+  #           aes(x = n, y = s1FluctMean),
+  #           size = 0.3) +í ½
   theme_classic() +
   labs(x = "Group Size",
        y = "Task Stimulus") +
@@ -422,14 +390,6 @@ gg_stimfluct <- ggplot() +
                     colour = GroupSizeFactor),
                 size = 0.25) +
   geom_point(data = stimSumFluct, 
-             aes(x = n, y = s1MeanMean),
-             size = 1.5) +
-  geom_errorbar(data = stimSumFluct, 
-                aes(x = n, 
-                    ymin = s1MeanMean - s1FluctSE, 
-                    ymax = s1MeanMean + s1FluctSE),
-                size = 0.25) +
-  geom_point(data = stimSumFluct, 
              aes(x = n, y = s1FluctMean, colour = GroupSizeFactor, fill = GroupSizeFactor),
              size = 1.5) +
   theme(legend.position = "none",
@@ -444,15 +404,7 @@ gg_stimfluct <- ggplot() +
         axis.text.y = element_text(size = 6, margin = margin(5, 6, 5, -2)),
         axis.text.x = element_text(size = 6, margin = margin(6, 5, -2, 5)),
         axis.title = element_text(size = 6, margin = margin(0, 0, 0, 0)),
-        axis.ticks.length = unit(-0.1, "cm")) +
-  annotate(geom = "text", 
-           x = 15, y = 1.5, 
-           label = "Variance",
-           size = 2) +
-  annotate(geom = "text", 
-           x = 15, y = 8.5, 
-           label = "Mean",
-           size = 2)
+        axis.ticks.length = unit(-0.1, "cm"))
 
 gg_stimfluct
 
@@ -508,33 +460,6 @@ tallySumFluct <- tallyFluct %>%
             Task2FluctSE = sd(Task2Fluct, na.rm = TRUE) / sqrt(length(Task2Fluct)),
             InactiveFluctMean = mean(InactiveFluct, na.rm = TRUE),
             InactiveFluctSE = sd(InactiveFluct, na.rm = TRUE) / sqrt(length(InactiveFluct)))
-tallySumFluct <- as.data.frame(tallySumFluct)
-tallySumFluct <- tallySumFluct %>% 
-  mutate(GroupSizeFactor = factor(GroupSizeFactor, levels = sort(unique(n))))
-
-
-#### Variance ####
-# Normalize and Summarise by "day" (i.e., time window)
-tallyFluct <- tallies %>% 
-  mutate(Task1 = Task1 / n,
-         Task2 = Task2 / n,
-         Inactive = Inactive / n,
-         Set = paste0(n, "-", replicate)) %>% 
-  group_by(n, Set) %>% 
-  summarise(task1mean = mean(Task1),
-            task1var = var(Task1),
-            task2mean = mean(Task2),
-            task2var = var(Task2)) %>% 
-  mutate(GroupSizeFactor = n) %>% 
-  mutate(Task1Fluct = task1var)
-
-# Summarise by n
-tallySumFluct <- tallyFluct %>% 
-  group_by(n, GroupSizeFactor) %>% 
-  summarise(Task1FluctMean = mean(Task1Fluct, na.rm = TRUE),
-            Task1FluctSE = sd(Task1Fluct, na.rm = TRUE) / sqrt(length(Task1Fluct)),
-            Task1MeanMean = mean(task1mean, na.rn = TRUE),
-            Task1MeanSE = sd(task1mean, na.rm = TRUE), sqrt(length(task1mean)))
 tallySumFluct <- as.data.frame(tallySumFluct)
 tallySumFluct <- tallySumFluct %>% 
   mutate(GroupSizeFactor = factor(GroupSizeFactor, levels = sort(unique(n))))
