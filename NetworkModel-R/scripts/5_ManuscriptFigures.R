@@ -374,10 +374,10 @@ gg_stimfluct <- ggplot() +
   #           size = 0.3) +í ½
   theme_classic() +
   labs(x = "Group Size",
-       y = "Task Stimulus") +
+       y = "Stimulus fluctuation") +
   scale_x_continuous(breaks = unique(stimFluct$n)) +
-  scale_y_continuous(breaks = seq(0, 22, 5),
-                     limits = c(0, 22),
+  scale_y_continuous(breaks = seq(0, 2, 0.4),
+                     limits = c(0, 1.85),
                      expand = c(0, 0)) +
   scale_fill_manual(values = palette) +
   scale_colour_manual(values = palette) +
@@ -401,14 +401,19 @@ gg_stimfluct <- ggplot() +
         legend.text = element_text(size = 6),
         legend.text.align = 0,
         # legend.box.background = element_rect(),
-        axis.text.y = element_text(size = 6, margin = margin(5, 6, 5, -2)),
-        axis.text.x = element_text(size = 6, margin = margin(6, 5, -2, 5)),
-        axis.title = element_text(size = 6, margin = margin(0, 0, 0, 0)),
+        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2)),
+        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5)),
+        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         axis.ticks.length = unit(-0.1, "cm"))
 
 gg_stimfluct
 
-ggsave("output/MSFigures/StimulusFluctuations.png", width = 2.82, height = 2.05, units = "in", dpi = 600)
+svg("output/MSFigures/StimulusFluctuations.svg", width = 2.76, height = 2.07)
+gg_stimfluct
+dev.off()
+
+
+# ggsave("output/MSFigures/StimulusFluctuations.png", width = 2.82, height = 2.05, units = "in", dpi = 600)
 
 
 ####################
@@ -427,7 +432,7 @@ tallyFluct <- tallies %>%
          Task2 = Task2 / n,
          Inactive = Inactive / n,
          Set = paste0(n, "-", replicate),
-         Window = t %/% 1) %>% 
+         Window = t %/% 200) %>% 
   group_by(n, Set, Window) %>% 
   summarise(Task1 = mean(Task1),
             Task2 = mean(Task2),
@@ -475,15 +480,15 @@ gg_fluct <- ggplot() +
              fill = "grey50", 
              colour = "grey50", 
              size = 0.7, 
-             position = position_dodge(width = 1),
+             position = position_jitter(width = 0.2),
              alpha = 0.4,
              stroke = 0) +
   theme_classic() +
   labs(x = "Group Size",
-       y = "Task Performance") +
+       y = "Task fluctuation") +
   scale_x_continuous(breaks = unique(tallyFluct$n)) +
-  scale_y_continuous(breaks = seq(0, 0.5, 0.05),
-                     limits = c(0, 0.38),
+  scale_y_continuous(breaks = seq(0, 0.2, 0.01),
+                     limits = c(0, 0.069),
                      expand = c(0, 0)) +
   scale_fill_manual(values = palette) +
   scale_colour_manual(values = palette) +
@@ -498,14 +503,6 @@ gg_fluct <- ggplot() +
   geom_point(data = tallySumFluct, 
              aes(x = n, y = Task1FluctMean, colour = GroupSizeFactor, fill = GroupSizeFactor),
              size = 1.5) +
-  geom_errorbar(data = tallySumFluct, 
-                aes(x = n, 
-                    ymin = Task1MeanMean - Task1MeanSE, 
-                    ymax = Task1MeanMean + Task1MeanSE),
-                size = 0.25) +
-  geom_point(data = tallySumFluct, 
-             aes(x = n, y = Task1MeanMean),
-             size = 1.5) +
   theme(legend.position = "none",
         legend.justification = c(1, 1),
         legend.title = element_blank(),
@@ -515,22 +512,13 @@ gg_fluct <- ggplot() +
         legend.text = element_text(size = 6),
         legend.text.align = 0,
         # legend.box.background = element_rect(),
-        axis.text.y = element_text(size = 6, margin = margin(5, 6, 5, -2)),
-        axis.text.x = element_text(size = 6, margin = margin(6, 5, -2, 5)),
-        axis.title = element_text(size = 6, margin = margin(0, 0, 0, 0)),
-        axis.ticks.length = unit(-0.1, "cm")) +
-  annotate(geom = "text", 
-           x = 15, y = 0.03, 
-           label = "Variance",
-           size = 2) +
-  annotate(geom = "text", 
-           x = 15, y = 0.315, 
-           label = "Mean",
-           size = 2)
+        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2)),
+        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5)),
+        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
+        axis.ticks.length = unit(-0.1, "cm"))
 
 gg_fluct
 
-ggsave("output/MSFigures/TaskPerformanceFluctuations_VARIANCE.png", width = 2.82, height = 2.05, units = "in", dpi = 600)
-svg("output/MSFigures/TaskPerformanceFluctuations.svg", width = 2.82, height = 2.05)
+svg("output/MSFigures/TaskPerformanceFluctuations.svg",  width = 2.82, height = 2.07)
 gg_fluct
 dev.off()
