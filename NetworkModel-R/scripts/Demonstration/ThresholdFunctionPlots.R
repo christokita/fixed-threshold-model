@@ -35,7 +35,7 @@ gg_thresh <- ggplot(data = threshStyles, aes(x = stim, y = prob, colour = eta)) 
                       labels = c(expression(paste(eta, " = 2")),
                                  expression(paste(eta, " = 7")),
                                  expression(paste(eta, " = 20")))) +
-  annotate("text", x = 12, y = 0.0, label = threshold, parse = TRUE, size = 3.5) +
+  annotate("text", x = 12, y = 0.0, label = threshold, parse = TRUE, size = 4) +
   theme(panel.grid = element_blank(),
         panel.border = element_rect(fill = NA, size = 1),
         legend.position = c(0.96, 0.30),
@@ -44,7 +44,7 @@ gg_thresh <- ggplot(data = threshStyles, aes(x = stim, y = prob, colour = eta)) 
         legend.key.height = unit(0.3, "cm"),
         legend.key.width= unit(0.4, "cm"),
         legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.1, "cm"),
-        legend.text = element_text(size = 6),
+        legend.text = element_text(size = 8),
         legend.text.align = 0,
         axis.text.x = element_text(size = 8),
         axis.title = element_text(size = 10))
@@ -86,13 +86,13 @@ gg_sig <- ggplot(data = sigmas, aes(x = x, y = y, group = sigma, colour = sigma)
   ylab("Frequency") +
   theme(panel.grid = element_blank(),
         panel.border = element_rect(fill = NA, size = 1),
-        legend.position = c(0.96, 1.01),
+        legend.position = c(0.45, 1.01),
         legend.justification = c(1, 1),
         legend.title = element_blank(),
         legend.key.height = unit(0.3, "cm"),
         legend.key.width= unit(0.4, "cm"),
         legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.1, "cm"),
-        legend.text = element_text(size = 6),
+        legend.text = element_text(size = 8),
         legend.background = element_rect(fill = NA, colour = NA),
         legend.text.align = 0,
         axis.text.x = element_text(size = 8),
@@ -102,18 +102,3 @@ gg_sig
 
 ggsave(file = "output/OtherFigures/SigmaDistributionExamples.png", width = 2, height = 2, units = "in", dpi = 800)
 
-
-# Plot - type 2
-
-gg_sig <- ggplot(data = sigmas, aes(x = x, y = y, colour = sigma, fill = sigma)) +
-  geom_line() +
-  # geom_polygon(alpha = 0.25) +
-  theme_classic() +
-  xlab(expression(theta[j])) +
-  ylab("Frequency") +
-  theme(axis.text.x = element_text(size = 8),
-        axis.title = element_text(size = 10),
-        strip.text = element_text(size = 8, face = "italic"),
-        strip.background = element_rect(fill = NA, colour = NA)) 
-
-gg_sig

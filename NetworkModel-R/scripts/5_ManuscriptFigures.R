@@ -111,7 +111,7 @@ gg_abslope <- ggplot() +
         legend.title = element_blank(),
         axis.text.y = element_text(size = 8, margin = margin(5, 2, 5, -2)),
         axis.text.x = element_text(size = 8, margin = margin(2, 5, -2, 5)),
-        axis.title = element_text(size = 11),
+        axis.title = element_text(size = 11, margin = margin(0, 0, 0, 0)),
         axis.ticks.length = unit(0, "cm"),
         panel.border = element_rect(fill = "NA", size = 1))
 
@@ -119,7 +119,7 @@ gg_abslope
 
 ggsave("output/MSFigures/ParameterSpaceDelta06wContourfill.png", width = 2.8, height = 2.05, units = "in", dpi = 600)
 
-ggsave("output/MSFigures/ParameterSpaceDelta06wContourfillNarrow.png", width = 2.3, height = 2.05, units = "in", dpi = 600)
+ggsave("output/MSFigures/ParameterSpaceDelta06wContourfillNarrow.png", width = 2.1, height = 2, units = "in", dpi = 600)
 
 
 
