@@ -117,7 +117,9 @@ gg_abslope <- ggplot() +
 
 gg_abslope
 
-ggsave("output/MSFigures/ParameterSpaceDelta06wContourfillLargerAxisTitle.png", width = 2.8, height = 2.05, units = "in", dpi = 600)
+ggsave("output/MSFigures/ParameterSpaceDelta06wContourfill.png", width = 2.8, height = 2.05, units = "in", dpi = 600)
+
+ggsave("output/MSFigures/ParameterSpaceDelta06wContourfillNarrow.png", width = 2.3, height = 2.05, units = "in", dpi = 600)
 
 
 
@@ -248,6 +250,10 @@ gg_fixedProb <- ggplot(data = allFixedProbCorr) +
         axis.ticks.length = unit(-0.1, "cm"))
 
 # svg("output/MSFigures/FixedProbSpecializationFits.svg", width = 2.65, height = 2.05)
+svg("output/MSFigures/FixedProbSpecializationFitsNarrow.svg", width = 2.34, height = 2.07)
+gg_fixedProb
+dev.off()
+
 svg("output/MSFigures/FixedProbSpecializationFits.svg", width = 2.8, height = 2.07)
 gg_fixedProb
 dev.off()
@@ -358,9 +364,6 @@ stimSumFluct <- stimSumFluct %>%
   mutate(GroupSizeFactor = factor(GroupSizeFactor, levels = sort(unique(n))))
 
 # Plot
-palette <- c("#83343E", "#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78")
-
-
 gg_stimfluct <- ggplot() +
   geom_point(data = stimFluct, 
              aes(x = n, y = s1Fluct),
@@ -372,7 +375,7 @@ gg_stimfluct <- ggplot() +
              stroke = 0) +
   # geom_line(data = stimSumFluct,
   #           aes(x = n, y = s1FluctMean),
-  #           size = 0.3) +í ½
+  #           size = 0.3) +ï¿½ï¿½ï¿½
   theme_classic() +
   labs(x = "Group Size",
        y = "Stimulus fluctuation") +
@@ -380,18 +383,17 @@ gg_stimfluct <- ggplot() +
   scale_y_continuous(breaks = seq(0, 2, 0.4),
                      limits = c(0, 1.85),
                      expand = c(0, 0)) +
-  scale_fill_manual(values = palette) +
-  scale_colour_manual(values = palette) +
   theme(legend.position = "none") +
   # Mean and SE portion of plot
   geom_errorbar(data = stimSumFluct, 
                 aes(x = n, 
                     ymin = s1FluctMean - s1FluctSE, 
-                    ymax = s1FluctMean + s1FluctSE, 
-                    colour = GroupSizeFactor),
+                    ymax = s1FluctMean + s1FluctSE),
+                colour = "black",
                 size = 0.25) +
   geom_point(data = stimSumFluct, 
-             aes(x = n, y = s1FluctMean, colour = GroupSizeFactor, fill = GroupSizeFactor),
+             aes(x = n, y = s1FluctMean),
+             colour = "black",
              size = 1.5) +
   theme(legend.position = "none",
         legend.justification = c(1, 1),
@@ -408,6 +410,10 @@ gg_stimfluct <- ggplot() +
         axis.ticks.length = unit(-0.1, "cm"))
 
 gg_stimfluct
+
+svg("output/MSFigures/StimulusFluctuationsNarrow.svg",  width = 2.3, height = 2.07)
+gg_stimfluct
+dev.off()
 
 svg("output/MSFigures/StimulusFluctuations.svg", width = 2.76, height = 2.07)
 gg_stimfluct
@@ -472,9 +478,6 @@ tallySumFluct <- tallySumFluct %>%
 
 
 # Plot
-palette <- c("#83343E", "#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78")
-
-
 gg_fluct <- ggplot() +
   geom_point(data = tallyFluct, 
              aes(x = n, y = Task1Fluct),
@@ -491,18 +494,17 @@ gg_fluct <- ggplot() +
   scale_y_continuous(breaks = seq(0, 0.2, 0.01),
                      limits = c(0, 0.069),
                      expand = c(0, 0)) +
-  scale_fill_manual(values = palette) +
-  scale_colour_manual(values = palette) +
   theme(legend.position = "none") +
   # Mean and SE portion of plot
   geom_errorbar(data = tallySumFluct, 
                 aes(x = n, 
                     ymin = Task1FluctMean - Task1FluctSE, 
-                    ymax = Task1FluctMean + Task1FluctSE, 
-                    colour = GroupSizeFactor),
+                    ymax = Task1FluctMean + Task1FluctSE),
+                colour= "black",
                 size = 0.25) +
   geom_point(data = tallySumFluct, 
-             aes(x = n, y = Task1FluctMean, colour = GroupSizeFactor, fill = GroupSizeFactor),
+             aes(x = n, y = Task1FluctMean),
+             colour = "black",
              size = 1.5) +
   theme(legend.position = "none",
         legend.justification = c(1, 1),
@@ -519,6 +521,10 @@ gg_fluct <- ggplot() +
         axis.ticks.length = unit(-0.1, "cm"))
 
 gg_fluct
+
+svg("output/MSFigures/TaskPerformanceFluctuationsNarrow.svg",  width = 2.35, height = 2.07)
+gg_fluct
+dev.off()
 
 svg("output/MSFigures/TaskPerformanceFluctuations.svg",  width = 2.82, height = 2.07)
 gg_fluct
