@@ -188,8 +188,8 @@ taskDistSpec <- taskDistTot %>%
   mutate(Active = Task1 + Task2) %>% 
   merge(groups_specialization) %>% 
   filter(n > 1) %>% 
-  mutate(groupsize = factor(paste0("n = ", n), 
-                             levels = c("n = 2", "n = 4", "n = 6", "n = 8", "n = 12", "n = 16")))
+  mutate(groupsize = factor(paste0("Group size ", n), 
+                             levels = c("Group size 2", "Group size 4", "Group size 6", "Group size 8", "Group size 12", "Group size 16")))
 
 gg_actspec <- ggplot(data = taskDistSpec, aes(x = Active, y = TransSpec, colour = groupsize)) +
   geom_hline(aes(yintercept = 0), 

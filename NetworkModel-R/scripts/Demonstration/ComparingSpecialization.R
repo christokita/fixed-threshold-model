@@ -218,6 +218,41 @@ gg_actspec <- ggplot(data = taskDistSpec, aes(x = Active, y = TransSpec, colour 
 
 gg_actspec
 
-ggsave(filename = "output/SpecializationMetrics/Plots/SpecializationVsActivity.png", width = 4, height = 3, units = "in", dpi = 600)
+ggsave(filename = "output/SpecializationMetrics/Plots/SpecializationVsActivity.png", width = 4, height = 3, units = "in", dpi = 800)
 
+
+
+myPalette <- colorRampPalette(brewer.pal(9, "Blues"))
+
+gg_taskspec <- ggplot(data = taskDistSpec, aes(x = Task1, y = Task2, colour = TransSpec)) +
+  geom_point(alpha = 0.5,
+             size = 0.2) +
+  theme_bw() +
+  scale_color_gradientn(name = "Task\nConsistency",
+                        colours = myPalette(5), values = c(0, 0.1, 0.3, 0.5, 1), oob = squish,
+                        breaks = seq(-1, 1, 0.2), limits = c(-0.2, 0.8)) +
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.5)) +
+  scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.5)) +
+  theme(legend.position = "none") +
+  xlab("Task 1 Activity") +
+  ylab("Task 2 Activity") +
+  theme(legend.position = "none", 
+        legend.title = element_text(size = 10),
+        legend.key.height = unit(0.4, "cm"),
+        legend.key.width= unit(0.3, "cm"),
+        legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
+        legend.text = element_text(size = 8),
+        axis.text = element_text(size = 8),
+        axis.title = element_text(size = 10),
+        axis.ticks = element_line(size = 0.5),
+        panel.border = element_rect(fill = NA, size = 1),
+        panel.grid = element_blank(),
+        strip.text = element_text(size = 10, face = "italic"),
+        strip.background = element_rect(fill = NA, colour = NA),
+        panel.spacing = unit(0.5, "cm")) +
+  facet_wrap(~ groupsize)
+
+gg_taskspec
+
+ggsave(filename = "output/SpecializationMetrics/Plots/TasksVsSpecialization.png", width = 4, height = 3, units = "in", dpi = 800)
 
