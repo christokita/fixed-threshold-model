@@ -198,7 +198,7 @@ gg_relslope <- ggplot() +
                aes(x = sigma,
                    y = threshSlope,
                    z = spec),
-               size = 0.3,
+               size = 0.4,
                alpha = 1,
                colour = "black",
                breaks = c(-0.1,  0.1)) +
@@ -222,7 +222,7 @@ gg_relslope <- ggplot() +
         legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
         legend.text = element_text(size = 6),
         axis.text = element_text(size = 8),
-        axis.title = element_text(size = 10),
+        axis.title = element_text(size = 12),
         axis.ticks = element_line(size = 0.5),
         panel.border = element_rect(fill = NA, size = 1))
 
@@ -245,7 +245,7 @@ gg_small <- ggplot() +
                aes(x = sigma,
                    y = threshSlope,
                    z = spec),
-               size = 0.3,
+               size = 0.4,
                alpha = 1,
                colour = "black",
                breaks = c(-0.1,  0.1)) +
@@ -269,7 +269,7 @@ gg_small <- ggplot() +
         legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
         legend.text = element_text(size = 6),
         axis.text = element_text(size = 8),
-        axis.title = element_text(size = 10),
+        axis.title = element_text(size = 12),
         axis.ticks = element_line(size = 0.5),
         panel.border = element_rect(fill = NA, size = 1))
 
@@ -292,7 +292,7 @@ gg_large <- ggplot() +
                aes(x = sigma,
                    y = threshSlope,
                    z = spec),
-               size = 0.3,
+               size = 0.4,
                alpha = 1,
                colour = "black",
                breaks = c(-0.1,  0.1)) +
@@ -310,13 +310,13 @@ gg_large <- ggplot() +
   ylab(expression(eta)) +
   theme(legend.position = "right",
         legend.title = element_text(size = 10),
-        legend.key.height = unit(0.5, "cm"),
+        legend.key.height = unit(0.6, "cm"),
         legend.key.width= unit(0.4, "cm"),
         legend.key = element_rect(colour = "black", size = 0.5),
         legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
         legend.text = element_text(size = 8),
         axis.text = element_text(size = 8),
-        axis.title = element_text(size = 10),
+        axis.title = element_text(size = 12),
         axis.ticks = element_line(size = 0.5),
         panel.border = element_rect(fill = NA, size = 1))
 
@@ -325,10 +325,15 @@ gg_large <- ggplot() +
 
 ##### Plot All Relative Plots #####
 # output
-png("output/ParameterExploration/Plot/Delta06_SlopeandSizeWithLegend.png", width = 6, height = 2, units = "in", res = 800)
-multiplot(gg_relslope, gg_small, gg_large, cols = 3)
+# png("output/ParameterExploration/Plot/Delta06_SlopeandSize.png", width = 6, height = 2, units = "in", res = 800)
+# multiplot(gg_relslope, gg_small, gg_large, cols = 3)
+# dev.off()
+
+png("output/ParameterExploration/Plot/Delta06_SlopeandSizeAB.png", width = 4, height = 2, units = "in", res = 800)
+multiplot(gg_relslope, gg_small, cols = 2)
 dev.off()
 
+ggsave(plot = gg_large,"output/ParameterExploration/Plot/Delta06_SlopeandSizeCwithLegend.png", width = 2, height = 2, units = "in", dpi = 800)
 
 ##### Total Fit - Delta 06 #####
 # Try custom color
@@ -353,7 +358,7 @@ gg_fit06 <- ggplot(improve06, aes(x = sigma, y = threshSlope, fill = fitRMSE)) +
   ylab(expression(eta)) +
   theme(legend.position = "right", 
         legend.title = element_text(size = 7),
-        legend.key.height = unit(0.3, "cm"),
+        legend.key.height = unit(0.8, "cm"),
         legend.key.width= unit(0.4, "cm"),
         legend.key = element_rect(colour = "black", size = 0.5),
         legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
