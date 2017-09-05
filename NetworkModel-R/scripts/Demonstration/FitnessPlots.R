@@ -69,8 +69,8 @@ tallyEx <- tallies %>%
   melt(id.vars = c("n", "t", "replicate")) %>% 
   rename(Task = variable, Freq = value) %>% 
   mutate(timestep = 0:(length(n)-1),
-         groupsize = factor(paste0("n = ", n), 
-                            levels = c("n = 2", "n = 6", "n = 16")))
+         groupsize = factor(paste0("Group size ", n), 
+                            levels = c("Group size 2", "Group size 6", "Group size 16")))
 levels(tallyEx$Task) <- c("Task 1", "Task 2", "Inactive")
 
 
@@ -94,7 +94,7 @@ gg_taskEx <- ggplot(data = tallyEx, aes(x = t, y = Freq, colour = groupsize)) +
         axis.text = element_text(size = 8),
         axis.title = element_text(size = 10),
         axis.ticks = element_line(size = 0.5),
-        strip.text = element_text(size = 7, face = "italic"),
+        strip.text = element_text(size = 10, face = "italic"),
         strip.background = element_rect(fill = NA, colour = NA),
         panel.spacing = unit(0.5, "cm")) +
   facet_grid(Task ~ groupsize)

@@ -92,19 +92,19 @@ gg_metric <- ggplot(data = metrics, aes(x = n, y = Mean, group = metric)) +
         legend.key.height = unit(0.3, "cm"),
         legend.key.width= unit(0.4, "cm"),
         legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
-        legend.text = element_text(size = 6),
+        legend.text = element_text(size = 10),
         axis.text = element_text(size = 8),
         axis.title = element_text(size = 10),
         axis.ticks = element_line(size = 0.5),
         panel.grid = element_blank(),
-        strip.text = element_text(size = 7, face = "italic"),
+        strip.text = element_text(size = 8, face = "italic"),
         strip.background = element_rect(fill = NA, colour = NA),
         panel.spacing = unit(0.5, "cm")) +
   facet_wrap(~ metric)
 
 gg_metric
 
-ggsave(gg_metric, file = "output/SpecializationMetrics/Plots/AllMetricsComparison.png", height = 2, width = 5, units = "in", dpi = 600)
+ggsave(gg_metric, file = "output/SpecializationMetrics/Plots/AllMetricsComparison.png", height = 2.1, width = 5, units = "in", dpi = 800)
 
 
 ####################
@@ -172,4 +172,52 @@ gg_entrcorr <- ggplot(data = taskEntrCorr, aes(x = Dxy, y = TaskMean, col = grou
 gg_entrcorr
 
 ggsave(filename = "output/SpecializationMetrics/Plots/EntropyVsCorrelation.png", width = 4, height = 3, units = "in", dpi = 600)
+
+####################
+# Fitness related plots
+####################
+# Speclialization vs Total Activity at inidividual level
+taskDist <- unlist(groups_taskDist, recursive = FALSE)
+taskDistTot <- do.call("rbind", taskDist)
+taskDistSpec <- taskDistTot %>% 
+  mutate(Active = Task1 + Task2) %>% 
+  merge(groups_specialization) %>% 
+  filter(n > 1) %>% 
+  mutate(groupsize = factor(paste0("n = ", n), 
+                            levels = c("n = 2", "n = 4", "n = 6", "n = 8", "n = 12", "n = 16")))
+
+gg_actspec <- ggplot(data = taskDistSpec, aes(x = Active, y = TransSpec, colour = groupsize)) +
+  geom_hline(aes(yintercept = 0), 
+             colour = "grey30",
+             size = 0.25) +
+  geom_point(alpha = 0.5, 
+             size = 0.2) +
+  theme_bw() +
+  scale_colour_manual(name = "Group Size", 
+                      values = palette) +
+  scale_y_continuous(limits = c(-0.2, 1)) +
+  scale_x_continuous(breaks = seq(0, 1, 0.2)) +
+  theme(legend.position = "none") +
+  xlab("Activity Level") +
+  ylab("Task Consistency") +
+  theme(legend.position = "none", 
+        legend.title = element_text(size = 7),
+        legend.key.height = unit(0.3, "cm"),
+        legend.key.width= unit(0.4, "cm"),
+        legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
+        legend.text = element_text(size = 6),
+        axis.text = element_text(size = 7),
+        axis.title = element_text(size = 12),
+        axis.ticks = element_line(size = 0.5),
+        panel.border = element_rect(fill = NA, size = 1),
+        panel.grid = element_blank(),
+        strip.text = element_text(size = 7, face = "italic"),
+        strip.background = element_rect(fill = NA, colour = NA),
+        panel.spacing = unit(0.5, "cm")) +
+  facet_wrap(~ groupsize)
+
+gg_actspec
+
+ggsave(filename = "output/SpecializationMetrics/Plots/SpecializationVsActivity.png", width = 4, height = 3, units = "in", dpi = 600)
+
 
