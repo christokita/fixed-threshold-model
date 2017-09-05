@@ -356,7 +356,7 @@ gg_fit06 <- ggplot(improve06, aes(x = sigma, y = threshSlope, fill = fitRMSE)) +
                        oob = squish) +
   xlab(expression(sigma)) +
   ylab(expression(eta)) +
-  theme(legend.position = "right", 
+  theme(legend.position = "none", 
         legend.title = element_text(size = 7),
         legend.key.height = unit(0.8, "cm"),
         legend.key.width= unit(0.4, "cm"),
@@ -364,12 +364,12 @@ gg_fit06 <- ggplot(improve06, aes(x = sigma, y = threshSlope, fill = fitRMSE)) +
         legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
         legend.text = element_text(size = 6),
         axis.text = element_text(size = 8),
-        axis.title = element_text(size = 10),
+        axis.title = element_text(size = 12),
         axis.ticks = element_line(size = 0.5),
         panel.border = element_rect(fill = NA, size = 1))
 gg_fit06
 
-ggsave("output/ParameterExploration/Plot/Delta06_fitRMSE.png", width = 2.8, height = 2, units = "in", dpi = 600)
+ggsave("output/ParameterExploration/Plot/Delta06_fitRMSE.png", width = 2, height = 2, units = "in", dpi = 800)
 
 
 ##### Total Fit - Delta 08 #####
@@ -389,7 +389,7 @@ gg_fit08 <- ggplot(improve08, aes(x = sigma, y = threshSlope, fill = fitRMSE)) +
                        oob = squish) +
   xlab(expression(sigma)) +
   ylab(expression(eta)) +
-  theme(legend.position = "right", 
+  theme(legend.position = "none", 
         legend.title = element_text(size = 10),
         legend.key.height = unit(0.5, "cm"),
         legend.key.width= unit(0.4, "cm"),
@@ -397,13 +397,13 @@ gg_fit08 <- ggplot(improve08, aes(x = sigma, y = threshSlope, fill = fitRMSE)) +
         legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
         legend.text = element_text(size = 8),
         axis.text = element_text(size = 8),
-        axis.title = element_text(size = 10),
+        axis.title = element_text(size = 12),
         axis.ticks = element_line(size = 0.5),
         panel.border = element_rect(fill = NA, size = 1))
 gg_fit08
 
 
-ggsave("output/ParameterExploration/Plot/Delta08_fitRMSE.png", width = 2.8, height = 2, units = "in", dpi = 600)
+ggsave("output/ParameterExploration/Plot/Delta08_fitRMSE.png", width = 2, height = 2, units = "in", dpi = 800)
 
 
 ##### Change in Fit #####
@@ -427,7 +427,7 @@ gg_diff <- ggplot(diff_improve, aes(x = sigma, y = threshSlope, fill = fit)) +
                        oob = squish) +
   xlab(expression(sigma)) +
   ylab(expression(eta)) +
-  theme(legend.position = "right", 
+  theme(legend.position = "none", 
         legend.title = element_text(size = 10),
         legend.key.height = unit(0.5, "cm"),
         legend.key.width= unit(0.4, "cm"),
@@ -435,9 +435,9 @@ gg_diff <- ggplot(diff_improve, aes(x = sigma, y = threshSlope, fill = fit)) +
         legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
         legend.text = element_text(size = 8),
         axis.text = element_text(size = 8),
-        axis.title = element_text(size = 10),
+        axis.title = element_text(size = 12),
         axis.ticks = element_line(size = 0.5),
         panel.border = element_rect(fill = NA, size = 1))
 gg_diff
 
-ggsave("output/ParameterExploration/Plot/Fixed_0806DifferenceOfFitRSME.png", width = 2.75, height = 2, units = "in", dpi = 600)
+ggsave("output/ParameterExploration/Plot/Fixed_0806DifferenceOfFitRSME.png", width = 2, height = 2, units = "in", dpi = 800)
