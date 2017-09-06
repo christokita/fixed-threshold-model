@@ -201,7 +201,7 @@ fillPalette <- c("#ffffff","#F9D76E", "#FD792C", "#F23619", "#97031B")
 # Plot with experimental data
 gg_fixedProb <- ggplot(data = allFixedProbCorr) +
   theme_classic() +
-  labs(x = "Group Size",
+  labs(x = "Group size",
        y = "Specialization") +
   scale_x_continuous(breaks = unique(taskCorrTot$n)) +
   scale_y_continuous(breaks = seq(-1, 1, 0.1), 
@@ -377,7 +377,7 @@ gg_stimfluct <- ggplot() +
   #           aes(x = n, y = s1FluctMean),
   #           size = 0.3) +���
   theme_classic() +
-  labs(x = "Group Size",
+  labs(x = "Group size",
        y = "Stimulus fluctuation") +
   scale_x_continuous(breaks = unique(stimFluct$n)) +
   scale_y_continuous(breaks = seq(0, 2, 0.4),
@@ -488,7 +488,7 @@ gg_fluct <- ggplot() +
              alpha = 0.4,
              stroke = 0) +
   theme_classic() +
-  labs(x = "Group Size",
+  labs(x = "Group size",
        y = "Task fluctuation") +
   scale_x_continuous(breaks = unique(tallyFluct$n)) +
   scale_y_continuous(breaks = seq(0, 0.2, 0.01),

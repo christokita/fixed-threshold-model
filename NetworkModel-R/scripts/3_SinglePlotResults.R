@@ -45,8 +45,8 @@ plot_TaskMat <- as.data.frame(taskDistTot)
 gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
   geom_point(aes(colour = n), size = 0.3) +
   theme_classic() +
-  labs(x = "\nGroup Size",
-       y = "Frequency Task 1") +
+  labs(x = "\nGroup size",
+       y = "Task 1 frequency") +
   scale_color_manual(values = palette) +
   scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
   theme(axis.text.x = element_blank(),
@@ -123,7 +123,7 @@ taskVarMean$NormVarMean[taskVarMean$Source == "Model"] <- taskVarMean$SD[taskVar
 #              alpha = 0.4,
 #              position = position_dodge(width = 1)) +
 #   theme_classic() +
-#   xlab("Group Size") +
+#   xlab("Group size") +
 #   ylab("Behavioral Variation (SD)") +
 #   scale_x_continuous(breaks = unique(taskVarMean$n)) +
 #   scale_y_continuous(breaks = seq(0, 1, 0.025)) +
@@ -154,8 +154,8 @@ gg_varNorm <- ggplot() +
              alpha = 0.4,
              position = position_dodge(width = 1)) +
   theme_classic() +
-  xlab("Group Size") +
-  ylab("Task 1 Variation (SD)") +
+  xlab("Group size") +
+  ylab("Relative task 1 variation") +
   scale_x_continuous(breaks = unique(taskVarMean$n)) +
   scale_y_continuous(breaks = seq(0, 3, 0.5)) +
   # Mean and SE portion of plot
@@ -186,8 +186,8 @@ gg_mean <- ggplot() +
              alpha = 0.4,
              position = position_dodge(width = 1)) +
   theme_classic() +
-  xlab("Group Size") +
-  ylab("Task 1 Frequency") +
+  xlab("Group size") +
+  ylab("Relative task 1 frequency") +
   scale_x_continuous(breaks = unique(taskVarMean$n)) +
   scale_y_continuous(breaks = seq(0, 1.5, 0.05)) +
   # Mean and SE portion of plot
@@ -271,8 +271,8 @@ gg_fluct <- ggplot() +
              alpha = 0.4,
              stroke = 0) +
   theme_classic() +
-  labs(x = "Group Size",
-       y = "Task 1 Fluctuation") +
+  labs(x = "Group size",
+       y = "Task 1 fluctuation") +
   scale_x_continuous(breaks = unique(tallyFluct$n)) +
   scale_y_continuous(breaks = seq(0, 0.2, 0.01),
                      limits = c(0, 0.069),
@@ -333,7 +333,7 @@ gg_corr <- ggplot() +
              position = position_dodge(width = 1),
              alpha = 0.4) +
   theme_classic() +
-  labs(x = "Group Size",
+  labs(x = "Group size",
        y = "Specialization") +
   scale_x_continuous(breaks = unique(taskCorrTot$n)) +
   scale_y_continuous(breaks = seq(-1, 1, 0.2)) +
@@ -414,8 +414,8 @@ gg_stimfluct <- ggplot() +
   #           aes(x = n, y = s1FluctMean),
   #           size = 0.3) +���
   theme_classic() +
-  labs(x = "Group Size",
-       y = "Stimulus 1 Fluctuation") +
+  labs(x = "Group size",
+       y = "Stimulus 1 fluctuation") +
   scale_x_continuous(breaks = unique(stimFluct$n)) +
   scale_y_continuous(breaks = seq(0, 2, 0.4),
                      limits = c(0, 1.85),
