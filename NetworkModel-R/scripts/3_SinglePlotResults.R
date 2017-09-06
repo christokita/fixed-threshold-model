@@ -10,7 +10,7 @@ source("scripts/3A_PrepPlotExperimentData.R")
 load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
 
 # Set variable  
-filename <- "Fixed_Delta06Sigma015Eta7"
+filename <- "Fixed_Delta06Sigma01Eta7"
 
 # Palette without single individuals
 #palette <- c("#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78", "#bdbdbd", "#525252")
@@ -45,14 +45,15 @@ plot_TaskMat <- as.data.frame(taskDistTot)
 gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
   geom_point(aes(colour = n), size = 0.3) +
   theme_classic() +
-  labs(x = "\nGroup size",
+  labs(x = "Group size",
        y = "Task 1 frequency") +
   scale_color_manual(values = palette) +
   scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
-  theme(axis.text.x = element_blank(),
+  theme(axis.text.x = element_text(size = 0),
         axis.ticks.x = element_blank(),
         axis.text = element_text(size = 8),
-        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
+        axis.title.y = element_text(size = 10, margin = margin(0, 0, 0, 0)),
+        axis.title.x = element_text(size = 10, margin = margin(12, 0, 0, 0)),
         legend.position = "none") 
 
 
