@@ -7,8 +7,6 @@ rm(list = ls())
 source("scripts/__Util__MASTER.R")
 source("scripts/3A_PrepPlotExperimentData.R")
 
-load("/Users/ChrisTokita/Documents/Research/Tarnita Lab/Evolution of DOL/Fixed_Delta06Sigma01Eta7LargerGroups100reps.Rdata")
-
 # Set variable
 filename <- "Fixed_Delta06Sigma01Eta7LargerGroups"
 
@@ -20,6 +18,11 @@ palette <- c("#83343E", "#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "
 
 # Model vs Data Palette
 compPalette <- c("indianred2", "black")
+
+####################
+# Load Data
+####################
+load("/Users/ChrisTokita/Documents/Research/Tarnita Lab/Evolution of DOL/Fixed_Delta06Sigma01Eta7LargerGroups100reps.Rdata")
 
 ####################
 # Final task distributions
@@ -45,12 +48,15 @@ plot_TaskMat <- as.data.frame(taskDistTot)
 gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
   geom_point(aes(colour = n), size = 0.3) +
   theme_classic() +
-  labs(x = "\nGroup Size",
-       y = "Frequency Task 1") +
+  labs(x = "Group size",
+       y = "Task 1 frequency") +
   scale_color_manual(values = palette) +
   scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
-  theme(axis.text.x = element_blank(),
+  theme(axis.text.x = element_text(size = 0),
         axis.ticks.x = element_blank(),
+        axis.text = element_text(size = 8),
+        axis.title.y = element_text(size = 10, margin = margin(0, 0, 0, 0)),
+        axis.title.x = element_text(size = 10, margin = margin(12, 0, 0, 0)),
         legend.position = "none") 
 
 
