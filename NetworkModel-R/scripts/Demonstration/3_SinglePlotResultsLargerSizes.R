@@ -7,6 +7,8 @@ rm(list = ls())
 source("scripts/__Util__MASTER.R")
 source("scripts/3A_PrepPlotExperimentData.R")
 
+load("/Users/ChrisTokita/Documents/Research/Tarnita Lab/Evolution of DOL/Fixed_Delta06Sigma01Eta7LargerGroups100reps.Rdata")
+
 # Set variable
 filename <- "Fixed_Delta06Sigma01Eta7LargerGroups"
 
@@ -19,10 +21,6 @@ palette <- c("#83343E", "#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "
 # Model vs Data Palette
 compPalette <- c("indianred2", "black")
 
-####################
-# Load Data
-####################
-load("/Users/ChrisTokita/Documents/Research/Tarnita Lab/Evolution of DOL/Fixed_Delta06Sigma01Eta7LargerGroups100reps.Rdata")
 
 ####################
 # Final task distributions
@@ -54,7 +52,7 @@ gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
   scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
   theme(axis.text.x = element_text(size = 0),
         axis.ticks.x = element_blank(),
-        axis.text = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
         axis.title.y = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         axis.title.x = element_text(size = 10, margin = margin(12, 0, 0, 0)),
         legend.position = "none") 
@@ -150,8 +148,8 @@ gg_varNorm <- ggplot() +
              alpha = 0.4,
              position = position_dodge(width = 1)) +
   theme_classic() +
-  xlab("Group Size") +
-  ylab("Behavioral Variation (SD)\nRelative to Group Size 16") +
+  xlab("Group size") +
+  ylab("Relative task 1 variation") +
   scale_x_continuous(breaks = unique(taskVarMean$n)) +
   scale_y_continuous(breaks = seq(0, 3, 0.5)) +
   scale_size_manual(values = c(2, 2, 2, 2, 2, 2, 2, 2, -1, -1, 2)) +
@@ -168,6 +166,9 @@ gg_varNorm <- ggplot() +
   scale_fill_manual(values = compPalette) +
   scale_colour_manual(values = compPalette) +
   theme(legend.position = "none",
+        axis.text.y = element_text(size = 8),
+        axis.text.x = element_text(size = 6),
+        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         strip.text = element_blank(),
         strip.background = element_blank(),
         panel.spacing = unit(0.25, "cm")) +
@@ -184,8 +185,8 @@ gg_mean <- ggplot() +
              alpha = 0.4,
              position = position_dodge(width = 1)) +
   theme_classic() +
-  xlab("Group Size") +
-  ylab("Behavioral Mean Relative to Group Size 1") +
+  xlab("Group size") +
+  ylab("Relative task 1 frequency") +
   scale_x_continuous(breaks = unique(taskVarMean$n)) +
   scale_y_continuous(breaks = seq(0, 1.5, 0.05)) +
   scale_size_manual(values = c(2, 2, 2, 2, 2, 2, 2, 2, -1, -1, 2)) +
@@ -202,6 +203,9 @@ gg_mean <- ggplot() +
   scale_fill_manual(values = compPalette) +
   scale_colour_manual(values = compPalette) +
   theme(legend.position = "none",
+        axis.text.y = element_text(size = 8),
+        axis.text.x = element_text(size = 6),
+        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         strip.text = element_blank(),
         strip.background = element_blank(),
         panel.spacing = unit(0.25, "cm")) +
@@ -254,14 +258,17 @@ gg_corr <- ggplot() +
              position = position_dodge(width = 1),
              alpha = 0.4) +
   theme_classic() +
-  labs(x = "Group Size",
-       y = "\nSpecialization") +
+  labs(x = "Group size",
+       y = "Specialization") +
   scale_x_continuous(breaks = unique(taskCorrTot$n)) +
   scale_y_continuous(breaks = seq(-1, 1, 0.2)) +
   scale_size_manual(values = c(2, 2, 2, 2, 2, 2, 2, -1, -1, 2)) +
   scale_fill_manual(values = compPalette) +
   scale_colour_manual(values = compPalette) +
   theme(legend.position = "none",
+        axis.text.y = element_text(size = 8),
+        axis.text.x = element_text(size = 6),
+        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         strip.text = element_blank(),
         strip.background = element_blank(),
         panel.spacing = unit(0.25, "cm")) +
@@ -283,7 +290,7 @@ gg_corr <- ggplot() +
 
 
 # MultiPlot
-png(filename = paste0("output/_ComprehnsivePlots/", filename, ".png"), width = 8, height = 8, units = "in", res = 800)
+png(filename = paste0("output/_ComprehnsivePlots/", filename, ".png"), width = 4, height = 4, units = "in", res = 800)
 multiplot(gg_dist, gg_mean,  gg_corr, gg_varNorm, cols = 2)  
 dev.off()
 
@@ -292,6 +299,6 @@ dev.off()
 ####################
 # Save all
 ####################
-save(groups_entropy, groups_stim, groups_taskCorr, groups_taskDist, groups_taskStep, groups_taskTally, taskCorrTot, 
-     file = paste0("output/__RData/", filename, ".Rdata"))
+# save(groups_entropy, groups_stim, groups_taskCorr, groups_taskDist, groups_taskStep, groups_taskTally, taskCorrTot, 
+#      file = paste0("output/__RData/", filename, ".Rdata"))
 
