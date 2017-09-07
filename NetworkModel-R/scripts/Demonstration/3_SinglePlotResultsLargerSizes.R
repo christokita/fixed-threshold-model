@@ -167,8 +167,7 @@ gg_varNorm <- ggplot() +
   scale_fill_manual(values = compPalette) +
   scale_colour_manual(values = compPalette) +
   theme(legend.position = "none",
-        axis.text.y = element_text(size = 8),
-        axis.text.x = element_text(size = 6),
+        axis.text = element_text(size = 8),
         axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         strip.text = element_blank(),
         strip.background = element_blank(),
@@ -205,8 +204,7 @@ gg_mean <- ggplot() +
   scale_fill_manual(values = compPalette) +
   scale_colour_manual(values = compPalette) +
   theme(legend.position = "none",
-        axis.text.y = element_text(size = 8),
-        axis.text.x = element_text(size = 6),
+        axis.text = element_text(size = 8),
         axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         strip.text = element_blank(),
         strip.background = element_blank(),
@@ -269,8 +267,7 @@ gg_corr <- ggplot() +
   scale_fill_manual(values = compPalette) +
   scale_colour_manual(values = compPalette) +
   theme(legend.position = "none",
-        axis.text.y = element_text(size = 8),
-        axis.text.x = element_text(size = 6),
+        axis.text = element_text(size = 8),
         axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         strip.text = element_blank(),
         strip.background = element_blank(),
