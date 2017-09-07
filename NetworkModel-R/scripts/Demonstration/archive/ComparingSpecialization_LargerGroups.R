@@ -10,7 +10,7 @@ source("scripts/3A_PrepPlotExperimentData.R")
 library(RColorBrewer)
 library(scales)
 
-load("output/SpecializationMetrics/Rdata/FixedDelta06Sigma01Eta7100reps.Rdata")
+load("/Users/ChrisTokita/Documents/Research/Tarnita Lab/Evolution of DOL/Fixed_Delta06Sigma01Eta7LargerGroups100reps.Rdata")
 
 ####################
 # Compare entropies
@@ -35,18 +35,18 @@ taskCorrTot <- taskCorrTot %>%
 ####################
 # Load in larger groups and bind
 ####################
-load("output/SpecializationMetrics/Rdata/FixedDelta06Sigma01Eta7LargerSizes100reps.Rdata")
-
-# Unlist
-entropy1 <- unlist(groups_entropy, recursive = FALSE)
-entropy1 <- do.call("rbind", entropy1)
-entropy <- rbind(entropy, entropy1)
-
-# Unlist
-taskCorrTot1 <- do.call("rbind", groups_taskCorr)
-taskCorrTot1 <- taskCorrTot1 %>% 
-  mutate(TaskMean = (Task1 + Task2) / 2)
-taskCorrTot <- rbind(taskCorrTot, taskCorrTot1)
+# load("output/SpecializationMetrics/Rdata/FixedDelta06Sigma01Eta7LargerSizes100reps.Rdata")
+# 
+# # Unlist
+# entropy1 <- unlist(groups_entropy, recursive = FALSE)
+# entropy1 <- do.call("rbind", entropy1)
+# entropy <- rbind(entropy, entropy1)
+# 
+# # Unlist
+# taskCorrTot1 <- do.call("rbind", groups_taskCorr)
+# taskCorrTot1 <- taskCorrTot1 %>% 
+#   mutate(TaskMean = (Task1 + Task2) / 2)
+# taskCorrTot <- rbind(taskCorrTot, taskCorrTot1)
 
 ####################
 # Scatterplot
@@ -62,21 +62,22 @@ taskEntrCorr <- taskCorrTot %>%
   mutate(colony = paste0(n, "-", replicate)) %>% 
   merge(entropy) %>% 
   select(colony, n, replicate, TaskMean, Dxy) %>% 
-  mutate(groupsize = factor(paste0("n = ", n), 
-                            levels = c("n = 2", "n = 4", "n = 6", "n = 8", "n = 12", "n = 16", "n = 32", "n = 100"))) %>% 
+  mutate(groupsize = factor(paste0("Group Size ", n), 
+                            levels = c("Group Size 2", "Group Size 4", "Group Size 6", "Group Size 8", "Group Size 12", "Group Size 16", "Group Size 32", "Group Size 100"))) %>% 
   filter(n %in% c(2, 16, 32, 100))
 
 palette <- c("#F00924", "#4C0E78", "#bdbdbd", "#525252")
-gg_entrcorr <- ggplot(data = taskEntrCorr, aes(x = Dxy, y = TaskMean, col = groupsize)) +
+gg_entrcorr <- ggplot(data = taskEntrCorr, aes(x = Dxy, y = TaskMean, colour = groupsize)) +
   geom_hline(data = taskCorrTot, 
              aes(yintercept = 0),
              colour = "grey30",
              size = 0.25) +
   geom_point(alpha = 0.5,
-             size = 0.2) +
+             size = 0.8,
+             stroke = 0) +
   theme_bw() +
-  xlab("Task Entropy") +
-  ylab("Rank Correlation") +
+  xlab("Task entropy") +
+  ylab("Rank correlation") +
   scale_colour_manual(name = "Group Size", 
                       values = palette) +
   scale_x_continuous(limits = c(0, 0.4),
@@ -88,19 +89,19 @@ gg_entrcorr <- ggplot(data = taskEntrCorr, aes(x = Dxy, y = TaskMean, col = grou
         legend.key.width= unit(0.4, "cm"),
         legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
         legend.text = element_text(size = 6),
-        axis.text = element_text(size = 7),
+        axis.text = element_text(size = 8),
         axis.title = element_text(size = 10),
         axis.ticks = element_line(size = 0.5),
         panel.border = element_rect(fill = NA, size = 1),
         panel.grid = element_blank(),
-        strip.text = element_text(size = 7, face = "italic"),
+        strip.text = element_blank(),
         strip.background = element_rect(fill = NA, colour = NA),
         panel.spacing = unit(0.5, "cm")) +
   facet_grid(.~ groupsize) 
 
 gg_entrcorr
 
-ggsave(filename = "output/SpecializationMetrics/Plots/EntropyVsCorrelationLargerSizes.png", width = 6, height = 2, units = "in", dpi = 600)
+ggsave(filename = "output/SpecializationMetrics/Plots/EntropyVsCorrelationLargerSizes.png", width = 4, height = 1.5, units = "in", dpi = 800)
 
 # ggsave(filename = "output/SpecializationMetrics/Plots/EntropyVsCorrelationFacet.png", width = 12, height = 2, units = "in", dpi = 300)
 

@@ -144,9 +144,10 @@ gg_varNorm <- ggplot() +
              colour = "grey30") +
   geom_point(data = taskVarMean, 
              aes(x = n, y = NormVarMean, colour = Source),
-             size = 0.8,
-             alpha = 0.4,
-             position = position_dodge(width = 1)) +
+             size = 1,
+             alpha = 0.5,
+             stroke = 0,
+             position = position_dodge(width = 2)) +
   theme_classic() +
   xlab("Group size") +
   ylab("Relative task 1 variation") +
@@ -181,9 +182,10 @@ gg_mean <- ggplot() +
              colour = "grey30") +
   geom_point(data = taskVarMean,
              aes(x = n, y = NormMean, colour = Source),
-             size = 0.5,
-             alpha = 0.4,
-             position = position_dodge(width = 1)) +
+             size = 1,
+             stroke = 0,
+             alpha = 0.5,
+             position = position_dodge(width = 2)) +
   theme_classic() +
   xlab("Group size") +
   ylab("Relative task 1 frequency") +
@@ -254,9 +256,10 @@ gg_corr <- ggplot() +
              colour = "grey30") +
   geom_point(data = taskCorrTot, 
              aes(x = n, y = TaskMean, fill = Source, colour = Source), 
-             size = 0.5,
-             position = position_dodge(width = 1),
-             alpha = 0.4) +
+             size = 1,
+             stroke = 0,
+             position = position_dodge(width = 2),
+             alpha = 0.5) +
   theme_classic() +
   labs(x = "Group size",
        y = "Specialization") +
