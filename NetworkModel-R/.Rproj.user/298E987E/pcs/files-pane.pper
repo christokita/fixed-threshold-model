@@ -1,8 +1,8 @@
 {
-    "path" : "~/Documents/Research/Tarnita Lab/Evolution of DOL/Network Model/NetworkModel-R/scripts/Demonstration/archive",
+    "path" : "~/Documents/Research/Tarnita Lab/Evolution of DOL/Network Model/NetworkModel-R/scripts/Demonstration",
     "sortOrder" : [
         {
-            "ascending" : true,
+            "ascending" : false,
             "columnIndex" : 2
         }
     ]

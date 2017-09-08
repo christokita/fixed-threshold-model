@@ -156,7 +156,7 @@ gg_varNorm <- ggplot() +
              position = position_dodge(width = 1)) +
   theme_classic() +
   xlab("Group size") +
-  ylab("Relative task 1 variation") +
+  ylab("Relative behavioral variation") +
   scale_x_continuous(breaks = unique(taskVarMean$n)) +
   scale_y_continuous(breaks = seq(0, 3, 0.5)) +
   # Mean and SE portion of plot
@@ -462,6 +462,6 @@ dev.off()
 ####################
 # Save all
 ####################
-save(groups_entropy, groups_stim, groups_taskCorr, groups_taskDist, groups_taskStep, groups_taskTally, taskCorrTot, 
-     file = paste0("output/__RData/", filename, ".Rdata"))
+# save(groups_entropy, groups_stim, groups_taskCorr, groups_taskDist, groups_taskStep, groups_taskTally, taskCorrTot, 
+#      file = paste0("output/__RData/", filename, ".Rdata"))
 

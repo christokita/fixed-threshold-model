@@ -150,7 +150,7 @@ gg_varNorm <- ggplot() +
              position = position_dodge(width = 2)) +
   theme_classic() +
   xlab("Group size") +
-  ylab("Relative task 1 variation") +
+  ylab("Relative behavioral variation") +
   scale_x_continuous(breaks = unique(taskVarMean$n)) +
   scale_y_continuous(breaks = seq(0, 3, 0.5)) +
   scale_size_manual(values = c(2, 2, 2, 2, 2, 2, 2, 2, -1, -1, 2)) +
@@ -187,7 +187,7 @@ gg_mean <- ggplot() +
              position = position_dodge(width = 2)) +
   theme_classic() +
   xlab("Group size") +
-  ylab("Relative task 1 frequency") +
+  ylab("Relative task 1 performance") +
   scale_x_continuous(breaks = unique(taskVarMean$n)) +
   scale_y_continuous(breaks = seq(0, 1.5, 0.05)) +
   scale_size_manual(values = c(2, 2, 2, 2, 2, 2, 2, 2, -1, -1, 2)) +
