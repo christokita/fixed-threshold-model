@@ -550,7 +550,7 @@ gg_fluct <- ggplot() +
              alpha = 0.4) +
   theme_classic() +
   labs(x = "Group Size",
-       y = "Average Fluctuation\nIn Task Performance") +
+       y = "Average fluctuation\nin task performance") +
   # scale_x_continuous(breaks = unique(tallyFluct$n)) +
   scale_y_continuous(breaks = seq(0, 0.1, 0.02)) +
   scale_fill_manual(values = palette) +
