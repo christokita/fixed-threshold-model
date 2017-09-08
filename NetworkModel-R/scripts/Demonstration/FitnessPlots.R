@@ -163,8 +163,8 @@ gg_stimfluct <- ggplot() +
   labs(x = "Group size",
        y = "Stimulus fluctuation") +
   scale_x_continuous(breaks = unique(stimFluct$n)) +
-  scale_y_continuous(breaks = seq(0, 2, 0.4),
-                     limits = c(0, 1.85),
+  scale_y_continuous(breaks = seq(0, 2, 0.2),
+                     limits = c(0, 0.85),
                      expand = c(0, 0)) +
   theme(legend.position = "none") +
   # Mean and SE portion of plot
@@ -293,7 +293,7 @@ gg_fluct
 ggsave("output/FitnessPlots/TaskFluctuations_200TimeStep.png",  width = 2, height = 2, dpi = 800)
 
 
-#### 200 Time steps ####
+#### 1 Time steps ####
 # Normalize and Summarise by "day" (i.e., time window) and calculate difference
 tallyFluct <- tallies %>% 
   mutate(Task1 = Task1 / n,
@@ -352,9 +352,9 @@ gg_fluct <- ggplot() +
   labs(x = "Group size",
        y = "Task fluctuation") +
   scale_x_continuous(breaks = unique(tallyFluct$n)) +
-  # scale_y_continuous(breaks = seq(0, 0.22, 0.02),
-  #                    limits = c(0, 0.155),
-  #                    expand = c(0, 0)) +
+  scale_y_continuous(breaks = seq(0, 0.22, 0.02),
+                     limits = c(0, 0.155),
+                     expand = c(0, 0)) +
   theme(legend.position = "none") +
   # Mean and SE portion of plot
   geom_errorbar(data = tallySumFluct, 
