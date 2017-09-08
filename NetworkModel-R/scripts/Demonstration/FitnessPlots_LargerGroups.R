@@ -33,7 +33,7 @@ gg_stimEx <- ggplot(data = stimSet, aes(x = timestep, y = s1)) +
   geom_line(colour = "#4eb3d3", 
             size = 0.2) +
   theme_classic() +
-  xlab("Timestep") +
+  xlab("Time step") +
   ylab("Stimulus") +
   scale_x_continuous(breaks = seq(0, 10000, 5000),
                      labels = comma) +

@@ -454,8 +454,8 @@ cols <- c("#F00924", "#FDD545", "#4C0E78")
 gg_taskEx <- ggplot(data = tallyEx, aes(x = t, y = Freq, colour = groupsize)) +
   geom_line(alpha = 1) +
   theme_classic() +
-  xlab("Timestep") +
-  ylab("Proportion of Colony") +
+  xlab("Time step") +
+  ylab("Proportion of colony") +
   scale_x_continuous(limits = c(0, 300),
                      breaks = seq(0, 1000, 100)) +
   scale_color_manual(values = cols) +
