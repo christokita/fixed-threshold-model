@@ -299,7 +299,7 @@ gg_large <- ggplot() +
   theme_bw() +
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_continuous(expand = c(0, 0), breaks = c(1, seq(10, 30, 10))) +
-  scale_fill_gradientn(name = "Fit to Data",
+  scale_fill_gradientn(name = "Deviation from\nExperimental Data",
                        colors = colPal,
                        #values = rescale(x = c(0, 0.01, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.5, 0.6)),
                        breaks = seq(-1, 1, 0.5),
