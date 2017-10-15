@@ -145,7 +145,7 @@ gg_varNorm <- ggplot() +
   geom_point(data = taskVarMean, 
              aes(x = n, y = NormVarMean, colour = Source),
              size = 1,
-             alpha = 0.5,
+             alpha = 0.4,
              stroke = 0,
              position = position_dodge(width = 2)) +
   theme_classic() +
@@ -156,7 +156,8 @@ gg_varNorm <- ggplot() +
   scale_size_manual(values = c(2, 2, 2, 2, 2, 2, 2, 2, -1, -1, 2)) +
   # Mean and SE portion of plot
   geom_errorbar(data = taskVarMeans, 
-                aes(x = n, ymin = NormVarMean - NormVarMeanSE, ymax = NormVarMean + NormVarMeanSE, colour = Source, width = 1.5),
+                aes(x = n, ymin = NormVarMean - NormVarMeanSE, ymax = NormVarMean + NormVarMeanSE, colour = Source),
+                width = 5,
                 position = position_dodge(width = 1)) +
   geom_point(data = taskVarMeans, 
              aes(x = n, y = NormVarMean, colour = Source, size = as.factor(n)),
@@ -183,7 +184,7 @@ gg_mean <- ggplot() +
              aes(x = n, y = NormMean, colour = Source),
              size = 1,
              stroke = 0,
-             alpha = 0.5,
+             alpha = 0.4,
              position = position_dodge(width = 2)) +
   theme_classic() +
   xlab("Group size") +
@@ -193,7 +194,8 @@ gg_mean <- ggplot() +
   scale_size_manual(values = c(2, 2, 2, 2, 2, 2, 2, 2, -1, -1, 2)) +
   # Mean and SE portion of plot
   geom_errorbar(data = taskVarMeans, 
-                aes(x = n, ymin = NormMean - NormMeanSE, ymax = NormMean + NormMeanSE, colour = Source, width = 1.5),
+                aes(x = n, ymin = NormMean - NormMeanSE, ymax = NormMean + NormMeanSE, colour = Source),
+                width = 5,
                 position = position_dodge(width = 1)) +
   geom_point(data = taskVarMeans, 
              aes(x = n, y = NormMean, colour = Source, size = as.factor(n)),
@@ -257,7 +259,7 @@ gg_corr <- ggplot() +
              size = 1,
              stroke = 0,
              position = position_dodge(width = 2),
-             alpha = 0.5) +
+             alpha = 0.4) +
   theme_classic() +
   labs(x = "Group size",
        y = "Specialization") +
@@ -274,7 +276,8 @@ gg_corr <- ggplot() +
         panel.spacing = unit(0.25, "cm")) +
   # Mean and SE portion of plot
   geom_errorbar(data = taskCorrMeans, 
-                aes(x = n, ymin = SpecMean - SpecSE, ymax = SpecMean + SpecSE, colour = Source, width = 1.5),
+                aes(x = n, ymin = SpecMean - SpecSE, ymax = SpecMean + SpecSE, colour = Source),
+                width = 5,
                 position = position_dodge(width = 1)) +
   geom_point(data = taskCorrMeans, 
              aes(x = n, y = SpecMean, colour = Source, fill = Source, size = as.factor(n)),

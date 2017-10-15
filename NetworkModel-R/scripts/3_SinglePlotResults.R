@@ -151,9 +151,10 @@ gg_varNorm <- ggplot() +
              colour = "grey30") +
   geom_point(data = taskVarMean, 
              aes(x = n, y = NormVarMean, colour = Source),
-             size = 0.8,
+             size = 0.9,
              alpha = 0.4,
-             position = position_dodge(width = 1)) +
+             position = position_dodge(width = 1),
+             stroke = 0) +
   theme_classic() +
   xlab("Group size") +
   ylab("Relative behavioral variation") +
@@ -161,7 +162,8 @@ gg_varNorm <- ggplot() +
   scale_y_continuous(breaks = seq(0, 3, 0.5)) +
   # Mean and SE portion of plot
   geom_errorbar(data = taskVarMeans, 
-                aes(x = n, ymin = NormVarMean - NormVarMeanSE, ymax = NormVarMean + NormVarMeanSE, colour = Source, width = 1.5),
+                aes(x = n, ymin = NormVarMean - NormVarMeanSE, ymax = NormVarMean + NormVarMeanSE, colour = Source),
+                width = 1.5,
                 position = position_dodge(width = 1)) +
   geom_point(data = taskVarMeans, 
              aes(x = n, y = NormVarMean, colour = Source),
@@ -183,9 +185,10 @@ gg_mean <- ggplot() +
              colour = "grey30") +
   geom_point(data = taskVarMean,
              aes(x = n, y = NormMean, colour = Source),
-             size = 0.5,
+             size = 0.9,
              alpha = 0.4,
-             position = position_dodge(width = 1)) +
+             position = position_dodge(width = 1),
+             stroke = 0) +
   theme_classic() +
   xlab("Group size") +
   ylab("Relative task 1 frequency") +
@@ -193,7 +196,8 @@ gg_mean <- ggplot() +
   scale_y_continuous(breaks = seq(0, 1.5, 0.05)) +
   # Mean and SE portion of plot
   geom_errorbar(data = taskVarMeans, 
-                aes(x = n, ymin = NormMean - NormMeanSE, ymax = NormMean + NormMeanSE, colour = Source, width = 1.5),
+                aes(x = n, ymin = NormMean - NormMeanSE, ymax = NormMean + NormMeanSE, colour = Source),
+                width = 1.5,
                 position = position_dodge(width = 1)) +
   geom_point(data = taskVarMeans, 
              aes(x = n, y = NormMean, colour = Source),
@@ -237,9 +241,10 @@ gg_corr <- ggplot() +
              colour = "grey30") +
   geom_point(data = taskCorrTot, 
              aes(x = n, y = TaskMean, fill = Source, colour = Source), 
-             size = 0.5, 
+             size = 0.9, 
              position = position_dodge(width = 1),
-             alpha = 0.4) +
+             alpha = 0.4,
+             stroke = 0) +
   theme_classic() +
   labs(x = "Group size",
        y = "Specialization") +
@@ -252,7 +257,8 @@ gg_corr <- ggplot() +
         axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0))) +
   # Mean and SE portion of plot
   geom_errorbar(data = taskCorrMeans, 
-                aes(x = n, ymin = SpecMean - SpecSE, ymax = SpecMean + SpecSE, colour = Source, width = 1.5),
+                aes(x = n, ymin = SpecMean - SpecSE, ymax = SpecMean + SpecSE, colour = Source),
+                width = 1.5,
                 position = position_dodge(width = 1)) +
   geom_point(data = taskCorrMeans, 
              aes(x = n, y = SpecMean, colour = Source, fill = Source),
