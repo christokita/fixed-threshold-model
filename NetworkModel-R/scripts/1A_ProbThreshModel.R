@@ -12,11 +12,11 @@ source("scripts/__Util__MASTER.R")
 ####################
 # Initial paramters: Free to change
 # Base parameters
-Ns             <- c(1, 2, 4, 6, 8, 12, 16) #vector of number of individuals to simulate
+Ns             <- c(2, 4, 6, 8, 12, 16) #vector of number of individuals to simulate
 m              <- 2 #number of tasks
 gens           <- 10000 #number of generations to run simulation 
 corrStep       <- 200 #number of time steps for calculation of correlation 
-reps           <- 15 #number of replications per simulation (for ensemble) !!Change!!
+reps           <- 10 #number of replications per simulation (for ensemble) !!Change!!
 
 # Threshold Parameters
 ThreshM        <- c(100, 100) #population threshold means 
@@ -139,8 +139,10 @@ for (i in 1:length(Ns)) {
         # Calculate rank correlation if it is not the first step
         if(sum(X_prev) != 0) {
           # Normalize
-          stepNorm <- X_step / rowSums(X_step)
-          prevNorm <- X_prev / rowSums(X_prev)
+          # stepNorm <- X_step / rowSums(X_step)
+          # prevNorm <- X_prev / rowSums(X_prev)
+          stepNorm <- X_step / corrStep
+          prevNorm <- X_prev / corrStep
           # Calculate ranks
           step_ranks <- calculateTaskRank(TaskStepMat = X_step)
           prev_ranks <- calculateTaskRank(TaskStepMat = X_prev)
