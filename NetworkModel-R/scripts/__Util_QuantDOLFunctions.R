@@ -10,7 +10,8 @@
 # From Gorelick, Bertram, Killeen, & Fewell (2004)
 mutualEntropy <- function(TotalStateMat) {
   # Normalize matrix
-  normMat <- TotalStateMat / rowSums(TotalStateMat)
+  # normMat <- TotalStateMat / rowSums(TotalStateMat)
+  normMat <- TotalStateMat / sum(TotalStateMat) #checking this after noticing possible error
   # Total Individuals
   n <- nrow(normMat)
   m <- ncol(normMat)
