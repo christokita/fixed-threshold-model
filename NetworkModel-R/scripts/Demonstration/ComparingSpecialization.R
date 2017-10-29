@@ -19,7 +19,8 @@ load("output/SpecializationMetrics/Rdata/FixedDelta06Sigma01Eta7100reps.Rdata")
 entropy <- unlist(groups_entropy, recursive = FALSE)
 entropy <- do.call("rbind", entropy)  %>% 
   mutate(set = paste(n, replicate, sep = "-"))%>% 
-  select(-Dsym, -Dyx)
+  select(-Dsym, -Dyx) %>% 
+  filter(n != 1)
 
 
 ####################
@@ -104,7 +105,7 @@ gg_metric <- ggplot(data = metrics, aes(x = n, y = Mean, group = metric)) +
 
 gg_metric
 
-ggsave(gg_metric, file = "output/SpecializationMetrics/Plots/AllMetricsComparison.png", height = 2.1, width = 5, units = "in", dpi = 800)
+ggsave(gg_metric, file = "output/SpecializationMetrics/Plots/AllMetricsComparison_TEST.png", height = 2.1, width = 5, units = "in", dpi = 800)
 
 
 ####################
