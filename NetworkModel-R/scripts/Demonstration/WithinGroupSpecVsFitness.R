@@ -42,19 +42,33 @@ stims <- do.call("rbind", stims)
 
 #### 200 Time steps ####
 # Normalize and Summarise by "day" (i.e., time window) and calculate difference
-stimFluct <- stims %>% 
-  select(-delta1, -delta2) %>% 
-  mutate(Set = paste0(n, "-", replicate)) %>% 
-  group_by(Set) %>% 
-  mutate(t = 0:(length(Set)-1)) %>% 
-  mutate(Window = t %/% 200) %>% 
-  filter(t != 0) %>% 
-  group_by(n, Set, Window) %>% 
+stimFluct <- stims %>%
+  select(-delta1, -delta2) %>%
+  mutate(Set = paste0(n, "-", replicate)) %>%
+  group_by(Set) %>%
+  mutate(t = 0:(length(Set)-1)) %>%
+  mutate(Window = t %/% 200) %>%
+  filter(t != 0) %>%
+  group_by(n, Set, Window) %>%
   summarise(s1 = mean(s1),
-            s2 = mean(s2)) %>% 
+            s2 = mean(s2)) %>%
   mutate(s1Diff = abs(s1 - lag(s1)),
          s2Diff = abs(s2 - lag(s2)),
-         BeginSet = !duplicated(Set)) 
+         BeginSet = !duplicated(Set))
+#### 1 Time steps ####
+# stimFluct <- stims %>% 
+#   select(-delta1, -delta2) %>% 
+#   mutate(Set = paste0(n, "-", replicate)) %>% 
+#   group_by(Set) %>% 
+#   mutate(t = 0:(length(Set)-1)) %>% 
+#   mutate(Window = t %/% 1) %>% 
+#   filter(t != 0) %>% 
+#   group_by(n, Set, Window) %>% 
+#   summarise(s1 = mean(s1),
+#             s2 = mean(s2)) %>% 
+#   mutate(s1Diff = abs(s1 - lag(s1)),
+#          s2Diff = abs(s2 - lag(s2)),
+#          BeginSet = !duplicated(Set)) 
 
 # Make sure first diff row of each new set is NA
 sets <- which(stimFluct$BeginSet == TRUE)
@@ -69,14 +83,72 @@ stimFluct <- stimFluct %>%
   mutate(GroupSizeFactor = factor(n, levels = sort(unique(n))),
          stimFluct = (s1Fluct + s2Fluct) / 2)
 
+####################
+# Task Performance Fluctuation
+####################
+# Unlist
+tallies <- unlist(groups_taskTally, recursive = FALSE)
+tallies <- do.call("rbind", tallies)
+
+#### 200 Time steps ####
+# Normalize and Summarise by "day" (i.e., time window) and calculate difference
+# tallyFluct <- tallies %>%
+#   mutate(Task1 = Task1 / n,
+#          Task2 = Task2 / n,
+#          Inactive = Inactive / n,
+#          Set = paste0(n, "-", replicate),
+#          Window = t %/% 200) %>%
+#   group_by(n, Set, Window) %>%
+#   summarise(Task1 = mean(Task1),
+#             Task2 = mean(Task2),
+#             Inactive = mean(Inactive)) %>%
+#   mutate(Task1Diff = abs(Task1 - lag(Task1)),
+#          Task2Diff = abs(Task2 - lag(Task2)),
+#          InactiveDiff = abs(Inactive - lag(Inactive)),
+#          BeginSet = !duplicated(Set))
+
+#### 1 Time steps ####
+# Normalize and Summarise by "day" (i.e., time window) and calculate difference
+tallyFluct <- tallies %>%
+  mutate(Task1 = Task1 / n,
+         Task2 = Task2 / n,
+         Inactive = Inactive / n,
+         Set = paste0(n, "-", replicate),
+         Window = t %/% 1) %>%
+  group_by(n, Set, Window) %>%
+  summarise(Task1 = mean(Task1),
+            Task2 = mean(Task2),
+            Inactive = mean(Inactive)) %>%
+  mutate(Task1Diff = abs(Task1 - lag(Task1)),
+         Task2Diff = abs(Task2 - lag(Task2)),
+         InactiveDiff = abs(Inactive - lag(Inactive)),
+         BeginSet = !duplicated(Set))
+
+# Make sure first diff row of each new set is NA
+sets <- which(tallyFluct$BeginSet == TRUE)
+tallyFluct$Task1Diff[sets] <- NA
+tallyFluct$Task2Diff[sets] <- NA
+tallyFluct$InactiveDiff[sets] <- NA
+
+# Summarise by colony/set
+tallyFluct <- tallyFluct %>% 
+  group_by(n, Set) %>% 
+  summarise(Task1Fluct = mean(Task1Diff, na.rm = TRUE),
+            Task2Fluct = mean(Task2Diff, na.rm = TRUE),
+            InactiveFluct = mean(InactiveDiff, na.rm = TRUE)) %>% 
+  mutate(GroupSizeFactor = factor(n, levels = sort(unique(n))),
+         taskFluct = (Task1Fluct + Task2Fluct) / 2)
+
+
 
 ####################
 # Merge and plot
 ####################
 # Merge
 merged_specstim <- merge(taskCorrTot, stimFluct, by = c("Set", "n"))
+merged_specstim <- merge(merged_specstim, tallyFluct, by = c("Set", "n"))
 
-# Plot
+# Plot - Stimulus vs Specialization total
 gg_compareTot <- gg_compare <- ggplot(merged_specstim, aes(x = TaskMean, y = s1Fluct, colour = as.factor(n))) +
   geom_point() +
   theme_classic() +
@@ -85,16 +157,34 @@ gg_compareTot <- gg_compare <- ggplot(merged_specstim, aes(x = TaskMean, y = s1F
   ylab("Stim 1 Fluctuations")
 gg_compareTot
 
-# Plot
+# Plot - Stimulus vs Specialization by Group Size
 gg_compare <- ggplot(merged_specstim, aes(x = TaskMean, y = s1Fluct, colour = as.factor(n))) +
   geom_point() +
   theme_classic() +
   scale_color_manual(values = palette) +
   theme(legend.position = "none") +
-  facet_wrap(~ n) +
+  facet_wrap(~ n, scales = "free") +
   xlab("Task Correlation") +
   ylab("Stim 1 Fluctuations")
 gg_compare
 
 
+# Plot - Stimulus vs Task Fluctuations total
+gg_compareTot <- gg_compare <- ggplot(merged_specstim, aes(y = Task1Fluct, x = s1Fluct, colour = as.factor(n))) +
+  geom_point() +
+  theme_classic() +
+  scale_color_manual(values = palette, name = "Group Size") +
+  xlab("Stim 1 Fluctuations") +
+  ylab("Task 1 Fluctuations")
+gg_compareTot
+
+# Plot - Stimulus vs Task Fluctuations by group size
+gg_compare <- gg_compare <- ggplot(merged_specstim, aes(y = Task1Fluct, x = TaskMean, colour = as.factor(n))) +
+  geom_point() +
+  theme_classic() +
+  scale_color_manual(values = palette, name = "Group Size") +
+  facet_wrap(~ n, scales = "free") +
+  xlab("Stim 1 Fluctuations") +
+  ylab("Task 1 Fluctuations")
+gg_compare
 
