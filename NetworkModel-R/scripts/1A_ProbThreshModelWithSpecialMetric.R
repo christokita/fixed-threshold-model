@@ -12,11 +12,11 @@ source("scripts/__Util__MASTER.R")
 ####################
 # Initial paramters: Free to change
 # Base parameters
-Ns             <- c(32, 100) #vector of number of individuals to simulate
+Ns             <- c(1, 2) #vector of number of individuals to simulate
 m              <- 2 #number of tasks
 gens           <- 10000 #number of generations to run simulation 
 corrStep       <- 200 #number of time steps for calculation of correlation 
-reps           <- 100 #number of replications per simulation (for ensemble) !!Change!!
+reps           <- 2 #number of replications per simulation (for ensemble) !!Change!!
 
 # Threshold Parameters
 ThreshM        <- c(10, 10) #population threshold means 
@@ -27,12 +27,8 @@ threshSlope    <- 7 #exponent parameter for threshold curve shape
 alpha          <- m #efficiency of task performance
 quitP          <- 0.2 #probability of quitting task once active
 
-# Social Network Parameters
-p              <- 0 #probability of interacting with individual in other states
-q              <- 1 #probability of interacting with individual in same state relative to others
 
-
-filename <- "FixedDelta06Sigma01Eta7LargerSizes"
+filename <- "MSrevision_FixedDelta06Sigma01Eta7_PerCap"
 
 
 ####################
@@ -46,6 +42,7 @@ groups_taskTally <- list()
 groups_stim      <- list()
 groups_entropy   <- list()
 groups_specialization <- data.frame(NULL)
+groups_taskOverTime <- list()
 
 # Loop through group sizes
 for (i in 1:length(Ns)) {
@@ -59,6 +56,7 @@ for (i in 1:length(Ns)) {
   ens_taskTally <- list()
   ens_entropy   <- list()
   ens_stim      <- list()
+  ens_taskOverTime <- list()
   
   # Run Simulations
   for (sim in 1:reps) {
@@ -225,6 +223,7 @@ for (i in 1:length(Ns)) {
     ens_taskTally[[sim]] <- taskTally
     ens_taskStep[[sim]]  <- taskStep
     ens_stim[[sim]]      <- stimMat
+    ens_taskOverTime[[sim]] <- taskOverTime
     
     # Print simulation completed
     print(paste0("DONE: N = ", n, ", Simulation ", sim))
@@ -256,6 +255,7 @@ for (i in 1:length(Ns)) {
   groups_taskTally[[i]] <- ens_taskTally
   groups_stim[[i]]      <- ens_stim
   groups_entropy[[i]]   <- ens_entropy
+  groups_taskOverTime[[i]] <- ens_taskOverTime
   
 }
 

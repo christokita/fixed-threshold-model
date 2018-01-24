@@ -16,22 +16,16 @@ Ns             <- c(1, 2, 4, 6, 8, 12, 16) #vector of number of individuals to s
 m              <- 2 #number of tasks
 gens           <- 10000 #number of generations to run simulation 
 corrStep       <- 200 #number of time steps for calculation of correlation 
-reps           <- 10 #number of replications per simulation (for ensemble) !!Change!!
+reps           <- 10 #number of replications per simulation (for ensemble) 
 
 # Threshold Parameters
 ThreshM        <- c(100, 100) #population threshold means 
-ThreshSD       <- ThreshM * 0.1 #population threshold standard deviations !!Change!!
+ThreshSD       <- ThreshM * 0.1 #population threshold standard deviations 
 InitialStim    <- c(0, 0) #intital vector of stimuli
 StimRates      <- c(0.6, 0.6) #vector of stimuli increase rates  
 threshSlope    <- 7 #exponent parameter for threshold curve shape  
 alpha          <- m #efficiency of task performance
 quitP          <- 0.2 #probability of quitting task once active
-
-# Social Network Parameters
-p              <- 0 #probability of interacting with individual in other states
-q              <- 1 #probability of interacting with individual in same state relative to others
-
-
 
 ####################
 # Run simulation multiple times
@@ -107,10 +101,6 @@ for (i in 1:length(Ns)) {
         # shift down delta (rate increases)
         stimMat[t + 1, j + m] <- stimMat[t, j + m]
       }
-      # Update social network
-      # g_adj <- temporalNetwork(X_sub_g = X_g,
-      #                          p = p, 
-      #                          bias = q)
       # Calculate task demand based on global stimuli
       P_g <- calcThresholdProbMat(TimeStep = t + 1, # first row is generation 0
                                   ThresholdMatrix = threshMat, 

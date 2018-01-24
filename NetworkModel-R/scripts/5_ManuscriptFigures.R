@@ -117,7 +117,7 @@ gg_abslope <- ggplot() +
 
 gg_abslope
 
-ggsave("output/MSFigures/ParameterSpaceDelta06wContourfill.png", width = 2.8, height = 2.05, units = "in", dpi = 600)
+ggsave("output/MSFigures/ParameterSpaceDelta06wContourfill.png", width = 2.4, height = 2.05, units = "in", dpi = 600)
 
 ggsave("output/MSFigures/ParameterSpaceDelta06wContourfillNarrow.png", width = 2.1, height = 2, units = "in", dpi = 600)
 
@@ -254,59 +254,63 @@ svg("output/MSFigures/FixedProbSpecializationFitsNarrow.svg", width = 2.34, heig
 gg_fixedProb
 dev.off()
 
-svg("output/MSFigures/FixedProbSpecializationFits.svg", width = 2.8, height = 2.07)
+svg("output/MSFigures/FixedProbSpecializationFits.svg", width = 2.7, height = 2.07)
 gg_fixedProb
 dev.off()
 
 ####################
 # Sample stimuli over time
 ####################
-# rm(list = ls())
-# source("scripts/__Util__MASTER.R")
-# library(RColorBrewer)
-# library(scales)
-# 
-# # load data
-# load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
-# 
-# # Unlist
-# stims <- unlist(groups_stim, recursive = FALSE)
-# stims <- do.call("rbind", stims)
-# 
-# # Select out example colonies
-# stimSet <- stims %>% 
-#   filter(n %in% c(2, 16)) %>% 
-#   filter(replicate == 1) %>% 
-#   group_by(n) %>% 
-#   mutate(timestep = 0:(length(n)-1),
-#          groupsize = factor(paste0("n = ", n), 
-#                             levels = c("n = 2", "n = 16")))
-# 
-# # Plot
-# gg_stimEx <- ggplot(data = stimSet, aes(x = timestep, y = s1)) +
-#   geom_line(size = 0.2, colour = "#4eb3d3") +
-#   theme_classic() +
-#   xlab("Timestep") +
-#   ylab("Stimulus") +
-#   scale_x_continuous(breaks = seq(0, 10000, 2500),
-#                      limits = c(0, 10500),
-#                      expand = c(0, 0),
-#                      labels = comma) +
-#   scale_y_continuous(breaks = seq(0, 20, 5), 
-#                      limits = c(0, 16),
-#                      expand = c(0, 0)) +
-#   theme(axis.text.y = element_text(size = 6, margin = margin(5, 6, 5, -2)),
-#         axis.text.x = element_text(size = 6, margin = margin(6, 5, -2, 5)),
-#         axis.title = element_text(size = 6),
-#         axis.ticks.length = unit(-0.1, "cm"),
-#         strip.text = element_blank(),
-#         strip.background = element_rect(fill = NA, colour = NA),
-#         panel.spacing = unit(0.25, "cm")) +
-#   facet_wrap(~ groupsize, ncol = 1, scale = "free")
-# 
-# svg("output/MSFigures/ExampleStimulusOverTime.svg", width = 2.66, height = 2.05)
+rm(list = ls())
+source("scripts/__Util__MASTER.R")
+library(RColorBrewer)
+library(scales)
+
+# load data
+load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
+
+# Unlist
+stims <- unlist(groups_stim, recursive = FALSE)
+stims <- do.call("rbind", stims)
+
+# Select out example colonies
+stimSet <- stims %>%
+  filter(n %in% c(2, 16)) %>%
+  filter(replicate == 1) %>%
+  group_by(n) %>%
+  mutate(timestep = 0:(length(n)-1),
+         groupsize = factor(paste0("n = ", n),
+                            levels = c("n = 2", "n = 16")))
+
+# Plot
+gg_stimEx <- ggplot(data = stimSet, aes(x = timestep, y = s1)) +
+  geom_line(size = 0.5, colour = "#4eb3d3") +
+  theme_classic() +
+  xlab("Timestep") +
+  ylab("Stimulus") +
+  scale_x_continuous(breaks = NULL,
+                     limits = c(0, 1000),
+                     expand = c(0, 0),
+                     labels = comma) +
+  scale_y_continuous(breaks = seq(0, 20, 5),
+                     limits = c(0, 16),
+                     expand = c(0, 0)) +
+  theme(axis.text.y = element_text(size = 6, margin = margin(5, 6, 5, -2)),
+        axis.text.x = element_text(size = 10, margin = margin(6, 5, -2, 5)),
+        axis.title = element_text(size = 6),
+        axis.ticks.length = unit(-0.1, "cm"),
+        strip.text = element_blank(),
+        strip.background = element_rect(fill = NA, colour = NA),
+        panel.spacing = unit(0.25, "cm")) +
+  facet_wrap(~ groupsize, ncol = 2)
+
+# svg("output/MSFigures/ExampleStimulusOverTime_SmallerWindwow.svg", width = 2.66, height = 2.05)
 # gg_stimEx
 # dev.off()
+
+gg_stimEx
+ggsave(filename = "output/FitnessPlots/StimOverTimeExample_Smaller Window.png", width = 3, height = 1.5, units = "in", dpi = 800)
+
 
 
 ####################
@@ -365,23 +369,24 @@ stimSumFluct <- stimSumFluct %>%
 
 # Plot
 gg_stimfluct <- ggplot() +
-  geom_point(data = stimFluct, 
-             aes(x = n, y = s1Fluct),
-             fill = "grey50", 
-             colour = "grey50", 
-             position = position_jitter(width = 0.1),
-             size = 0.7, 
-             alpha = 0.4,
-             stroke = 0) +
+  # geom_point(data = stimFluct, 
+  #            aes(x = n, y = s1Fluct),
+  #            fill = "grey50", 
+  #            colour = "grey50", 
+  #            position = position_jitter(width = 0.2),
+  #            size = 0.5, 
+  #            alpha = 0.4,
+  #            stroke = 0) +
   # geom_line(data = stimSumFluct,
   #           aes(x = n, y = s1FluctMean),
   #           size = 0.3) +���
   theme_classic() +
   labs(x = "Group size",
        y = "Stimulus fluctuation") +
-  scale_x_continuous(breaks = unique(stimFluct$n)) +
+  scale_x_continuous(breaks = unique(stimFluct$n), 
+                     labels = c(1, "", 4, "", 8, "", 16)) +
   scale_y_continuous(breaks = seq(0, 2, 0.4),
-                     limits = c(0, 1.85),
+                     limits = c(0, 1.65),
                      expand = c(0, 0)) +
   theme(legend.position = "none") +
   # Mean and SE portion of plot
@@ -410,6 +415,11 @@ gg_stimfluct <- ggplot() +
         axis.ticks.length = unit(-0.1, "cm"))
 
 gg_stimfluct
+
+
+svg("output/MSFigures/StimulusFluctuationsCombined.svg",  width = 1.4, height = 2.07)
+gg_stimfluct
+dev.off()
 
 svg("output/MSFigures/StimulusFluctuationsNarrow.svg",  width = 2.3, height = 2.07)
 gg_stimfluct
@@ -479,20 +489,21 @@ tallySumFluct <- tallySumFluct %>%
 
 # Plot
 gg_fluct <- ggplot() +
-  geom_point(data = tallyFluct, 
-             aes(x = n, y = Task1Fluct),
-             fill = "grey50", 
-             colour = "grey50", 
-             size = 0.7, 
-             position = position_jitter(width = 0.1),
-             alpha = 0.4,
-             stroke = 0) +
+  # geom_point(data = tallyFluct, 
+  #            aes(x = n, y = Task1Fluct),
+  #            fill = "grey50", 
+  #            colour = "grey50", 
+  #            size = 0.5, 
+  #            position = position_jitter(width = 0.2),
+  #            alpha = 0.4,
+  #            stroke = 0) +
   theme_classic() +
   labs(x = "Group size",
        y = "Task fluctuation") +
-  scale_x_continuous(breaks = unique(tallyFluct$n)) +
+  scale_x_continuous(breaks = unique(tallyFluct$n),
+                     labels = c(1, "", 4, "", 8, "", 16)) +
   scale_y_continuous(breaks = seq(0, 0.2, 0.01),
-                     limits = c(0, 0.069),
+                     limits = c(0, 0.0515),
                      expand = c(0, 0)) +
   theme(legend.position = "none") +
   # Mean and SE portion of plot
@@ -522,10 +533,79 @@ gg_fluct <- ggplot() +
 
 gg_fluct
 
+svg("output/MSFigures/TaskPerformanceFluctuationsCombined.svg",  width = 1.45, height = 2.07)
+gg_fluct
+dev.off()
+
 svg("output/MSFigures/TaskPerformanceFluctuationsNarrow.svg",  width = 2.35, height = 2.07)
 gg_fluct
 dev.off()
 
 svg("output/MSFigures/TaskPerformanceFluctuations.svg",  width = 2.82, height = 2.07)
 gg_fluct
+dev.off()
+
+
+# Combined plot
+svg("output/MSFigures/TaskAndStimFluctuationsCombined_errorbars.svg",  width = 2.8, height = 2.07)
+multiplot(gg_stimfluct, gg_fluct, cols = 2)
+dev.off()
+
+####################
+# Task Distribution 
+####################
+rm(list = ls())
+source("scripts/__Util__MASTER.R")
+source("scripts/3A_PrepPlotExperimentData.R")
+
+load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
+
+# Set variable  
+filename <- "Fixed_Delta06Sigma01Eta7"
+
+# Palette without single individuals
+palette <- c("#83343E", "#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78", "#bdbdbd", "#525252")
+# palette <- c("#bababa", "#4d4d4d", "#bababa", "#4d4d4d", "#bababa", "#4d4d4d", "#bababa") #for black and white theme
+
+
+# Bind together
+taskDist <- unlist(groups_taskDist, recursive = FALSE)
+taskDistTot <- do.call("rbind", taskDist)
+
+# Choose random subset of replicates to show
+set.seed(323)
+to_show <- sample(1:100, 10, replace = F)
+
+# Manipulate
+taskDistTot <- taskDistTot %>% 
+  filter(replicate %in% to_show) %>% 
+  mutate(set = paste0(n, "-", replicate)) %>% 
+  mutate(set = factor(set, 
+                      levels = mixedsort(unique(set))),
+         n = as.factor(n))
+
+taskSum <- taskDistTot %>% 
+  group_by(n) %>% 
+  summarise(taskMean1 = mean(Task1),
+            taskMean2 = mean(Task2))
+
+# Plot
+plot_TaskMat <- as.data.frame(taskDistTot)
+gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
+  geom_point(aes(colour = n), size = 0.2) +
+  theme_classic() +
+  labs(x = "Group size",
+       y = "Task 1 frequency") +
+  scale_color_manual(values = palette) +
+  scale_y_continuous(limits = c(0, 0.72), breaks = seq(0, 1, 0.1), expand = c(0, 0)) +
+  theme( axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2)),
+         axis.text.x = element_blank(),
+         axis.ticks.x = element_blank(), 
+         axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
+         axis.title.x = element_text(size = 10, margin = margin(15, 0, 0, 0)),
+         axis.ticks.length = unit(-0.1, "cm"),
+         legend.position = "none")
+
+svg("output/MSFigures/TaskDistExample.svg", width = 2.8, height = 2.07)
+gg_dist
 dev.off()
