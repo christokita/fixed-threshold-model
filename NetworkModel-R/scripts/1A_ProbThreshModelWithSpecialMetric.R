@@ -12,11 +12,11 @@ source("scripts/__Util__MASTER.R")
 ####################
 # Initial paramters: Free to change
 # Base parameters
-Ns             <- c(1, 2) #vector of number of individuals to simulate
+Ns             <- c(1, 2, 4, 6, 8, 12, 16) #vector of number of individuals to simulate
 m              <- 2 #number of tasks
 gens           <- 10000 #number of generations to run simulation 
 corrStep       <- 200 #number of time steps for calculation of correlation 
-reps           <- 2 #number of replications per simulation (for ensemble) !!Change!!
+reps           <- 100 #number of replications per simulation (for ensemble) !!Change!!
 
 # Threshold Parameters
 ThreshM        <- c(10, 10) #population threshold means 
@@ -28,7 +28,7 @@ alpha          <- m #efficiency of task performance
 quitP          <- 0.2 #probability of quitting task once active
 
 
-filename <- "MSrevision_FixedDelta06Sigma01Eta7_PerCap"
+filename <- "MSrevision_FixedDelta06Sigma01Eta7"
 
 
 ####################
@@ -102,17 +102,13 @@ for (i in 1:length(Ns)) {
       for (j in 1:(ncol(stimMat)/2)) {
         # update stim
         stimMat[t + 1, j] <- globalStimUpdate(stimulus = stimMat[t, j],
-                                              delta = stimMat[t, j + m], 
-                                              alpha = alpha, 
-                                              Ni = sum(X_g[ , j]), 
+                                              delta = stimMat[t, j + m],
+                                              alpha = alpha,
+                                              Ni = sum(X_g[ , j]),
                                               n = n)
         # shift down delta (rate increases)
         stimMat[t + 1, j + m] <- stimMat[t, j + m]
       }
-      # Update social network
-      # g_adj <- temporalNetwork(X_sub_g = X_g,
-      #                          p = p, 
-      #                          bias = q)
       # Calculate task demand based on global stimuli
       P_g <- calcThresholdProbMat(TimeStep = t + 1, # first row is generation 0
                                   ThresholdMatrix = threshMat, 
@@ -125,12 +121,12 @@ for (i in 1:length(Ns)) {
       
       # Note which task is being peformed
       taskPerf <- matrix(nrow = 1, ncol = n)
-      for (i in 1:nrow(X_g)) {
-        task <- unname(which(X_g[i, ] == 1))
+      for (l in 1:nrow(X_g)) {
+        task <- unname(which(X_g[l, ] == 1))
         if (length(task) == 0) {
           task <- 0
         }
-        taskPerf[i] <- task
+        taskPerf[l] <- task
       }
       colnames(taskPerf) <- row.names(X_g)
       taskOverTime <- rbind(taskOverTime, taskPerf)
@@ -223,7 +219,7 @@ for (i in 1:length(Ns)) {
     ens_taskTally[[sim]] <- taskTally
     ens_taskStep[[sim]]  <- taskStep
     ens_stim[[sim]]      <- stimMat
-    ens_taskOverTime[[sim]] <- taskOverTime
+    ens_taskOverTime[[sim]] <- as.data.frame(taskOverTime)
     
     # Print simulation completed
     print(paste0("DONE: N = ", n, ", Simulation ", sim))
@@ -269,7 +265,7 @@ if(1 %in% Ns) {
 # Save all
 ####################
 save(groups_entropy, groups_stim, groups_taskCorr, groups_taskDist, 
-     groups_taskStep, groups_taskTally, groups_specialization,
+     groups_taskStep, groups_taskTally, groups_specialization, groups_taskOverTime,
      file = paste0("output/SpecializationMetrics/Rdata/", filename, "100reps.Rdata"))
 
 

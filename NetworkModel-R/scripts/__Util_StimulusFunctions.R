@@ -38,7 +38,7 @@ globalStimUpdate <- function(stimulus, delta, alpha, Ni, n) {
 }
 
 # Density dependent (per capita)
-globalStimUpdate_PerCap <- function(stimulus, delta, alpha, Ni, n, m, quitP) {
+globalStimUpdate_PerCap <- function(stimulus, delta, alpha, Ni, n, m) {
   # Calculate
   s <- stimulus + (alpha * (delta ) * (n / m)) - (Ni * alpha)
   # s <- stimulus + (alpha * (delta ) * (1 / (1 + quitP)) * (n / m)) - (Ni * alpha)
