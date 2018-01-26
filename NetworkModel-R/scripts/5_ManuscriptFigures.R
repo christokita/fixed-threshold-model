@@ -133,7 +133,7 @@ library(scales)
 library(ggthemes)
 
 # Load and prep experimental data
-source("scripts/3A_PrepPlotExperimentData.R")
+source("scripts/3_PrepPlotExperimentData.R")
 yukoCorr <- yukoCorr %>% 
   mutate(Sigma = NA)
 
