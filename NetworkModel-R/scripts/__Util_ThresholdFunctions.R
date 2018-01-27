@@ -35,7 +35,7 @@ threshProb <- function(s, phi, nSlope) {
 
 
 ####################
-# Output Threshold Demands
+# Calculate Threshold
 ####################
 calcThresholdProbMat <- function(TimeStep, ThresholdMatrix, StimulusMatrix, nSlope) {
   # select proper stimulus for this time step

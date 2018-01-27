@@ -102,10 +102,9 @@ for (i in 1:length(Ns)) {
         stimMat[t + 1, j + m] <- stimMat[t, j + m]
       }
       # Calculate task demand based on global stimuli
-      P_g <- calcThresholdProbMat(TimeStep = t + 1, # first row is generation 0
-                                  ThresholdMatrix = threshMat, 
-                                  StimulusMatrix = stimMat, 
-                                  nSlope = threshSlope)
+      P_g <- calcThresholdDetermMat(TimeStep = t + 1, # first row is generation 0
+                                    ThresholdMatrix = threshMat, 
+                                    StimulusMatrix = stimMat)
       # Update task performance
       X_g <- updateTaskPerformance(P_sub_g    = P_g,
                                    TaskMat    = X_g,
