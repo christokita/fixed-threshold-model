@@ -8,7 +8,7 @@ rm(list = ls())
 source("scripts/__Util__MASTER.R")
 source("scripts/3A_PrepPlotExperimentData.R")
 
-load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
+load("output/__RData/MSrevision_FixedDelta06Sigma01Eta7100reps.Rdata")
 
 # Set variable  
 filename <- "Fixed_Delta06Sigma01Eta7"
