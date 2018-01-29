@@ -8,7 +8,7 @@ rm(list = ls())
 source("scripts/__Util__MASTER.R")
 source("scripts/3_PrepPlotExperimentData.R")
 
-load("output/__RData/MSrevision_FixedDelta06Sigma01Eta7_Sigma0Eta30100reps.Rdata")
+load("output/__RData/MSrevision_FixedDelta06_DetThreshDetUpdate100reps.Rdata")
 
 # Set variable  
 filename <- "Fixed_Delta06Sigma01Eta7"
@@ -57,6 +57,7 @@ gg_noTask <- ggplot(data = noTaskPerf, aes(x = n, y = noTask1)) +
   geom_point() +
   theme_classic() +
   scale_x_continuous(breaks = unique(noTaskPerf$n)) +
+  scale_y_continuous(limits = c(0, 6800)) +
   xlab("Group Size") +
   ylab("Instances of No Task 1 Performance")
   # ylab("Avg. Length of No Task 1 Performance")

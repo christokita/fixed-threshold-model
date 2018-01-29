@@ -53,15 +53,21 @@ updateTaskPerformance <- function(P_sub_g, TaskMat, QuitProb) {
 ####################
 # Choose task with most demand (conceptual)
 ####################
-updateTaskPerformance <- function(P_sub_g, TaskMat, QuitProb, TimeStep, StimulusMatrix) {
+updateTaskPerformance_Determ <- function(P_sub_g, TaskMat, QuitProb, TimeStep, StimulusMatrix) {
   # Create possible task space
   tasks <- seq(1:ncol(P_sub_g))
+  # Get relevant stimulus levels
+  stim_levels <- StimulusMatrix[TimeStep, 1:2]
   # Loop through individuals
   for(row in 1:nrow(TaskMat)) {
     # Inactive workers randomly sample one stimulus
     if (sum(TaskMat[row, ]) == 0) {
       # Sample task probability
-      tasks_order <- sample(x = tasks, size = length(tasks), replace = FALSE)
+      if (P_sub_g[row, 1] == P_sub_g[row, 2]) {
+        tasks_order <- order(stim_levels, decreasing = T)
+      } else {
+        tasks_order <- order(P_sub_g[row, ], decreasing = T)
+      }
       # Loop through tasks and go with first one that results in activity
       for (task in tasks_order) {
         prob <- P_sub_g[row, task]

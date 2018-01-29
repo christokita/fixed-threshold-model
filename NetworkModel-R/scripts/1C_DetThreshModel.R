@@ -106,10 +106,14 @@ for (i in 1:length(Ns)) {
                                     ThresholdMatrix = threshMat, 
                                     StimulusMatrix = stimMat)
       # Update task performance
+      # X_g <- updateTaskPerformance_Determ(P_sub_g    = P_g,
+      #                                     TaskMat    = X_g,
+      #                                     QuitProb   = quitP, 
+      #                                     TimeStep = t, 
+      #                                     StimulusMatrix = stimMat)
       X_g <- updateTaskPerformance(P_sub_g    = P_g,
                                    TaskMat    = X_g,
                                    QuitProb   = quitP)
-      
       # Capture current task performance tally
       tally <- matrix(c(t, colSums(X_g)), ncol = ncol(X_g) + 1)
       colnames(tally) <- c("t", colnames(X_g))
