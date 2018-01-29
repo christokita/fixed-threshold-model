@@ -27,7 +27,7 @@ alpha          <- m #efficiency of task performance
 quitP          <- 0.2 #probability of quitting task once active
 
 
-filename <- "MSrevision_FixedDelta06_DetThreshDetUpdate"
+filename <- "MSrevision_FixedDelta06_DetThreshDetUpdateDetQuit"
 
 
 ####################
@@ -92,6 +92,9 @@ for (i in 1:length(Ns)) {
     taskTally <- list()
     taskOverTime  <- matrix(nrow = 0, ncol = n)
     
+    # Crate memory of task performance (conceptual check)
+    task_memory <- matrix(data = rep(0, n), nrow = n, ncol = 1)
+    
     ####################
     # Simulate
     ####################
@@ -113,11 +116,15 @@ for (i in 1:length(Ns)) {
                                     ThresholdMatrix = threshMat, 
                                     StimulusMatrix = stimMat)
       # Update task performance
-      X_g <- updateTaskPerformance_Determ(P_sub_g    = P_g,
-                                          TaskMat    = X_g,
-                                          QuitProb   = quitP, 
-                                          TimeStep = t, 
-                                          StimulusMatrix = stimMat)
+      X_g <- updateTaskPerformance_DetermTimed(P_sub_g    = P_g,
+                                               TaskMat    = X_g,
+                                               QuitProb   = quitP, 
+                                               TimeStep = t, 
+                                               StimulusMatrix = stimMat, 
+                                               TaskMemory = task_memory, 
+                                               QuitRate = 1/quitP)
+      task_memory[which(rowSums(X_g)!= 0)] <- task_memory[which(rowSums(X_g)!= 0)] + 1 #add time step to memory of active
+      task_memory[which(rowSums(X_g) == 0)] <- 0 #ensure inactive have reset memory
       # Note which task is being peformed
       taskPerf <- matrix(nrow = 1, ncol = n)
       for (l in 1:nrow(X_g)) {
