@@ -8,7 +8,7 @@ rm(list = ls())
 source("scripts/__Util__MASTER.R")
 source("scripts/3_PrepPlotExperimentData.R")
 
-load("output/__RData/MSrevision_FixedDelta06Sigma01Eta7100reps.Rdata")
+load("output/__RData/MSrevision_FixedDelta06Sigma01Eta7_PerCap100reps.Rdata")
 
 # Set variable  
 filename <- "Fixed_Delta06Sigma01Eta7"
@@ -59,7 +59,7 @@ noTaskPerf <- do.call("rbind", noTaskPerf)
 
 # Plot
 gg_noTask <- ggplot(data = noTaskPerf, aes(x = n, y = noTask1)) +
-  geom_point() +
+  geom_point(size = 0.5, alpha = 0.3) +
   theme_classic() +
   scale_x_continuous(breaks = unique(noTaskPerf$n)) +
   scale_y_continuous(limits = c(0, 6800)) +
@@ -93,3 +93,51 @@ gg_specPerf <- ggplot(data = merged_specperf) +
   ylab("Instances of Task 1 Neglect") +
   xlab("Rank Correlation")
 gg_specPerf
+
+
+
+####################
+# Check stimulus level at time of neglect
+####################
+neglectStim <- lapply(1:length(groups_taskTally), function(i) {
+  group_size <- groups_taskTally[[i]]
+  size_stim <- groups_stim[[i]]
+  # Loop through replicates within group size
+  within_groupPerfStim <- lapply(1:length(group_size), function(j) {
+    replicate <- group_size[[j]]
+    stim <- size_stim[[j]]
+    # Get which time steps had non-performance
+    # Task 1
+    steps <- which(replicate$Task1 == 0)
+    steps <- steps[steps > 15]
+    stim_levels <- stim$s1[steps+1]
+    zscore1 <- ( stim_levels - mean(stim$s1) ) / sd(stim$s1)
+    # Task 2
+    steps <- which(replicate$Task2 == 0)
+    steps <- steps[steps > 15]
+    stim_levels <- stim$s2[steps+1]
+    zscore2 <- ( stim_levels - mean(stim$s2) ) / sd(stim$s2)
+    to_return <- data.frame(n = unique(replicate$n), Zscore = c(zscore1, zscore2) )
+    return(to_return)
+  })
+  # Bind and return
+  within_groupPerfStim <- do.call('rbind', within_groupPerfStim)
+  return(within_groupPerfStim)
+})
+# Bind
+neglectStim <- do.call('rbind', neglectStim)
+
+# Graph
+palette <- c("#83343E", "#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78", "#bdbdbd", "#525252")
+gg_neglectStim <- ggplot(neglectStim, aes(x = Zscore, 
+                                          color = as.factor(n),
+                                          fill = as.factor(n))) +
+  geom_histogram(bins = 50) +
+  theme_classic() +
+  xlab("Zscore of Stim Relative to Mean") +
+  geom_vline(xintercept = 0) +
+  scale_color_manual(values = palette) +
+  scale_fill_manual(values = palette) +
+  facet_wrap(~n, scales = "free_y") +
+  theme(legend.position = "none")
+gg_neglectStim
