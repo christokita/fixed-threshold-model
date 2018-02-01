@@ -20,14 +20,14 @@ reps           <- 100 #number of replications per simulation (for ensemble) !!Ch
 
 # Threshold Parameters
 ThreshM        <- c(10, 10) #population threshold means 
-ThreshSD       <- ThreshM * 0 #population threshold standard deviations !!Change!!
+ThreshSD       <- ThreshM * 0.1 #population threshold standard deviations !!Change!!
 InitialStim    <- c(0, 0) #intital vector of stimuli
 StimRates      <- c(0.6, 0.6) #vector of stimuli increase rates  
 alpha          <- m #efficiency of task performance
 quitP          <- 0.2 #probability of quitting task once active
 
 
-filename <- "MSrevision_FixedDelta06_DetThreshDetQuit"
+filename <- "MSrevision_FixedDelta06_DetUpdateDetQuit"
 
 
 ####################
@@ -116,7 +116,7 @@ for (i in 1:length(Ns)) {
                                     ThresholdMatrix = threshMat, 
                                     StimulusMatrix = stimMat)
       # Update task performance
-      X_g <- updateTaskPerformance_Timed(P_sub_g    = P_g,
+      X_g <- updateTaskPerformance_DetermTimed(P_sub_g    = P_g,
                                                TaskMat    = X_g,
                                                QuitProb   = quitP, 
                                                TimeStep = t, 
