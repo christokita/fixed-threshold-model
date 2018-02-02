@@ -10,9 +10,9 @@ source("scripts/3_PrepPlotExperimentData.R")
 library(RColorBrewer)
 library(scales)
 
-load("output/__RData/MSrevision_FixedDelta06_DetThreshDetUpdateDetQuit100reps.Rdata")
+load("output/__RData/MSrevision_FixedDelta06_DetThreshWithSigmaDetUpdateDetQuit100reps.Rdata")
 
-filename <- "DetThreshDetUpdateDetQuit"
+filename <- "DetThreshWithSigmaDetUpdateDetQuit"
 
 ####################
 # Stimulus Fluctuation
@@ -371,5 +371,5 @@ gg_fluct1 <- ggplot() +
 # Plot
 ####################
 png(filename = paste0("output/", filename, ".png"), width = 4, height = 4, units = "in", res = 300)
-multiplot(gg_stimfluct200, gg_stimfluct1, gg_fluct200, gg_fluct1, cols = 2)
+multiplot(gg_stimfluct200, gg_fluct200, gg_stimfluct1, gg_fluct1, cols = 2)
 dev.off()
