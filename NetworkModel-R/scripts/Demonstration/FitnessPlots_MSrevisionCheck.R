@@ -6,13 +6,13 @@
 
 rm(list = ls())
 source("scripts/__Util__MASTER.R")
-source("scripts/3A_PrepPlotExperimentData.R")
+source("scripts/3_PrepPlotExperimentData.R")
 library(RColorBrewer)
 library(scales)
 
-load("output/SpecializationMetrics/Rdata/FixedDelta06Sigma01Eta7100reps.Rdata")
+load("output/__RData/MSrevision_FixedDelta06_DetThreshDetUpdateDetQuit100reps.Rdata")
 
-filename <- 
+filename <- "DetThreshDetUpdateDetQuit"
 
 ####################
 # Stimulus Fluctuation
@@ -280,11 +280,6 @@ gg_fluct200 <- ggplot() +
         # legend.box.background = element_rect(),
         axis.text = element_text(size = 8),
         axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)))
-
-gg_fluct
-
-ggsave("output/FitnessPlots/TaskFluctuations_200TimeStep.png",  width = 2, height = 2, dpi = 800)
-
 
 #### 1 Time steps ####
 # Normalize and Summarise by "day" (i.e., time window) and calculate difference
