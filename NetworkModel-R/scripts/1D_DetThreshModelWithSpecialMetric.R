@@ -20,9 +20,10 @@ reps           <- 100 #number of replications per simulation (for ensemble) !!Ch
 
 # Threshold Parameters
 ThreshM        <- c(10, 10) #population threshold means 
-ThreshSD       <- ThreshM * 0.1 #population threshold standard deviations !!Change!!
+ThreshSD       <- ThreshM * 0 #population threshold standard deviations !!Change!!
 InitialStim    <- c(0, 0) #intital vector of stimuli
 StimRates      <- c(0.6, 0.6) #vector of stimuli increase rates  
+threshSlope    <- 7 #exponent parameter for threshold curve shape 
 alpha          <- m #efficiency of task performance
 quitP          <- 0.2 #probability of quitting task once active
 
@@ -112,9 +113,13 @@ for (i in 1:length(Ns)) {
         stimMat[t + 1, j + m] <- stimMat[t, j + m]
       }
       # Calculate task demand based on global stimuli
-      P_g <- calcThresholdDetermMat(TimeStep = t + 1, # first row is generation 0
-                                    ThresholdMatrix = threshMat, 
-                                    StimulusMatrix = stimMat)
+      # P_g <- calcThresholdDetermMat(TimeStep = t + 1, # first row is generation 0
+      #                               ThresholdMatrix = threshMat, 
+      #                               StimulusMatrix = stimMat)
+      P_g <- calcThresholdProbMat(TimeStep = t + 1, # first row is generation 0
+                                  ThresholdMatrix = threshMat, 
+                                  StimulusMatrix = stimMat, 
+                                  nSlope = threshSlope)
       # Update task performance
       X_g <- updateTaskPerformance_DetermTimed(P_sub_g    = P_g,
                                                TaskMat    = X_g,

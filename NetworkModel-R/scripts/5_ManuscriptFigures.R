@@ -138,8 +138,8 @@ yukoCorr <- yukoCorr %>%
   mutate(Sigma = NA)
 
 # Load and prep fixed probabilistic sigma = 0.1
+# load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
 load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
-
 taskCorrTot <- do.call("rbind", groups_taskCorr)
 fixedprob_01 <-  taskCorrTot %>% 
   mutate(TaskMean = (Task1 + Task2) / 2) %>% 
