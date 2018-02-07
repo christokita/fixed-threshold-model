@@ -109,8 +109,8 @@ gg_abslope <- ggplot() +
         legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
         legend.text = element_text(size = 6),
         legend.title = element_blank(),
-        axis.text.y = element_text(size = 8, margin = margin(5, 2, 5, -2)),
-        axis.text.x = element_text(size = 8, margin = margin(2, 5, -2, 5)),
+        axis.text.y = element_text(size = 8, margin = margin(5, 2, 5, -2), color = "black"),
+        axis.text.x = element_text(size = 8, margin = margin(2, 5, -2, 5), color = "black"),
         axis.title = element_text(size = 11, margin = margin(0, 0, 0, 0)),
         axis.ticks.length = unit(0, "cm"),
         panel.border = element_rect(fill = "NA", size = 1))
@@ -244,8 +244,8 @@ gg_fixedProb <- ggplot(data = allFixedProbCorr) +
         legend.text = element_text(size = 8),
         legend.text.align = 0,
         # legend.box.background = element_rect(),
-        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2)),
-        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5)),
+        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
+        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
         axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         axis.ticks.length = unit(-0.1, "cm"))
 
@@ -259,304 +259,11 @@ gg_fixedProb
 dev.off()
 
 ####################
-# Sample stimuli over time
-####################
-rm(list = ls())
-source("scripts/__Util__MASTER.R")
-library(RColorBrewer)
-library(scales)
-
-# load data
-load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
-
-# Unlist
-stims <- unlist(groups_stim, recursive = FALSE)
-stims <- do.call("rbind", stims)
-
-# Select out example colonies
-stimSet <- stims %>%
-  filter(n %in% c(2, 16)) %>%
-  filter(replicate == 1) %>%
-  group_by(n) %>%
-  mutate(timestep = 0:(length(n)-1),
-         groupsize = factor(paste0("n = ", n),
-                            levels = c("n = 2", "n = 16")))
-
-# Plot
-gg_stimEx <- ggplot(data = stimSet, aes(x = timestep, y = s1)) +
-  geom_line(size = 0.5, colour = "#4eb3d3") +
-  theme_classic() +
-  xlab("Timestep") +
-  ylab("Stimulus") +
-  scale_x_continuous(breaks = NULL,
-                     limits = c(0, 1000),
-                     expand = c(0, 0),
-                     labels = comma) +
-  scale_y_continuous(breaks = seq(0, 20, 5),
-                     limits = c(0, 16),
-                     expand = c(0, 0)) +
-  theme(axis.text.y = element_text(size = 6, margin = margin(5, 6, 5, -2)),
-        axis.text.x = element_text(size = 10, margin = margin(6, 5, -2, 5)),
-        axis.title = element_text(size = 6),
-        axis.ticks.length = unit(-0.1, "cm"),
-        strip.text = element_blank(),
-        strip.background = element_rect(fill = NA, colour = NA),
-        panel.spacing = unit(0.25, "cm")) +
-  facet_wrap(~ groupsize, ncol = 2)
-
-# svg("output/MSFigures/ExampleStimulusOverTime_SmallerWindwow.svg", width = 2.66, height = 2.05)
-# gg_stimEx
-# dev.off()
-
-gg_stimEx
-ggsave(filename = "output/FitnessPlots/StimOverTimeExample_Smaller Window.png", width = 3, height = 1.5, units = "in", dpi = 800)
-
-
-
-####################
-# Stimulus Fluctuation
-####################
-rm(list = ls())
-source("scripts/__Util__MASTER.R")
-library(RColorBrewer)
-library(scales)
-
-# load data
-load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
-
-# Unlist
-stims <- unlist(groups_stim, recursive = FALSE)
-stims <- do.call("rbind", stims)
-
-#### Time steps ####
-# Normalize and Summarise by "day" (i.e., time window) and calculate difference
-stimFluct <- stims %>% 
-  select(-delta1, -delta2) %>% 
-  mutate(Set = paste0(n, "-", replicate)) %>% 
-  group_by(Set) %>% 
-  mutate(t = 0:(length(Set)-1)) %>% 
-  mutate(Window = t %/% 200) %>% 
-  filter(t != 0) %>% 
-  group_by(n, Set, Window) %>% 
-  summarise(s1 = mean(s1),
-            s2 = mean(s2)) %>% 
-  mutate(s1Diff = abs(s1 - lag(s1)),
-         s2Diff = abs(s2 - lag(s2)),
-         BeginSet = !duplicated(Set)) 
-
-# Make sure first diff row of each new set is NA
-sets <- which(stimFluct$BeginSet == TRUE)
-stimFluct$s1Diff[sets] <- NA
-stimFluct$s2Diff[sets] <- NA
-
-# Summarise by colony/set
-stimFluct <- stimFluct %>% 
-  group_by(n, Set) %>% 
-  summarise(s1Fluct = mean(s1Diff, na.rm = TRUE),
-            s2Fluct = mean(s2Diff, na.rm = TRUE)) %>% 
-  mutate(GroupSizeFactor = factor(n, levels = sort(unique(n))))
-
-# Summarise by n
-stimSumFluct <- stimFluct %>% 
-  group_by(n, GroupSizeFactor) %>% 
-  summarise(s1FluctMean = mean(s1Fluct, na.rm = TRUE),
-            s1FluctSE = sd(s1Fluct, na.rm = TRUE) / sqrt(length(s1Fluct)),
-            s2FluctMean = mean(s2Fluct, na.rm = TRUE),
-            s2FluctSE = sd(s2Fluct, na.rm = TRUE) / sqrt(length(s2Fluct)))
-stimSumFluct <- as.data.frame(stimSumFluct)
-stimSumFluct <- stimSumFluct %>% 
-  mutate(GroupSizeFactor = factor(GroupSizeFactor, levels = sort(unique(n))))
-
-# Plot
-gg_stimfluct <- ggplot() +
-  # geom_point(data = stimFluct, 
-  #            aes(x = n, y = s1Fluct),
-  #            fill = "grey50", 
-  #            colour = "grey50", 
-  #            position = position_jitter(width = 0.2),
-  #            size = 0.5, 
-  #            alpha = 0.4,
-  #            stroke = 0) +
-  # geom_line(data = stimSumFluct,
-  #           aes(x = n, y = s1FluctMean),
-  #           size = 0.3) +���
-  theme_classic() +
-  labs(x = "Group size",
-       y = "Stimulus fluctuation") +
-  scale_x_continuous(breaks = unique(stimFluct$n), 
-                     labels = c(1, "", 4, "", 8, "", 16)) +
-  scale_y_continuous(breaks = seq(0, 2, 0.4),
-                     limits = c(0, 1.65),
-                     expand = c(0, 0)) +
-  theme(legend.position = "none") +
-  # Mean and SE portion of plot
-  geom_errorbar(data = stimSumFluct, 
-                aes(x = n, 
-                    ymin = s1FluctMean - s1FluctSE, 
-                    ymax = s1FluctMean + s1FluctSE),
-                colour = "black",
-                size = 0.25) +
-  geom_point(data = stimSumFluct, 
-             aes(x = n, y = s1FluctMean),
-             colour = "black",
-             size = 1.5) +
-  theme(legend.position = "none",
-        legend.justification = c(1, 1),
-        legend.title = element_blank(),
-        legend.key.height = unit(0.3, "cm"),
-        legend.key.width= unit(0.4, "cm"),
-        legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
-        legend.text = element_text(size = 6),
-        legend.text.align = 0,
-        # legend.box.background = element_rect(),
-        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2)),
-        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5)),
-        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
-        axis.ticks.length = unit(-0.1, "cm"))
-
-gg_stimfluct
-
-
-svg("output/MSFigures/StimulusFluctuationsCombined.svg",  width = 1.4, height = 2.07)
-gg_stimfluct
-dev.off()
-
-svg("output/MSFigures/StimulusFluctuationsNarrow.svg",  width = 2.3, height = 2.07)
-gg_stimfluct
-dev.off()
-
-svg("output/MSFigures/StimulusFluctuations.svg", width = 2.76, height = 2.07)
-gg_stimfluct
-dev.off()
-
-
-# ggsave("output/MSFigures/StimulusFluctuations.png", width = 2.82, height = 2.05, units = "in", dpi = 600)
-
-
-####################
-# Task Performance Fluctuation
-####################
-load("output/SpecializationMetrics/Rdata/FixedDelta06Sigma01Eta7100reps.Rdata")
-
-# Unlist
-tallies <- unlist(groups_taskTally, recursive = FALSE)
-tallies <- do.call("rbind", tallies)
-
-#### Time steps ####
-# Normalize and Summarise by "day" (i.e., time window) and calculate difference
-tallyFluct <- tallies %>% 
-  mutate(Task1 = Task1 / n,
-         Task2 = Task2 / n,
-         Inactive = Inactive / n,
-         Set = paste0(n, "-", replicate),
-         Window = t %/% 200) %>% 
-  group_by(n, Set, Window) %>% 
-  summarise(Task1 = mean(Task1),
-            Task2 = mean(Task2),
-            Inactive = mean(Inactive)) %>% 
-  mutate(Task1Diff = abs(Task1 - lag(Task1)),
-         Task2Diff = abs(Task2 - lag(Task2)),
-         InactiveDiff = abs(Inactive - lag(Inactive)),
-         BeginSet = !duplicated(Set)) 
-
-# Make sure first diff row of each new set is NA
-sets <- which(tallyFluct$BeginSet == TRUE)
-tallyFluct$Task1Diff[sets] <- NA
-tallyFluct$Task2Diff[sets] <- NA
-tallyFluct$InactiveDiff[sets] <- NA
-
-# Summarise by colony/set
-tallyFluct <- tallyFluct %>% 
-  group_by(n, Set) %>% 
-  summarise(Task1Fluct = mean(Task1Diff, na.rm = TRUE),
-            Task2Fluct = mean(Task2Diff, na.rm = TRUE),
-            InactiveFluct = mean(InactiveDiff, na.rm = TRUE)) %>% 
-  mutate(GroupSizeFactor = factor(n, levels = sort(unique(n))))
-
-# Summarise by n
-tallySumFluct <- tallyFluct %>% 
-  group_by(n, GroupSizeFactor) %>% 
-  summarise(Task1FluctMean = mean(Task1Fluct, na.rm = TRUE),
-            Task1FluctSE = sd(Task1Fluct) / sqrt(length(Task1Fluct)),
-            Task2FluctMean = mean(Task2Fluct, na.rm = TRUE),
-            Task2FluctSE = sd(Task2Fluct, na.rm = TRUE) / sqrt(length(Task2Fluct)),
-            InactiveFluctMean = mean(InactiveFluct, na.rm = TRUE),
-            InactiveFluctSE = sd(InactiveFluct, na.rm = TRUE) / sqrt(length(InactiveFluct)))
-tallySumFluct <- as.data.frame(tallySumFluct)
-tallySumFluct <- tallySumFluct %>% 
-  mutate(GroupSizeFactor = factor(GroupSizeFactor, levels = sort(unique(n))))
-
-
-# Plot
-gg_fluct <- ggplot() +
-  # geom_point(data = tallyFluct, 
-  #            aes(x = n, y = Task1Fluct),
-  #            fill = "grey50", 
-  #            colour = "grey50", 
-  #            size = 0.5, 
-  #            position = position_jitter(width = 0.2),
-  #            alpha = 0.4,
-  #            stroke = 0) +
-  theme_classic() +
-  labs(x = "Group size",
-       y = "Task fluctuation") +
-  scale_x_continuous(breaks = unique(tallyFluct$n),
-                     labels = c(1, "", 4, "", 8, "", 16)) +
-  scale_y_continuous(breaks = seq(0, 0.2, 0.01),
-                     limits = c(0, 0.0515),
-                     expand = c(0, 0)) +
-  theme(legend.position = "none") +
-  # Mean and SE portion of plot
-  geom_errorbar(data = tallySumFluct, 
-                aes(x = n, 
-                    ymin = Task1FluctMean - Task1FluctSE, 
-                    ymax = Task1FluctMean + Task1FluctSE),
-                colour= "black",
-                size = 0.25) +
-  geom_point(data = tallySumFluct, 
-             aes(x = n, y = Task1FluctMean),
-             colour = "black",
-             size = 1.5) +
-  theme(legend.position = "none",
-        legend.justification = c(1, 1),
-        legend.title = element_blank(),
-        legend.key.height = unit(0.3, "cm"),
-        legend.key.width= unit(0.4, "cm"),
-        legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
-        legend.text = element_text(size = 6),
-        legend.text.align = 0,
-        # legend.box.background = element_rect(),
-        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2)),
-        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5)),
-        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
-        axis.ticks.length = unit(-0.1, "cm"))
-
-gg_fluct
-
-svg("output/MSFigures/TaskPerformanceFluctuationsCombined.svg",  width = 1.45, height = 2.07)
-gg_fluct
-dev.off()
-
-svg("output/MSFigures/TaskPerformanceFluctuationsNarrow.svg",  width = 2.35, height = 2.07)
-gg_fluct
-dev.off()
-
-svg("output/MSFigures/TaskPerformanceFluctuations.svg",  width = 2.82, height = 2.07)
-gg_fluct
-dev.off()
-
-
-# Combined plot
-svg("output/MSFigures/TaskAndStimFluctuationsCombined_errorbars.svg",  width = 2.8, height = 2.07)
-multiplot(gg_stimfluct, gg_fluct, cols = 2)
-dev.off()
-
-####################
 # Task Distribution 
 ####################
 rm(list = ls())
 source("scripts/__Util__MASTER.R")
-source("scripts/3A_PrepPlotExperimentData.R")
+source("scripts/3_PrepPlotExperimentData.R")
 
 load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
 
@@ -598,7 +305,7 @@ gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
        y = "Task 1 frequency") +
   scale_color_manual(values = palette) +
   scale_y_continuous(limits = c(0, 0.72), breaks = seq(0, 1, 0.1), expand = c(0, 0)) +
-  theme( axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2)),
+  theme( axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
          axis.text.x = element_blank(),
          axis.ticks.x = element_blank(), 
          axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
@@ -608,4 +315,100 @@ gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
 
 svg("output/MSFigures/TaskDistExample.svg", width = 2.8, height = 2.07)
 gg_dist
+dev.off()
+
+
+####################
+# Task Neglect 
+####################
+rm(list = ls())
+source("scripts/__Util__MASTER.R")
+source("scripts/3_PrepPlotExperimentData.R")
+
+load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
+
+# Frequency of no task being performed
+noTaskPerf <- lapply(groups_taskTally, function(group_size) {
+  # Loop through replicates within group size
+  within_groupTaskPerf <- lapply(group_size, function(replicate) {
+    # Get basics and counts of instances in which there isn't anyone performing task
+    to_return <- data.frame(n = unique(replicate$n), 
+                            replicate = unique(replicate$replicate),
+                            Set = paste0(unique(replicate$n), "-", unique(replicate$replicate)),
+                            noTask1 = sum(replicate$Task1 == 0),
+                            noTask2 = sum(replicate$Task2 == 0))
+    #  Quantify length of no-performance bouts
+    for (task in c("Task1", "Task2")) {
+      bout_lengths <- rle(replicate[ , task])
+      bout_lengths <- as.data.frame(do.call("cbind", bout_lengths))
+      bout_lengths <- bout_lengths %>% 
+        filter(values == 0)
+      avg_nonPerformance <- mean(bout_lengths$lengths)
+      if(task == "Task1") {
+        to_return$noTask1Length = avg_nonPerformance
+      } 
+      else {
+        to_return$noTask2Length = avg_nonPerformance
+      }
+    }
+    # Get averages
+    to_return <- to_return %>% 
+      mutate(noTaskAvg = (noTask1 + noTask2) / 2,
+             noTaskLengthAvg = (noTask1Length + noTask2Length) / 2)
+    # Return
+    return(to_return)
+  })
+  # Bind and return
+  within_groupTaskPerf <- do.call("rbind", within_groupTaskPerf)
+  return(within_groupTaskPerf)
+})
+# Bind
+noTaskPerf <- do.call("rbind", noTaskPerf)
+
+# Summarise
+neglectSum <- noTaskPerf %>% 
+  group_by(n) %>% 
+  mutate(noTaskAvg = (noTask1 + noTask2) / 2 ) %>% 
+  summarise(Task1NegelectMean = mean(noTask1, na.rm = TRUE) / 10000,
+            Task1NegelectSE = ( sd(noTask1) / sqrt(length(noTask1)) ) / 1000,
+            Task2NegelectMean = mean(noTask2, na.rm = TRUE) / 10000,
+            Task2NegelectSE = ( sd(noTask2) / sqrt(length(noTask2)) ) / 10000,
+            TaskNegelectMean = mean(noTaskAvg, na.rm = TRUE) / 10000,
+            TaskNegelectSE = ( sd(noTaskAvg) / sqrt(length(noTaskAvg)) ) / 10000)
+
+
+# Plot
+gg_noTask <- ggplot(data = neglectSum) +
+  geom_errorbar(aes(x = n, 
+                    ymin = TaskNegelectMean - TaskNegelectSE, 
+                    ymax = TaskNegelectMean + TaskNegelectSE),
+                colour = "#F23619",
+                size = 0.25) +
+  geom_point(aes(x = n, y = TaskNegelectMean),
+             colour = "#F23619",
+             size = 1.5) +
+  theme_classic() +
+  labs(x = "Group size",
+       y = "Avg. task neglect") +
+  scale_x_continuous(breaks = unique(neglectSum$n),
+                     labels = c(1, "", 4, "", 8, "", 16)) +
+  scale_y_continuous(breaks = seq(0, 1, 0.2),
+                     limits = c(0, 0.825),
+                     expand = c(0, 0)) +
+  theme(legend.position = "none",
+        legend.justification = c(1, 1),
+        legend.title = element_blank(),
+        legend.key.height = unit(0.3, "cm"),
+        legend.key.width= unit(0.4, "cm"),
+        legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
+        legend.text = element_text(size = 6),
+        legend.text.align = 0,
+        # legend.box.background = element_rect(),
+        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
+        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
+        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
+        axis.ticks.length = unit(-0.1, "cm"))
+
+svg("output/MSFigures/TaskNeglectCombined.svg",  width = 1.45, height = 2.085)
+gg_noTask
 dev.off()
