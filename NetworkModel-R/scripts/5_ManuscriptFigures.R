@@ -270,7 +270,7 @@ load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
 # Set variable  
 filename <- "Fixed_Delta06Sigma01Eta7"
 
-# Palette without single individuals
+# Palette with single individuals
 palette <- c("#83343E", "#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78", "#bdbdbd", "#525252")
 # palette <- c("#bababa", "#4d4d4d", "#bababa", "#4d4d4d", "#bababa", "#4d4d4d", "#bababa") #for black and white theme
 
@@ -392,7 +392,7 @@ gg_noTask <- ggplot(data = neglectSum) +
        y = "Avg. task neglect") +
   scale_x_continuous(breaks = unique(neglectSum$n),
                      labels = c(1, "", 4, "", 8, "", 16)) +
-  scale_y_continuous(breaks = seq(0, 1, 0.2),
+  scale_y_continuous(breaks = seq(0, 1, 0.1),
                      limits = c(0, 0.825),
                      expand = c(0, 0)) +
   theme(legend.position = "none",
@@ -409,6 +409,76 @@ gg_noTask <- ggplot(data = neglectSum) +
         axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         axis.ticks.length = unit(-0.1, "cm"))
 
-svg("output/MSFigures/TaskNeglectCombined.svg",  width = 1.45, height = 2.085)
+svg("output/MSFigures/TaskNeglectCombined.svg",  width = 1.3, height = 2.08)
 gg_noTask
 dev.off()
+
+
+####################
+# Task Neglect vs. Specialization within group
+####################
+# Load specialization
+taskCorrTot <- do.call("rbind", groups_taskCorr)
+taskCorrTot <- taskCorrTot %>% 
+  mutate(TaskMean = (Task1 + Task2) / 2)
+taskCorrTot <- taskCorrTot %>% 
+  mutate(Set = paste0(n, "-", replicate)) %>% 
+  select(n, TaskMean, Task1, Task2, Set) 
+
+# Merge
+merged_specperf <- merge(taskCorrTot, noTaskPerf, by = c("Set", "n"))
+merged_specperf <- merged_specperf %>% 
+  mutate(noTaskAvg = noTaskAvg / 10000) %>% 
+  group_by(n) %>% 
+  mutate(noTaskAvgMin = min(noTaskAvg),
+         noTaskAvgMax = max(noTaskAvg)) %>% 
+  mutate(noTaskAvgNorm = (noTaskAvg - noTaskAvgMin) / (noTaskAvgMax - noTaskAvgMin)) 
+
+# Plot
+gg_specPerf <- ggplot(data = merged_specperf) +
+  geom_point(aes(x = TaskMean, y = noTask1, colour = as.factor(n))) +
+  theme_classic() +
+  facet_wrap(~n, scales = "free", ncol = 1) +
+  theme(legend.position = "none") +
+  ylab("Avg. task negelect") +
+  xlab("Specialization")
+gg_specPerf
+
+# Plot
+# Palette with single individuals
+palette <- c("#83343E", "#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78", "#bdbdbd", "#525252")
+
+gg_specPerfNorm <- ggplot(data = merged_specperf) +
+  geom_point(aes(x = TaskMean,
+                 # colour = as.factor(n),
+                 y = noTaskAvgNorm), 
+             colour = "#F23619",
+             size = 0.1) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  ylab("Normalized \ntask neglect") +
+  xlab("Specialization") +
+  scale_y_continuous(breaks = seq(0, 1, 0.2), 
+                     expand = c(0, 0.01)) +
+  scale_x_continuous(breaks = seq(0, 1, 0.5), 
+                     expand = c(0, 0.03)) +
+  # scale_color_manual(values = palette) +
+  theme(legend.position = "none",
+        legend.justification = c(1, 1),
+        legend.title = element_blank(),
+        legend.key.height = unit(0.3, "cm"),
+        legend.key.width= unit(0.4, "cm"),
+        legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
+        legend.text = element_text(size = 6),
+        legend.text.align = 0,
+        # legend.box.background = element_rect(),
+        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
+        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
+        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
+        axis.ticks.length = unit(-0.1, "cm"))
+gg_specPerfNorm
+
+svg("output/MSFigures/TaskNeglect_WithinGroup_Normalized.svg",  width = 1.55, height = 2.08)
+gg_specPerfNorm
+dev.off()
+
