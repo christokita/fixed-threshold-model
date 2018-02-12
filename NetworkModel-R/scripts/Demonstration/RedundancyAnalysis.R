@@ -8,7 +8,7 @@ rm(list = ls())
 source("scripts/__Util__MASTER.R")
 source("scripts/3_PrepPlotExperimentData.R")
 
-load("output/__RData/MSrevision_FixedDelta06_DetUpdateWithSigma005DetQuitDetUpdate100reps.Rdata")
+load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
 
 # Set variable  
 filename <- "Fixed_Delta06Sigma01Eta7"
@@ -95,6 +95,113 @@ gg_specPerf <- ggplot(data = merged_specperf) +
 gg_specPerf
 
 
+# Normalized within group
+normalizedNeglect <- merged_specperf %>% 
+  mutate(noTaskAvg = noTaskAvg / 10000) %>% 
+  group_by(n) %>% 
+  mutate(noTaskAvgMin = min(noTaskAvg),
+         noTaskAvgMax = max(noTaskAvg),
+         TaskMeanMin = min(TaskMean),
+         TaskMeanMax = max(TaskMean)) %>% 
+  mutate(noTaskAvgNorm = (noTaskAvg - noTaskAvgMin) / (noTaskAvgMax - noTaskAvgMin),
+         TaskMeanNorm = (TaskMean - TaskMeanMin) / (TaskMeanMax - TaskMeanMin)) 
+
+palette <- c("#83343E", "#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78", "#bdbdbd", "#525252")
+
+gg_specPerfNorm <- ggplot(data = normalizedNeglect) +
+  geom_point(aes(x = TaskMeanNorm,
+                 colour = as.factor(n),
+                 y = noTaskAvgNorm), 
+             # colour = "#F23619",
+             size = 0.5) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  ylab("Normalized task neglect") +
+  xlab("Normalized specialization") +
+  scale_y_continuous(breaks = seq(0, 1, 0.2), 
+                     expand = c(0, 0.005)) +
+  scale_x_continuous(breaks = seq(-1, 1, 0.2), 
+                     expand = c(0, 0.005)) +
+  scale_color_manual(values = palette) +
+  theme(legend.position = "none",
+        legend.justification = c(1, 1),
+        legend.title = element_blank(),
+        legend.key.height = unit(0.3, "cm"),
+        legend.key.width= unit(0.4, "cm"),
+        legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
+        legend.text = element_text(size = 6),
+        legend.text.align = 0,
+        # legend.box.background = element_rect(),
+        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
+        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
+        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
+        axis.ticks.length = unit(-0.1, "cm"),
+        aspect.ratio = 1)
+
+gg_specPerfNorm
+
+ggsave(filename = "output/FitnessPlots/NormalizedTaskNegelct.png", width = 2, height = 2, units = "in", dpi = 600)
+
+
+####################
+# Frequency of task not being performed vs. specialization
+####################
+# Load distribution
+taskDist <- unlist(groups_taskDist, recursive = FALSE)
+taskDistTot <- do.call("rbind", taskDist)
+taskDistTot <- taskDistTot %>% 
+  mutate(Set = paste0(n, "-", replicate)) %>% 
+  group_by(Set) %>% 
+  mutate(minTask1 = min(Task1),
+         minTask2 = min(Task2),
+         maxTask1 = max(Task1),
+         maxTask2 = max(Task2)) %>% 
+  group_by(n) %>% 
+  mutate(minTask1norm = (minTask1 - min(minTask1)) / (max(minTask1) - min(minTask1))) %>% 
+  select(n, Set, minTask1, minTask2, maxTask1, maxTask2) %>% 
+  unique()
+  
+# Merge
+merged_specperf <- merge(merged_specperf, taskDistTot, by = c("Set", "n"))
+normalizedNeglect <- merged_specperf %>% 
+  mutate(noTaskAvg = noTaskAvg / 10000) %>% 
+  group_by(n) %>% 
+  mutate(noTaskAvgMin = min(noTaskAvg),
+         noTaskAvgMax = max(noTaskAvg),
+         TaskMeanMin = min(TaskMean),
+         TaskMeanMax = max(TaskMean)) %>% 
+  mutate(noTaskAvgNorm = (noTaskAvg - noTaskAvgMin) / (noTaskAvgMax - noTaskAvgMin),
+         TaskMeanNorm = (TaskMean - TaskMeanMin) / (TaskMeanMax - TaskMeanMin)) 
+
+# Plot
+gg_min <- ggplot(data = normalizedNeglect, aes(x = maxTask2, y = TaskMeanNorm, colour = as.factor(n))) +
+  geom_point() +
+  theme_classic() +
+  theme(legend.position = "none") +
+  ylab("Normalized specialization") +
+  xlab("Min task 1 frequency") +
+  scale_y_continuous(breaks = seq(0, 1, 0.2), 
+                     expand = c(0, 0.005)) +
+  # scale_x_continuous(breaks = seq(-1, 1, 0.05), 
+  #                    limits = c(0, 0.33),
+  #                    expand = c(0, 0.005)) +
+  scale_color_manual(values = palette) +
+  theme(legend.position = "none",
+        legend.justification = c(1, 1),
+        legend.title = element_blank(),
+        legend.key.height = unit(0.3, "cm"),
+        legend.key.width= unit(0.4, "cm"),
+        legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
+        legend.text = element_text(size = 6),
+        legend.text.align = 0,
+        # legend.box.background = element_rect(),
+        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
+        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
+        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
+        axis.ticks.length = unit(-0.1, "cm"),
+        aspect.ratio = 1)
+
+gg_min
 
 ####################
 # Check stimulus level at time of neglect
