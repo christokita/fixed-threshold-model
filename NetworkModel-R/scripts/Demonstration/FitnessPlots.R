@@ -6,17 +6,174 @@
 
 rm(list = ls())
 source("scripts/__Util__MASTER.R")
-source("scripts/3A_PrepPlotExperimentData.R")
+source("scripts/3_PrepPlotExperimentData.R")
 library(RColorBrewer)
 library(scales)
 
-load("output/SpecializationMetrics/Rdata/FixedDelta06Sigma01Eta7100reps.Rdata")
+load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
 
 
 ####################
-# Stimulus Fluctuation
+# Task Negelect
 ####################
+# Across roup size plot
+noTaskPerf <- lapply(groups_taskTally, function(group_size) {
+  # Loop through replicates within group size
+  within_groupTaskPerf <- lapply(group_size, function(replicate) {
+    # Get basics and counts of instances in which there isn't anyone performing task
+    to_return <- data.frame(n = unique(replicate$n), 
+                            replicate = unique(replicate$replicate),
+                            Set = paste0(unique(replicate$n), "-", unique(replicate$replicate)),
+                            noTask1 = sum(replicate$Task1 == 0),
+                            noTask2 = sum(replicate$Task2 == 0))
+    #  Quantify length of no-performance bouts
+    for (task in c("Task1", "Task2")) {
+      bout_lengths <- rle(replicate[ , task])
+      bout_lengths <- as.data.frame(do.call("cbind", bout_lengths))
+      bout_lengths <- bout_lengths %>% 
+        filter(values == 0)
+      avg_nonPerformance <- mean(bout_lengths$lengths)
+      if(task == "Task1") {
+        to_return$noTask1Length = avg_nonPerformance
+      } 
+      else {
+        to_return$noTask2Length = avg_nonPerformance
+      }
+    }
+    # Get averages
+    to_return <- to_return %>% 
+      mutate(noTaskAvg = (noTask1 + noTask2) / 2,
+             noTaskLengthAvg = (noTask1Length + noTask2Length) / 2)
+    # Return
+    return(to_return)
+  })
+  # Bind and return
+  within_groupTaskPerf <- do.call("rbind", within_groupTaskPerf)
+  return(within_groupTaskPerf)
+})
+# Bind
+noTaskPerf <- do.call("rbind", noTaskPerf)
 
+
+# Summarise
+noTaskPerf <- noTaskPerf %>% 
+  group_by(n) %>% 
+  mutate(noTask1 = noTask1 / 10000,
+         noTask2 = noTask2 / 10000,
+         noTaskAvg = noTaskAvg / 10000)
+
+neglectSum <- noTaskPerf %>% 
+  summarise(Task1NegelectMean = mean(noTask1, na.rm = TRUE),
+            Task1NegelectSE = ( sd(noTask1) / sqrt(length(noTask1)) ),
+            Task2NegelectMean = mean(noTask2, na.rm = TRUE),
+            Task2NegelectSE = ( sd(noTask2) / sqrt(length(noTask2)) ),
+            TaskNegelectMean = mean(noTaskAvg, na.rm = TRUE),
+            TaskNegelectSE = ( sd(noTaskAvg) / sqrt(length(noTaskAvg)) ))
+
+# Plot
+gg_noTask <- ggplot() +
+  geom_point(data = noTaskPerf, 
+             aes(x = n, y = noTaskAvg),
+             fill = "grey50", 
+             colour = "grey50", 
+             position = position_jitter(width = 0.1),
+             size = 0.7, 
+             alpha = 0.4,
+             stroke = 0) +
+  geom_errorbar(data = neglectSum,
+                aes(x = n, 
+                    ymin = TaskNegelectMean - TaskNegelectSE, 
+                    ymax = TaskNegelectMean + TaskNegelectSE),
+                colour = "black",
+                size = 0.25) +
+  geom_point(data = neglectSum,
+             aes(x = n, y = TaskNegelectMean),
+             colour = "black",
+             size = 1.5) +
+  theme_classic() +
+  labs(x = "Group size",
+       y = "Avg. task neglect") +
+  scale_x_continuous(breaks = unique(neglectSum$n)) +
+  scale_y_continuous(breaks = seq(0, 1, 0.1),
+                     limits = c(0, 1),
+                     expand = c(0, 0)) +
+  theme(legend.position = "none",
+        legend.justification = c(1, 1),
+        legend.title = element_blank(),
+        legend.key.height = unit(0.3, "cm"),
+        legend.key.width= unit(0.4, "cm"),
+        legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
+        legend.text = element_text(size = 6),
+        legend.text.align = 0,
+        # legend.box.background = element_rect(),
+        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
+        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
+        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
+        axis.ticks.length = unit(-0.1, "cm"),
+        aspect.ratio = 1)
+
+gg_noTask
+
+ggsave(filename = "output/FitnessPlots/AvgTaskNeglect.png", height = 2, width = 2, dpi = 600)
+
+# Within group size
+# Load specialization
+taskCorrTot <- do.call("rbind", groups_taskCorr)
+taskCorrTot <- taskCorrTot %>% 
+  mutate(TaskMean = (Task1 + Task2) / 2)
+taskCorrTot <- taskCorrTot %>% 
+  mutate(Set = paste0(n, "-", replicate)) %>% 
+  select(n, TaskMean, Task1, Task2, Set) 
+
+# Merge
+merged_specperf <- merge(taskCorrTot, noTaskPerf, by = c("Set", "n"))
+merged_specperf <- merged_specperf %>% 
+  mutate(noTaskAvg = noTaskAvg / 10000) %>% 
+  group_by(n) %>% 
+  mutate(noTaskAvgMin = min(noTaskAvg),
+         noTaskAvgMax = max(noTaskAvg),
+         TaskMeanMin = min(TaskMean),
+         TaskMeanMax = max(TaskMean)) %>% 
+  mutate(noTaskAvgNorm = (noTaskAvg - noTaskAvgMin) / (noTaskAvgMax - noTaskAvgMin),
+         TaskMeanNorm = (TaskMean - TaskMeanMin) / (TaskMeanMax - TaskMeanMin)) 
+
+# Plot
+# Palette withoutsingle individuals
+palette <- c("#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78")
+
+gg_specPerfNorm <- ggplot(data = merged_specperf) +
+  geom_point(aes(x = TaskMeanNorm,
+                 colour = as.factor(n),
+                 y = noTaskAvgNorm), 
+             # colour = "#F23619",
+             size = 0.1) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  ylab("Normalized task neglect") +
+  xlab("Normalized specialization") +
+  scale_y_continuous(breaks = seq(0, 1, 0.2), 
+                     limits = c(0, 1.02),
+                     expand = c(0, 0)) +
+  scale_x_continuous(breaks = seq(0, 1, 0.2), 
+                     limits = c(0, 1.02),
+                     expand = c(0, 0)) +
+  scale_color_manual(values = palette) +
+  theme(legend.position = "none",
+        legend.justification = c(1, 1),
+        legend.title = element_blank(),
+        legend.key.height = unit(0.3, "cm"),
+        legend.key.width= unit(0.4, "cm"),
+        legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
+        legend.text = element_text(size = 6),
+        legend.text.align = 0,
+        # legend.box.background = element_rect(),
+        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
+        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
+        axis.title = element_text(size = 8, margin = margin(0, 0, 0, 0)),
+        axis.ticks.length = unit(-0.1, "cm"))
+gg_specPerfNorm
+
+ggsave(filename = "output/FitnessPlots/TaskNeglectVsSpecializationWithinGroups.png", height = 2, width = 2, dpi = 600)
 
 ####################
 # Stimulus Fluctuation
@@ -198,6 +355,72 @@ gg_stimfluct <- ggplot() +
 gg_stimfluct
 
 ggsave("output/FitnessPlots/StimuFluctuations_1TimeSteps.png",  width = 2, height = 2, dpi = 800)
+
+
+# Within group - short term flucatuions vs specialization
+# Load specialization
+taskCorrTot <- do.call("rbind", groups_taskCorr)
+taskCorrTot <- taskCorrTot %>% 
+  mutate(TaskMean = (Task1 + Task2) / 2)
+taskCorrTot <- taskCorrTot %>% 
+  mutate(Set = paste0(n, "-", replicate)) %>% 
+  select(n, TaskMean, Task1, Task2, Set) 
+
+# Merge
+merged_specstim <- merge(taskCorrTot, stimFluct, by = c("Set", "n"))
+merged_specstim <- merged_specstim %>% 
+  mutate(sFluct = (s1Fluct + s2Fluct) / 2) %>% 
+  group_by(n) %>% 
+  mutate(s1Min = min(s1Fluct),
+         s1Max = max(s1Fluct),
+         s2Min = min(s2Fluct),
+         s2Max = max(s2Fluct),
+         sMin = min(sFluct),
+         sMax = max(sFluct),
+         TaskMeanMin = min(TaskMean),
+         TaskMeanMax = max(TaskMean)) %>% 
+  mutate(s1Norm = (s1Fluct - s1Min) / (s1Max - s1Min),
+         s2Norm = (s2Fluct - s2Min) / (s2Max - s2Min),
+         sNorm = (sFluct - sMin) / (sMax - sMin),
+         TaskMeanNorm = (TaskMean - TaskMeanMin) / (TaskMeanMax - TaskMeanMin)) 
+
+# Plot
+# Palette with single individuals
+palette <- c("#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78")
+
+gg_specStimNorm <- ggplot(data = merged_specstim) +
+  geom_point(aes(x = TaskMeanNorm,
+                 colour = as.factor(n),
+                 y = sNorm), 
+             # colour = "#F23619",
+             size = 0.1) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  ylab("Normalized stim. fluctuation") +
+  xlab("Normalized specialization") +
+  scale_y_continuous(breaks = seq(0, 1, 0.2), 
+                     limits = c(-0.01, 1.01),
+                     expand = c(0, 0)) +
+  scale_x_continuous(breaks = seq(0, 1, 0.2), 
+                     limits = c(-0.01, 1.01),
+                     expand = c(0, 0)) +
+  scale_color_manual(values = palette) +
+  theme(legend.position = "none",
+        legend.justification = c(1, 1),
+        legend.title = element_blank(),
+        legend.key.height = unit(0.3, "cm"),
+        legend.key.width= unit(0.4, "cm"),
+        legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
+        legend.text = element_text(size = 6),
+        legend.text.align = 0,
+        # legend.box.background = element_rect(),
+        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
+        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
+        axis.title = element_text(size = 8, margin = margin(0, 0, 0, 0)),
+        axis.ticks.length = unit(-0.1, "cm"))
+gg_specStimNorm
+
+ggsave(filename = "output/FitnessPlots/StimFluctVsSpecializationWithinGroups.png", height = 2, width = 2, dpi = 600)
 
 
 ####################
