@@ -95,7 +95,7 @@ gg_noTask <- ggplot() +
        y = "Avg. task neglect") +
   scale_x_continuous(breaks = unique(neglectSum$n)) +
   scale_y_continuous(breaks = seq(0, 1, 0.1),
-                     limits = c(0, 1),
+                     limits = c(0, 0.71),
                      expand = c(0, 0)) +
   theme(legend.position = "none",
         legend.justification = c(1, 1),
@@ -110,11 +110,12 @@ gg_noTask <- ggplot() +
         axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
         axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         axis.ticks.length = unit(-0.1, "cm"),
-        aspect.ratio = 1)
+        # aspect.ratio = 1
+  )
 
 gg_noTask
 
-ggsave(filename = "output/FitnessPlots/AvgTaskNeglect.png", height = 2, width = 2, dpi = 600)
+ggsave(filename = "output/FitnessPlots/AvgTaskNeglect_poster.png", height = 3, width = 1.5, dpi = 600)
 
 # Within group size
 # Load specialization
@@ -143,19 +144,19 @@ palette <- c("#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78")
 
 gg_specPerfNorm <- ggplot(data = merged_specperf) +
   geom_point(aes(x = TaskMeanNorm,
-                 colour = as.factor(n),
+                 # colour = as.factor(n),
                  y = noTaskAvgNorm), 
-             # colour = "#F23619",
+             colour = "#F23619",
              size = 0.1) +
   theme_classic() +
   theme(legend.position = "none") +
-  ylab("Normalized task neglect") +
-  xlab("Normalized specialization") +
-  scale_y_continuous(breaks = seq(0, 1, 0.2), 
-                     limits = c(0, 1.02),
+  ylab("Normalized \ntask neglect") +
+  xlab("Normalized \nspecialization") +
+  scale_y_continuous(breaks = seq(0, 1, 1), 
+                     limits = c(-0.01, 1.01),
                      expand = c(0, 0)) +
-  scale_x_continuous(breaks = seq(0, 1, 0.2), 
-                     limits = c(0, 1.02),
+  scale_x_continuous(breaks = seq(0, 1, 1), 
+                     limits = c(-0.01, 1.01),
                      expand = c(0, 0)) +
   scale_color_manual(values = palette) +
   theme(legend.position = "none",
@@ -167,13 +168,13 @@ gg_specPerfNorm <- ggplot(data = merged_specperf) +
         legend.text = element_text(size = 6),
         legend.text.align = 0,
         # legend.box.background = element_rect(),
-        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
-        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
-        axis.title = element_text(size = 8, margin = margin(0, 0, 0, 0)),
+        axis.text.y = element_text(size = 10, margin = margin(5, 6, 5, -2), color = "black"),
+        axis.text.x = element_text(size = 10, margin = margin(6, 5, -2, 5), color = "black"),
+        axis.title = element_text(size = 11, margin = margin(0, 0, 0, 0)),
         axis.ticks.length = unit(-0.1, "cm"))
 gg_specPerfNorm
 
-ggsave(filename = "output/FitnessPlots/TaskNeglectVsSpecializationWithinGroups.png", height = 2, width = 2, dpi = 600)
+ggsave(filename = "output/FitnessPlots/TaskNeglectVsSpecializationWithinGroups_poster.png", height = 3, width = 1.5, dpi = 600)
 
 ####################
 # Stimulus Fluctuation
@@ -391,7 +392,7 @@ palette <- c("#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78")
 gg_specStimNorm <- ggplot(data = merged_specstim) +
   geom_point(aes(x = TaskMeanNorm,
                  colour = as.factor(n),
-                 y = sNorm), 
+                 y = s1Norm), 
              # colour = "#F23619",
              size = 0.1) +
   theme_classic() +
