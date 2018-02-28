@@ -347,3 +347,53 @@ gg_stimEx16
 
 ggsave(filename = "output/FitnessPlots/StimExample16_poster.png", width = 1.5, height = 1.5, units = "in", dpi = 600)
 
+
+####################
+# Sample Task Time Series
+####################
+# Unlist
+tallies <- unlist(groups_taskTally, recursive = FALSE)
+tallies <- do.call("rbind", tallies)
+
+# Normalize
+tallyEx <- tallies %>% 
+  filter(n %in% c(2)) %>% 
+  filter(replicate == 3) %>% 
+  mutate(Task1 = Task1 / n,
+         Task2 = Task2 / n,
+         Inactive = Inactive / n,
+         n = factor(n)) %>% 
+  melt(id.vars = c("n", "t", "replicate")) %>% 
+  rename(Task = variable, Freq = value) %>% 
+  mutate(timestep = 0:(length(n)-1)) %>% 
+  filter(Task == "Task1")
+
+
+# Plot
+cols <- c("#F00924", "#FDD545", "#4C0E78")
+
+gg_taskEx <- ggplot(data = tallyEx, aes(x = t, y = Freq)) +
+  geom_line(colour = "#F00924") +
+  theme_classic() +
+  xlab("Time step") +
+  ylab("Proportion of colony") +
+  scale_x_continuous(breaks = seq(0, 10000, 100),
+                     limits = c(0, 200),
+                     labels = comma,
+                     expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 1),
+                     breaks = seq(0, 1, 0.5),
+                     expand = c(0,0)) +
+  theme(plot.margin = margin(0.25, 0.4, 0.25, 0.25, "cm"),
+        axis.text = element_text(size = 10, color = "black"),
+        axis.title = element_blank(),
+        axis.ticks = element_line(size = 0.5),
+        strip.text = element_text(size = 7, face = "italic"),
+        strip.background = element_rect(fill = NA, colour = NA),
+        panel.spacing = unit(0.5, "cm"),
+        aspect.ratio = 1) 
+
+gg_taskEx
+
+ggsave(filename = "output/FitnessPlots/TaskExample2_poster.png", width = 1.5, height = 1.5, units = "in", dpi = 600)
+

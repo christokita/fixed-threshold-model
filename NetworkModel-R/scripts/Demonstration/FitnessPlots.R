@@ -110,12 +110,11 @@ gg_noTask <- ggplot() +
         axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
         axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         axis.ticks.length = unit(-0.1, "cm"),
-        # aspect.ratio = 1
-  )
+        aspect.ratio = 1)
 
 gg_noTask
 
-ggsave(filename = "output/FitnessPlots/AvgTaskNeglect_poster.png", height = 3, width = 1.5, dpi = 600)
+ggsave(filename = "output/FitnessPlots/AvgTaskNeglect.png", height = 2, width = 2, dpi = 600)
 
 # Within group size
 # Load specialization
@@ -296,7 +295,8 @@ stimFluct <- stimFluct %>%
   group_by(n, Set) %>% 
   summarise(s1Fluct = mean(s1Diff, na.rm = TRUE),
             s2Fluct = mean(s2Diff, na.rm = TRUE)) %>% 
-  mutate(GroupSizeFactor = factor(n, levels = sort(unique(n))))
+  mutate(GroupSizeFactor = factor(n, levels = sort(unique(n))),
+         sFluct = (s1Fluct + s2Fluct) / 2)
 
 # Summarise by n
 stimSumFluct <- stimFluct %>% 
@@ -304,7 +304,9 @@ stimSumFluct <- stimFluct %>%
   summarise(s1FluctMean = mean(s1Fluct, na.rm = TRUE),
             s1FluctSE = sd(s1Fluct, na.rm = TRUE) / sqrt(length(s1Fluct)),
             s2FluctMean = mean(s2Fluct, na.rm = TRUE),
-            s2FluctSE = sd(s2Fluct, na.rm = TRUE) / sqrt(length(s2Fluct)))
+            s2FluctSE = sd(s2Fluct, na.rm = TRUE) / sqrt(length(s2Fluct)),
+            sFluctMean = mean(sFluct, na.rm = TRUE),
+            sFluctSE = sd(sFluct, na.rm = TRUE) / sqrt(length(sFluct)))
 stimSumFluct <- as.data.frame(stimSumFluct)
 stimSumFluct <- stimSumFluct %>% 
   mutate(GroupSizeFactor = factor(GroupSizeFactor, levels = sort(unique(n))))
