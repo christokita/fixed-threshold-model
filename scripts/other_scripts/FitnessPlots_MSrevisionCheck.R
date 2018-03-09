@@ -373,3 +373,104 @@ gg_fluct1 <- ggplot() +
 png(filename = paste0("output/", filename, ".png"), width = 4, height = 4, units = "in", res = 300)
 multiplot(gg_stimfluct200, gg_fluct200, gg_stimfluct1, gg_fluct1, cols = 2)
 dev.off()
+
+
+####################
+# Behavioral Variation vs. Task Negelect
+####################
+# Bind together
+taskDist <- unlist(groups_taskDist, recursive = FALSE)
+taskDistTot <- do.call("rbind", taskDist)
+
+# Manipulate
+taskDistTot <- taskDistTot %>% 
+  mutate(Set = paste0(n, "-", replicate))
+
+taskVarMean <- taskDistTot %>% 
+  mutate(n = as.character(n)) %>% 
+  mutate(n = as.numeric(n)) %>% 
+  group_by(n, replicate, Set) %>% 
+  summarise(SD1 = sd(Task1),
+            SD2 = sd(Task2),
+            Mean = mean(Task1)) %>% 
+  mutate(Source = "Model",
+         SD = (SD1 + SD2) / 2)
+
+# Task negelect
+noTaskPerf <- lapply(groups_taskTally, function(group_size) {
+  # Loop through replicates within group size
+  within_groupTaskPerf <- lapply(group_size, function(replicate) {
+    # Get basics and counts of instances in which there isn't anyone performing task
+    to_return <- data.frame(n = unique(replicate$n), 
+                            replicate = unique(replicate$replicate),
+                            Set = paste0(unique(replicate$n), "-", unique(replicate$replicate)),
+                            noTask1 = sum(replicate$Task1 == 0),
+                            noTask2 = sum(replicate$Task2 == 0))
+    #  Quantify length of no-performance bouts
+    for (task in c("Task1", "Task2")) {
+      bout_lengths <- rle(replicate[ , task])
+      bout_lengths <- as.data.frame(do.call("cbind", bout_lengths))
+      bout_lengths <- bout_lengths %>% 
+        filter(values == 0)
+      avg_nonPerformance <- mean(bout_lengths$lengths)
+      if(task == "Task1") {
+        to_return$noTask1Length = avg_nonPerformance
+      } 
+      else {
+        to_return$noTask2Length = avg_nonPerformance
+      }
+    }
+    # Get averages
+    to_return <- to_return %>% 
+      mutate(noTaskAvg = (noTask1 + noTask2) / 2,
+             noTaskLengthAvg = (noTask1Length + noTask2Length) / 2)
+    # Return
+    return(to_return)
+  })
+  # Bind and return
+  within_groupTaskPerf <- do.call("rbind", within_groupTaskPerf)
+  return(within_groupTaskPerf)
+})
+
+# Bind
+noTaskPerf <- do.call("rbind", noTaskPerf)
+noTaskPerf <- noTaskPerf %>% 
+  mutate(noTaskAvg = noTaskAvg / 10000)
+
+# Merge with behavioral variation data
+Neglect_variation <- merge(taskVarMean, noTaskPerf, by = c("n", "replicate", "Set"))
+
+# Normalize for within group comparison
+Neglect_variation <- Neglect_variation %>% 
+  filter(!is.na(SD)) %>% 
+  group_by(n) %>% 
+  mutate(noTaskAvgMin = min(noTaskAvg),
+         noTaskAvgMax = max(noTaskAvg),
+         SDMin = min(SD),
+         SDMax = max(SD)) %>% 
+  mutate(noTaskAvgNorm = (noTaskAvg - noTaskAvgMin) / (noTaskAvgMax - noTaskAvgMin),
+         SDNorm = (SD - SDMin) / (SDMax - SDMin)) 
+
+# Plot
+gg_NeglectVar <- ggplot(data = Neglect_variation, aes (x = SDNorm, y = noTaskAvgNorm)) +
+  geom_point() +
+  theme_classic() +
+  xlab("Normalized \nBehavioral Variation (SD)") +
+  ylab("Normalized \nTask Neglect") +
+  theme(legend.position = "none",
+        legend.justification = c(1, 1),
+        legend.title = element_blank(),
+        legend.key.height = unit(0.3, "cm"),
+        legend.key.width= unit(0.4, "cm"),
+        legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
+        legend.text = element_text(size = 6),
+        legend.text.align = 0,
+        # legend.box.background = element_rect(),
+        axis.text.y = element_text(size = 10, margin = margin(5, 6, 5, -2), color = "black"),
+        axis.text.x = element_text(size = 10, margin = margin(6, 5, -2, 5), color = "black"),
+        axis.title = element_text(size = 11, margin = margin(0, 0, 0, 0)),
+        axis.ticks.length = unit(-0.1, "cm"),
+        aspect.ratio = 1)
+
+gg_NeglectVar
+

@@ -16,7 +16,7 @@ load("output/__RData/FixedDelta06Sigma01Eta7100reps.Rdata")
 ####################
 # Task Negelect
 ####################
-# Across roup size plot
+# Across group size plot
 noTaskPerf <- lapply(groups_taskTally, function(group_size) {
   # Loop through replicates within group size
   within_groupTaskPerf <- lapply(group_size, function(replicate) {
