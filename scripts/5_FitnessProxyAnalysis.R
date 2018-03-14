@@ -626,34 +626,39 @@ stims <- do.call("rbind", stims)
 
 # Select out example colonies
 stimSet <- stims %>% 
-  filter(n %in% c(2, 16)) %>% 
-  filter(replicate == 1) %>% 
+  filter(n %in% c(2, 16),
+         replicate == 1) %>% 
   group_by(n) %>% 
   mutate(timestep = 0:(length(n)-1),
-         groupsize = factor(paste0("n = ", n), 
-                            levels = c("n = 2", "n = 16")))
+         groupsize = factor(paste0("Group size ", n), 
+                            levels = c("Group size 2", "Group size 16"))) %>% 
+  filter(timestep <= 1000)
 
 # Plot
 gg_stimEx <- ggplot(data = stimSet, aes(x = timestep, y = s1)) +
   geom_line(colour = "#4eb3d3", 
             size = 0.2) +
   theme_classic() +
-  xlab("Timestep") +
+  xlab("Time step") +
   ylab("Stimulus") +
-  scale_x_continuous(breaks = seq(0, 10000, 5000),
-                     labels = comma) +
+  scale_x_continuous(breaks = seq(0, 10000, 250),
+                     labels = comma,
+                     limits = c(0, 1000),
+                     expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 15), 
+                     expand = c(0, 0)) +
   theme(plot.margin = margin(0.25, 0.4, 0.25, 0.25, "cm"),
         axis.text = element_text(size = 8),
         axis.title = element_text(size = 10),
         axis.ticks = element_line(size = 0.5),
-        strip.text = element_text(size = 7, face = "italic"),
+        strip.text = element_blank(),
         strip.background = element_rect(fill = NA, colour = NA),
         panel.spacing = unit(0.5, "cm")) +
-  facet_grid(. ~ groupsize)
+  facet_grid(groupsize ~ .)
 
 gg_stimEx
 
-ggsave(filename = "output/FitnessPlots/StimOverTimeExample.png", width = 4.2, height = 2, units = "in", dpi = 600)
+ggsave(filename = "output/FitnessPlots/StimOverTimeExample.png", width = 2, height = 2, units = "in", dpi = 600)
 
 
 ####################
@@ -665,30 +670,38 @@ tallies <- do.call("rbind", tallies)
 
 # Normalize
 tallyEx <- tallies %>% 
-  filter(n %in% c(2, 6, 16)) %>% 
-  filter(replicate == 1) %>% 
+  filter(n %in% c(2, 16),
+         replicate == 1) %>% 
   mutate(Task1 = Task1 / n,
          Task2 = Task2 / n,
          Inactive = Inactive / n,
          n = factor(n)) %>% 
   melt(id.vars = c("n", "t", "replicate")) %>% 
-  rename(Task = variable, Freq = value) %>% 
+  rename(Task = variable, Freq = value) %>%
+  group_by(n) %>% 
   mutate(timestep = 0:(length(n)-1),
          groupsize = factor(paste0("Group size ", n), 
-                            levels = c("Group size 2", "Group size 6", "Group size 16")))
-levels(tallyEx$Task) <- c("Task 1", "Task 2", "Inactive")
+                            levels = c("Group size 2", "Group size 16"))) %>% 
+  filter(timestep <= 1000,
+         Task == "Task1") 
 
 
 # Plot
 cols <- c("#F00924", "#FDD545", "#4C0E78")
 
-gg_taskEx <- ggplot(data = tallyEx, aes(x = t, y = Freq, colour = groupsize)) +
-  geom_line(alpha = 1) +
+gg_taskEx <- ggplot(data = tallyEx, aes(x = t, y = Freq)) +
+  geom_line(alpha = 1,
+            size = 0.2, 
+            color = "#d36e4e") +
   theme_classic() +
   xlab("Time step") +
   ylab("Proportion of colony") +
-  scale_x_continuous(limits = c(0, 300),
-                     breaks = seq(0, 1000, 100)) +
+  scale_x_continuous(limits = c(0, 1000),
+                     labels = comma,
+                     breaks = seq(0, 1000, 250),
+                     expand = c(0, 0)) +
+  scale_y_continuous(breaks = seq(0, 1, 0.5),
+                     expand = c(0, 0)) +
   scale_color_manual(values = cols) +
   theme(legend.position = "none", 
         legend.title = element_text(size = 7, face = "bold"),
@@ -699,14 +712,14 @@ gg_taskEx <- ggplot(data = tallyEx, aes(x = t, y = Freq, colour = groupsize)) +
         axis.text = element_text(size = 8),
         axis.title = element_text(size = 10),
         axis.ticks = element_line(size = 0.5),
-        strip.text = element_text(size = 10, face = "italic"),
-        strip.background = element_rect(fill = NA, colour = NA),
+        strip.text = element_blank(),
+        strip.background = element_blank(),
         panel.spacing = unit(0.5, "cm")) +
-  facet_grid(Task ~ groupsize)
+  facet_grid(groupsize ~ .)
 
 gg_taskEx
 
-ggsave(filename = "output/FitnessPlots/TasksOverTimeExample.png", width = 5, height = 4, units = "in", dpi = 600)
+ggsave(filename = "output/FitnessPlots/TasksOverTimeExample.png", width = 2, height = 2, units = "in", dpi = 600)
 
 
 ####################

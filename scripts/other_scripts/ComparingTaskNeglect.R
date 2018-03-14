@@ -56,7 +56,7 @@ noTaskPerf <- noTaskPerf %>%
          noTaskAvg = noTaskAvg / 10000) %>% 
   summarise(TaskNegelectMean = mean(noTaskAvg, na.rm = TRUE),
             TaskNegelectSE = ( sd(noTaskAvg) / sqrt(length(noTaskAvg)) )) %>% 
-  mutate(Source = "Determinstic")
+  mutate(Source = "Deterministic")
 
 taskNeglect_all <- noTaskPerf
 
@@ -310,33 +310,31 @@ noTaskPerf <- noTaskPerf %>%
          noTaskAvg = noTaskAvg / 10000) %>% 
   summarise(TaskNegelectMean = mean(noTaskAvg, na.rm = TRUE),
             TaskNegelectSE = ( sd(noTaskAvg) / sqrt(length(noTaskAvg)) )) %>% 
-  mutate(Source = "All (Original)")
+  mutate(Source = "Full Model")
 
 taskNeglect_all <- rbind(taskNeglect_all, noTaskPerf)
 
-taskNeglect_all$Source <- factor(taskNeglect_all$Source, levels = c("Determinstic",
+taskNeglect_all$Source <- factor(taskNeglect_all$Source, levels = c("Deterministic",
+                                                                    "Prob. Updating",
                                                                     "Prob. Quitting",
                                                                     "Prob. Thresholds",
-                                                                    "Prob. Updating",
                                                                     "Threshold Variation",
-                                                                    "All (Original)"))
+                                                                    "Full Model"))
 
 # Plot all
 gg_models <- ggplot(data = taskNeglect_all) +
+  geom_line(aes(x = n, y = TaskNegelectMean, colour = Source)) +
   geom_errorbar(aes(x = n, ymin = TaskNegelectMean - TaskNegelectSE, ymax = TaskNegelectMean + TaskNegelectSE, colour = Source),
-                width = 1.5,
-                position = position_dodge(width = 1)) +
+                width = 1) +
   geom_point(aes(x = n, y = TaskNegelectMean, colour = Source),
-             size = 2,
-             position = position_dodge(width = 1)) +
-  geom_line(aes(x = n, y = TaskNegelectMean, colour = Source),
-            position = position_dodge(width = 1)) +
+             size = 1.5) +
   theme_classic() +
-  scale_color_brewer(palette = "Set1") +
+  scale_color_brewer(palette = "Set2") +
   scale_x_continuous(breaks = unique(taskNeglect_all$n)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 0.8)) +
   xlab("Group Size") +
   ylab("Task Negelect") +
-  theme(legend.position = "right",
+  theme(legend.position = "none",
         legend.justification = c(1, 1),
         legend.title = element_blank(),
         legend.key.height = unit(0.3, "cm"),
@@ -345,10 +343,13 @@ gg_models <- ggplot(data = taskNeglect_all) +
         legend.text = element_text(size = 10),
         legend.text.align = 0,
         # legend.box.background = element_rect(),
-        axis.text.y = element_text(size = 10, margin = margin(5, 6, 5, -2), color = "black"),
-        axis.text.x = element_text(size = 10, margin = margin(6, 5, -2, 5), color = "black"),
-        axis.title = element_text(size = 11, margin = margin(0, 0, 0, 0)),
+        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
+        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
+        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         axis.ticks.length = unit(-0.1, "cm"),
         aspect.ratio = 1)
 
 gg_models
+
+
+ggsave("output/StochasticElements/TaskNeglectByModelType.png", width = 2, height = 2, dpi = 600, unit = "in")
