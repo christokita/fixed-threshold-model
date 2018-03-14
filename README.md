@@ -11,7 +11,7 @@ This directory has three main files:
 * **output**: contains all subsequent derived data from simulations as well as any graphs produced from analysis of the simulation data. 
 
 The scripts folder has the following structure:
-* Any script starting with **__Util__** contains relevant utility functions used throughout the other scripts. These are broken down by general functionality. **__Util__MASTER.R** is the script sourced in all other scripts that imports all the other utility functions. 
+* Any script starting with **\_\_Util__** contains relevant utility functions used throughout the other scripts. These are broken down by general functionality. **__Util__MASTER.R** is the script sourced in all other scripts that imports all the other utility functions. 
 * **1A** and **1B** contain the general simulation scripts that can run a single parameter combination. 
 * **2** allows one to plot some of the results of the simulations from 1A or 1B
 * **3** preps the experimental data from the "data" folder for use in comparison with the model
