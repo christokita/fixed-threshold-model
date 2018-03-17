@@ -332,8 +332,8 @@ gg_models <- ggplot(data = taskNeglect_all) +
   scale_color_brewer(palette = "Set2") +
   scale_x_continuous(breaks = unique(taskNeglect_all$n)) +
   scale_y_continuous(expand = c(0, 0), limits = c(0, 0.8)) +
-  xlab("Group Size") +
-  ylab("Task Negelect") +
+  xlab("Group size") +
+  ylab("Task negelect") +
   theme(legend.position = "none",
         legend.justification = c(1, 1),
         legend.title = element_blank(),

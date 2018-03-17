@@ -7,7 +7,7 @@ rm(list = ls())
 source("scripts/__Util__MASTER.R")
 source("scripts/3_PrepPlotExperimentData.R")
 
-load("/Users/ChrisTokita/Documents/Research/Tarnita Lab/Evolution of DOL/Fixed_Delta06Sigma01Eta7LargerGroups100reps.Rdata")
+load("/Users/ChrisTokita/Documents/Research/Tarnita Lab/Incipient Groups DOL/Fixed_Delta06Sigma01Eta7LargerGroups100reps.Rdata")
 
 # Set variable
 filename <- "Fixed_Delta06Sigma01Eta7LargerGroups"
@@ -52,7 +52,7 @@ gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
   scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
   theme(axis.text.x = element_text(size = 0),
         axis.ticks.x = element_blank(),
-        axis.text.y = element_text(size = 8),
+        axis.text.y = element_text(size = 8, colour = "black"),
         axis.title.y = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         axis.title.x = element_text(size = 10, margin = margin(12, 0, 0, 0)),
         legend.position = "none") 
@@ -139,9 +139,9 @@ taskVarMeans$mask[taskVarMeans$n > 90] <- 1
 # Plot variance and mean by group size
 
 gg_varNorm <- ggplot() +
-  geom_hline(data = taskVarMean, 
-             aes(yintercept = 1),
-             colour = "grey30") +
+  # geom_hline(data = taskVarMean, 
+  #            aes(yintercept = 1),
+  #            colour = "grey30") +
   geom_point(data = taskVarMean, 
              aes(x = n, y = NormVarMean, colour = Source),
              size = 1,
@@ -177,9 +177,9 @@ gg_varNorm <- ggplot() +
 
 
 gg_mean <- ggplot() +
-  geom_hline(data = taskVarMean, 
-             aes(yintercept = 1),
-             colour = "grey30") +
+  # geom_hline(data = taskVarMean, 
+  #            aes(yintercept = 1),
+  #            colour = "grey30") +
   geom_point(data = taskVarMean,
              aes(x = n, y = NormMean, colour = Source),
              size = 1,
@@ -206,7 +206,7 @@ gg_mean <- ggplot() +
   scale_fill_manual(values = compPalette) +
   scale_colour_manual(values = compPalette) +
   theme(legend.position = "none",
-        axis.text = element_text(size = 8),
+        axis.text = element_text(size = 8, colour = "black"),
         axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         strip.text = element_blank(),
         strip.background = element_blank(),
@@ -251,9 +251,9 @@ taskCorrTot$mask[taskCorrTot$n > 90] <- 1
 
 # Plot
 gg_corr <- ggplot() +
-  geom_hline(data = taskCorrTot, 
-             aes(yintercept = 0),
-             colour = "grey30") +
+  # geom_hline(data = taskCorrTot, 
+  #            aes(yintercept = 0),
+  #            colour = "grey30") +
   geom_point(data = taskCorrTot, 
              aes(x = n, y = TaskMean, fill = Source, colour = Source), 
              size = 1,
@@ -269,7 +269,7 @@ gg_corr <- ggplot() +
   scale_fill_manual(values = compPalette) +
   scale_colour_manual(values = compPalette) +
   theme(legend.position = "none",
-        axis.text = element_text(size = 8),
+        axis.text = element_text(size = 8, colour = "black"),
         axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         strip.text = element_blank(),
         strip.background = element_blank(),
@@ -293,7 +293,7 @@ gg_corr <- ggplot() +
 
 
 # MultiPlot
-png(filename = paste0("output/_ComprehnsivePlots/", filename, ".png"), width = 4, height = 4, units = "in", res = 800)
+png(filename = paste0("output/_ComprehnsivePlots/", filename, ".png"), width = 6, height = 4, units = "in", res = 800)
 multiplot(gg_dist, gg_mean,  gg_corr, gg_varNorm, cols = 2)  
 dev.off()
 

@@ -249,9 +249,9 @@ gg_models <- ggplot(data = stimFluct_all) +
   scale_color_brewer(palette = "Set2") +
   scale_x_continuous(breaks = unique(stimFluct_all$n)) +
   scale_y_continuous(expand = c(0, 0), limits = c(0, 0.95), breaks = seq(0, 1, 0.2)) +
-  xlab("Group Size") +
-  ylab("Stimulus Fluctuation") +
-  theme(legend.position = "right",
+  xlab("Group size") +
+  ylab("Stimulus fluctuation") +
+  theme(legend.position = "none",
         legend.justification = c(1, 1),
         legend.title = element_blank(),
         legend.key.height = unit(0.3, "cm"),
@@ -269,4 +269,4 @@ gg_models <- ggplot(data = stimFluct_all) +
 gg_models
 
 
-ggsave("output/StochasticElements/StimFluctByModelType_Legend.png", width = 2, height = 2, dpi = 600, unit = "in")
+ggsave("output/StochasticElements/StimFluctByModelType.png", width = 2, height = 2, dpi = 600, unit = "in")
