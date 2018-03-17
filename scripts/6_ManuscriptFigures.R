@@ -443,9 +443,9 @@ palette <- c("#83343E", "#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "
 
 gg_specPerfNorm <- ggplot(data = merged_specperf) +
   geom_point(aes(x = TaskMeanNorm,
-                 # colour = as.factor(n),
+                 colour = as.factor(n),
                  y = noTaskAvgNorm), 
-             colour = "#F23619",
+             # colour = "black",
              size = 0.1) +
   theme_classic() +
   theme(legend.position = "none") +
@@ -455,7 +455,7 @@ gg_specPerfNorm <- ggplot(data = merged_specperf) +
                      expand = c(0, 0.01)) +
   scale_x_continuous(breaks = seq(0, 1, 0.5), 
                      expand = c(0, 0.03)) +
-  # scale_color_manual(values = palette) +
+  scale_color_manual(values = palette) +
   theme(legend.position = "none",
         legend.justification = c(1, 1),
         legend.title = element_blank(),
@@ -471,7 +471,7 @@ gg_specPerfNorm <- ggplot(data = merged_specperf) +
         axis.ticks.length = unit(-0.1, "cm"))
 gg_specPerfNorm
 
-svg("output/MSFigures/TaskNeglect_WithinGroup_Normalized.svg",  width = 1.45, height = 2.068)
+svg("output/MSFigures/TaskNeglect_WithinGroup_Normalized_Color.svg",  width = 1.45, height = 2.068)
 gg_specPerfNorm
 dev.off()
 

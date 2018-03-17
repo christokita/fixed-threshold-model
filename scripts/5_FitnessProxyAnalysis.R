@@ -426,6 +426,7 @@ gg_specStimNorm
 ggsave(filename = "output/FitnessPlots/StimFluctVsSpecializationWithinGroups.png", height = 2, width = 2, dpi = 600)
 
 
+
 ####################
 # Task Performance Fluctuation
 ####################
@@ -616,110 +617,67 @@ ggsave("output/FitnessPlots/TaskFluctuations_1TimeStep.png",  width = 2, height 
 
 
 
+# Within group - short term flucatuations vs specialization
+# Load specialization
+taskCorrTot <- do.call("rbind", groups_taskCorr)
+taskCorrTot <- taskCorrTot %>% 
+  mutate(TaskMean = (Task1 + Task2) / 2)
+taskCorrTot <- taskCorrTot %>% 
+  mutate(Set = paste0(n, "-", replicate)) %>% 
+  select(n, TaskMean, Task1, Task2, Set) 
 
-####################
-# Sample stimuli time series
-####################
-# Unlist
-stims <- unlist(groups_stim, recursive = FALSE)
-stims <- do.call("rbind", stims)
-
-# Select out example colonies
-stimSet <- stims %>% 
-  filter(n %in% c(2, 16),
-         replicate == 1) %>% 
+# Merge
+merged_spectally <- merge(taskCorrTot, tallyFluct, by = c("Set", "n"))
+merged_spectally <- merged_spectally %>% 
   group_by(n) %>% 
-  mutate(timestep = 0:(length(n)-1),
-         groupsize = factor(paste0("Group size ", n), 
-                            levels = c("Group size 2", "Group size 16"))) %>% 
-  filter(timestep <= 1000)
+  mutate(Task1Min = min(Task1Fluct),
+         Task1Max = max(Task1Fluct),
+         Task2Min = min(Task2Fluct),
+         Task2Max = max(Task2Fluct),
+         TaskMeanMin = min(TaskMean),
+         TaskMeanMax = max(TaskMean)) %>% 
+  mutate(Task1Norm = (Task1Fluct - Task1Min) / (Task1Max - Task1Min),
+         Task2Norm = (Task2Fluct - Task2Min) / (Task2Max - Task2Min),
+         TaskMeanNorm = (TaskMean - TaskMeanMin) / (TaskMeanMax - TaskMeanMin)) 
 
 # Plot
-gg_stimEx <- ggplot(data = stimSet, aes(x = timestep, y = s1)) +
-  geom_line(colour = "#4eb3d3", 
-            size = 0.2) +
+# Palette with single individuals
+palette <- c("#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78")
+
+gg_specTallyNorm <- ggplot(data = merged_spectally) +
+  geom_point(aes(x = TaskMeanNorm,
+                 colour = as.factor(n),
+                 y = Task1Norm), 
+             # colour = "#F23619",
+             size = 0.1) +
   theme_classic() +
-  xlab("Time step") +
-  ylab("Stimulus") +
-  scale_x_continuous(breaks = seq(0, 10000, 250),
-                     labels = comma,
-                     limits = c(0, 1000),
+  theme(legend.position = "none") +
+  ylab("Normalized task fluctuation") +
+  xlab("Normalized specialization") +
+  scale_y_continuous(breaks = seq(0, 1, 0.2), 
+                     limits = c(-0.01, 1.01),
                      expand = c(0, 0)) +
-  scale_y_continuous(limits = c(0, 15), 
+  scale_x_continuous(breaks = seq(0, 1, 0.2), 
+                     limits = c(-0.01, 1.01),
                      expand = c(0, 0)) +
-  theme(plot.margin = margin(0.25, 0.4, 0.25, 0.25, "cm"),
-        axis.text = element_text(size = 8),
-        axis.title = element_text(size = 10),
-        axis.ticks = element_line(size = 0.5),
-        strip.text = element_blank(),
-        strip.background = element_rect(fill = NA, colour = NA),
-        panel.spacing = unit(0.5, "cm")) +
-  facet_grid(groupsize ~ .)
-
-gg_stimEx
-
-ggsave(filename = "output/FitnessPlots/StimOverTimeExample.png", width = 2, height = 2, units = "in", dpi = 600)
-
-
-####################
-# Sample Task Time Series
-####################
-# Unlist
-tallies <- unlist(groups_taskTally, recursive = FALSE)
-tallies <- do.call("rbind", tallies)
-
-# Normalize
-tallyEx <- tallies %>% 
-  filter(n %in% c(2, 16),
-         replicate == 1) %>% 
-  mutate(Task1 = Task1 / n,
-         Task2 = Task2 / n,
-         Inactive = Inactive / n,
-         n = factor(n)) %>% 
-  melt(id.vars = c("n", "t", "replicate")) %>% 
-  rename(Task = variable, Freq = value) %>%
-  group_by(n) %>% 
-  mutate(timestep = 0:(length(n)-1),
-         groupsize = factor(paste0("Group size ", n), 
-                            levels = c("Group size 2", "Group size 16"))) %>% 
-  filter(timestep <= 1000,
-         Task == "Task1") 
-
-
-# Plot
-cols <- c("#F00924", "#FDD545", "#4C0E78")
-
-gg_taskEx <- ggplot(data = tallyEx, aes(x = t, y = Freq)) +
-  geom_line(alpha = 1,
-            size = 0.2, 
-            color = "#d36e4e") +
-  theme_classic() +
-  xlab("Time step") +
-  ylab("Proportion of colony") +
-  scale_x_continuous(limits = c(0, 1000),
-                     labels = comma,
-                     breaks = seq(0, 1000, 250),
-                     expand = c(0, 0)) +
-  scale_y_continuous(breaks = seq(0, 1, 0.5),
-                     expand = c(0, 0)) +
-  scale_color_manual(values = cols) +
-  theme(legend.position = "none", 
-        legend.title = element_text(size = 7, face = "bold"),
+  scale_color_manual(values = palette) +
+  theme(legend.position = "none",
+        legend.justification = c(1, 1),
+        legend.title = element_blank(),
         legend.key.height = unit(0.3, "cm"),
         legend.key.width= unit(0.4, "cm"),
-        legend.margin =  margin(t = 0.1, r = 0.1, b = 0.1, l = 0.1, "cm"),
+        legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
         legend.text = element_text(size = 6),
-        axis.text = element_text(size = 8),
-        axis.title = element_text(size = 10),
-        axis.ticks = element_line(size = 0.5),
-        strip.text = element_blank(),
-        strip.background = element_blank(),
-        panel.spacing = unit(0.5, "cm")) +
-  facet_grid(groupsize ~ .)
+        legend.text.align = 0,
+        # legend.box.background = element_rect(),
+        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
+        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
+        axis.title = element_text(size = 8, margin = margin(0, 0, 0, 0)),
+        axis.ticks.length = unit(-0.1, "cm"))
+gg_specTallyNorm
 
-gg_taskEx
+ggsave(filename = "output/FitnessPlots/TaskFluctVsSpecializationWithinGroups.png", height = 2, width = 2, dpi = 600)
 
-ggsave(filename = "output/FitnessPlots/TasksOverTimeExample.png", width = 2, height = 2, units = "in", dpi = 600)
 
 
 ####################
