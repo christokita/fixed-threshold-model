@@ -262,7 +262,7 @@ gg_models <- ggplot(data = stimFluct_all) +
         # legend.box.background = element_rect(),
         axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
         axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
-        axis.title = element_text(size = 2, margin = margin(0, 0, 0, 0)),
+        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
         axis.ticks.length = unit(-0.1, "cm"),
         aspect.ratio = 1)
 
