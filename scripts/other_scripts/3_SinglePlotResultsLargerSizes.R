@@ -44,7 +44,7 @@ taskSum <- taskDistTot %>%
 # Plot
 plot_TaskMat <- as.data.frame(taskDistTot)
 gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
-  geom_point(aes(colour = n), size = 0.3) +
+  geom_point(aes(colour = n), size = 0.05) +
   theme_classic() +
   labs(x = "Group size",
        y = "Task 1 frequency") +
@@ -53,8 +53,8 @@ gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
   theme(axis.text.x = element_text(size = 0),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 8, colour = "black"),
-        axis.title.y = element_text(size = 10, margin = margin(0, 0, 0, 0)),
-        axis.title.x = element_text(size = 10, margin = margin(12, 0, 0, 0)),
+        axis.title.y = element_text(size = 10, margin = margin(0, 10, 0, 0)),
+        axis.title.x = element_text(size = 10, margin = margin(11, 0, 0, 0)),
         legend.position = "none") 
 
 
@@ -169,7 +169,8 @@ gg_varNorm <- ggplot() +
   scale_colour_manual(values = compPalette) +
   theme(legend.position = "none",
         axis.text = element_text(size = 8),
-        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
+        axis.title.x = element_text(size = 10),
+        axis.title.y = element_text(size = 10, margin = margin(0, 10, 0, 0)), #so it aligns with text in large plot
         strip.text = element_blank(),
         strip.background = element_blank(),
         panel.spacing = unit(0.25, "cm")) +
@@ -270,7 +271,7 @@ gg_corr <- ggplot() +
   scale_colour_manual(values = compPalette) +
   theme(legend.position = "none",
         axis.text = element_text(size = 8, colour = "black"),
-        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
+        axis.title = element_text(size = 10),
         strip.text = element_blank(),
         strip.background = element_blank(),
         panel.spacing = unit(0.25, "cm")) +
