@@ -4,6 +4,8 @@ Theoretical simulation scripts and data for:
 
 Ulrich Y, Saragosti J, Tokita CK, Tarnita CE, Kronauer DJC. (In Revision). Fitness Benefits and Emergent Division of Labor at the Onset of Group-Living.
 
+This is the living repository of this code. For the public release/archive of the code used in the paper please see [![DOI](https://zenodo.org/badge/92619774.svg)](https://zenodo.org/badge/latestdoi/92619774)
+
 
 This directory has three main files:
 * **data**: contains relevant experimental data produced by Yuko Ulrich and the Kronauer lab.
