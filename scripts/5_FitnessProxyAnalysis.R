@@ -393,9 +393,9 @@ palette <- c("#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78")
 
 gg_specStimNorm <- ggplot(data = merged_specstim) +
   geom_point(aes(x = TaskMeanNorm,
-                 colour = as.factor(n),
+                 # colour = as.factor(n),
                  y = s1Norm), 
-             # colour = "#F23619",
+             colour = "black",
              size = 0.1) +
   theme_classic() +
   theme(legend.position = "none") +
@@ -423,7 +423,7 @@ gg_specStimNorm <- ggplot(data = merged_specstim) +
         axis.ticks.length = unit(-0.1, "cm"))
 gg_specStimNorm
 
-ggsave(filename = "output/FitnessPlots/StimFluctVsSpecializationWithinGroups.png", height = 2, width = 2, dpi = 600)
+ggsave(filename = "output/FitnessPlots/StimFluctVsSpecializationWithinGroups_1TimeStep.png", height = 2, width = 2, dpi = 600)
 
 
 
@@ -646,9 +646,9 @@ palette <- c("#F00924", "#F7A329", "#FDD545", "#027C2C", "#1D10F9", "#4C0E78")
 
 gg_specTallyNorm <- ggplot(data = merged_spectally) +
   geom_point(aes(x = TaskMeanNorm,
-                 colour = as.factor(n),
+                 # colour = as.factor(n),
                  y = Task1Norm), 
-             # colour = "#F23619",
+             colour = "black",
              size = 0.1) +
   theme_classic() +
   theme(legend.position = "none") +
@@ -676,7 +676,7 @@ gg_specTallyNorm <- ggplot(data = merged_spectally) +
         axis.ticks.length = unit(-0.1, "cm"))
 gg_specTallyNorm
 
-ggsave(filename = "output/FitnessPlots/TaskFluctVsSpecializationWithinGroups.png", height = 2, width = 2, dpi = 600)
+ggsave(filename = "output/FitnessPlots/TaskFluctVsSpecializationWithinGroups_1TimeStep.png", height = 2, width = 2, dpi = 600)
 
 
 
