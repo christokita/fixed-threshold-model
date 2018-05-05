@@ -68,9 +68,11 @@ taskVarMean <- taskDistTot %>%
   group_by(n, replicate) %>% 
   summarise(SD1 = sd(Task1),
             SD2 = sd(Task2),
-            Mean = mean(Task1)) %>% 
+            Mean1 = mean(Task1),
+            Mean2 = mean(Task2)) %>% 
   mutate(Source = "Model",
-         SD = (SD1 + SD2) / 2)
+         SD = (SD1 + SD2) / 2,
+         Mean = (Mean1 + Mean2) / 2)
 taskVarMean$SD[is.na(taskVarMean$SD)] <- 0 #fix for single individuals
 
 taskVarMean <- rbind(taskVarMean, yukoDataSummary)

@@ -69,9 +69,11 @@ taskVarMean <- taskDistTot %>%
   group_by(n, replicate) %>% 
   summarise(SD1 = sd(Task1),
             SD2 = sd(Task2),
-            Mean = mean(Task1)) %>% 
+            Mean1 = mean(Task1),
+            Mean2 = mean(Task2)) %>% 
   mutate(Source = "Model",
-         SD = (SD1 + SD2) / 2)
+         SD = (SD1 + SD2) / 2,
+         Mean = (Mean1 + Mean2) / 2)
 taskVarMean$SD[is.na(taskVarMean$SD)] <- 0 #fix for single individuals
 
 taskVarMean <- rbind(taskVarMean, yukoDataSummary)
@@ -119,13 +121,23 @@ taskVarMean$NormVarMean[taskVarMean$Source == "Model"] <- taskVarMean$SD[taskVar
 # Prep for broken axis plot
 taskVarMean <- as.data.frame(taskVarMean)
 taskVarMeans <- as.data.frame(taskVarMeans)
+# addrows <- data.frame(n = c(37, 95),
+#                       Source = rep("Model", 2),
+#                       MeanMean = c(0.2996409, 0.2996395),
+#                       MeanSE = c(NA, NA),
+#                       SDMean = c(0.1257388, 0.1282122),
+#                       SDSE= c(NA, NA),
+#                       NormMean = c(0.8669811, 0.8669778),
+#                       NormMeanSE = c(NA, NA),
+#                       NormVarMean = c(1.059927, 1.080777),
+#                       NormVarMeanSE= c(NA, NA))
 addrows <- data.frame(n = c(37, 95),
                       Source = rep("Model", 2),
-                      MeanMean = c(0.2996409, 0.2996395),
+                      MeanMean = c(0.2996399, 0.2996396),
                       MeanSE = c(NA, NA),
                       SDMean = c(0.1257388, 0.1282122),
                       SDSE= c(NA, NA),
-                      NormMean = c(0.8669811, 0.8669778),
+                      NormMean = c(0.8649687, 0.864968),
                       NormMeanSE = c(NA, NA),
                       NormVarMean = c(1.059927, 1.080777),
                       NormVarMeanSE= c(NA, NA))
@@ -189,7 +201,7 @@ gg_mean <- ggplot() +
              position = position_dodge(width = 2)) +
   theme_classic() +
   xlab("Group size") +
-  ylab("Relative task 1 performance") +
+  ylab("Relative task performance") +
   scale_x_continuous(breaks = unique(taskVarMean$n)) +
   scale_y_continuous(breaks = seq(0, 1.5, 0.05)) +
   scale_size_manual(values = c(2, 2, 2, 2, 2, 2, 2, 2, -1, -1, 2)) +
@@ -532,9 +544,9 @@ gg_fluct <- ggplot() +
 # Plot
 ####################
 # MultiPlot
-png(filename = paste0("output/_ComprehnsivePlots/", filename, ".png"), width = 6, height = 6, units = "in", res = 800)
-multiplot(gg_dist, gg_mean, gg_stimfluct,
-          gg_corr, gg_varNorm, gg_fluct,
+png(filename = paste0("output/_ComprehnsivePlots/", filename, ".png"), width = 6, height = 4, units = "in", res = 800)
+multiplot(gg_dist, gg_mean,
+          gg_corr, gg_varNorm,
           cols = 2)  
 dev.off()
 

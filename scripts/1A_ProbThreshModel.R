@@ -16,14 +16,14 @@ Ns             <- c(16) #vector of number of individuals to simulate
 m              <- 2 #number of tasks
 gens           <- 10000 #number of generations to run simulation 
 corrStep       <- 200 #number of time steps for calculation of correlation 
-reps           <- 1 #number of replications per simulation (for ensemble) 
+reps           <- 10 #number of replications per simulation (for ensemble) 
 
 # Threshold Parameters
 ThreshM        <- c(10, 10) #population threshold means 
-ThreshSD       <- ThreshM * 0 #population threshold standard deviations 
+ThreshSD       <- ThreshM * 0.1 #population threshold standard deviations 
 InitialStim    <- c(0, 0) #intital vector of stimuli
 StimRates      <- c(0.6, 0.6) #vector of stimuli increase rates  
-threshSlope    <- 30 #exponent parameter for threshold curve shape  
+threshSlope    <- 7 #exponent parameter for threshold curve shape  
 alpha          <- m #efficiency of task performance
 quitP          <- 0.2 #probability of quitting task once active
 

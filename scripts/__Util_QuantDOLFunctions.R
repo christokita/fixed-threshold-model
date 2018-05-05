@@ -40,7 +40,7 @@ mutualEntropy <- function(TotalStateMat) {
       # If entry has zero probability, set total value to zero (instead of NA/-Inf)
       entry <- p_xy * logVal
       if (is.na(entry)) {
-        entry <- 0
+        entry <- 0 # setting to zero because if p_x or p_y is 0, then you will get Inf/NA, but times 0 is 0 (approx)
       }
       # enter into list
       mutualEntr[task] <- entry
@@ -54,8 +54,8 @@ mutualEntropy <- function(TotalStateMat) {
   I_xy <- sum(unlist(I_xy))
   # Calcualte symmetrid division of labor D(x,y)
   D_sym <- I_xy / sqrt(H_x * H_y)
-  D_yx <- I_xy / H_x
-  D_xy <- I_xy / H_y
+  D_yx <- I_xy / H_x #names mixed up
+  D_xy <- I_xy / H_y #names mixed up
   # Dataframe
   D <- data.frame(Dsym = D_sym, Dyx = D_yx, Dxy = D_xy)
   # Return 
