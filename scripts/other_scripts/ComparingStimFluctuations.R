@@ -149,7 +149,7 @@ stimSumFluct <- stimFluct %>%
   group_by(n, GroupSizeFactor) %>% 
   summarise(sFluctMean = mean(sFluct, na.rm = TRUE),
             sFluctSE = sd(sFluct, na.rm = TRUE) / sqrt(length(sFluct))) %>% 
-  mutate(Source = "Prob. Updating")
+  mutate(Source = "Prob. Task Encounter")
 stimSumFluct <- as.data.frame(stimSumFluct)
 
 stimFluct_all <- rbind(stimFluct_all, stimSumFluct)
@@ -230,7 +230,7 @@ stimFluct_all <- rbind(stimFluct_all, stimSumFluct)
 
 # Plot
 stimFluct_all$Source <- factor(stimFluct_all$Source, levels = c("Deterministic",
-                                                                "Prob. Updating",
+                                                                "Prob. Task Encounter",
                                                                 "Prob. Quitting",
                                                                 "Prob. Thresholds",
                                                                 "Threshold Variation",
@@ -251,12 +251,12 @@ gg_models <- ggplot(data = stimFluct_all) +
   scale_y_continuous(expand = c(0, 0), limits = c(0, 0.95), breaks = seq(0, 1, 0.2)) +
   xlab("Group size") +
   ylab("Stimulus fluctuation") +
-  theme(legend.position = "none",
+  theme(legend.position = "right",
         legend.justification = c(1, 1),
         legend.title = element_blank(),
         legend.key.height = unit(0.3, "cm"),
         legend.key.width= unit(0.4, "cm"),
-        legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
+        legend.margin =  margin(t = 0, r = 0, b = 0, l = 0, "cm"),
         legend.text = element_text(size = 8),
         legend.text.align = 0,
         # legend.box.background = element_rect(),
@@ -269,4 +269,4 @@ gg_models <- ggplot(data = stimFluct_all) +
 gg_models
 
 
-ggsave("output/StochasticElements/StimFluctByModelType.png", width = 2, height = 2, dpi = 600, unit = "in")
+ggsave("output/StochasticElements/StimFluctByModelType_Legend.png", width = 2, height = 2, dpi = 600, unit = "in")

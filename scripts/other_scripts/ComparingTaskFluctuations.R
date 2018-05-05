@@ -190,7 +190,7 @@ tallySumFluct <- tallyFluct %>%
             InactiveFluctSE = sd(InactiveFluct, na.rm = TRUE) / sqrt(length(InactiveFluct)),
             TaskFluctMean = mean(TaskFluct, na.rm = TRUE),
             TaskFluctSE = sd(TaskFluct, na.rm = TRUE) / sqrt(length(TaskFluct))) %>% 
-  mutate(Source = "Prob. Updating")
+  mutate(Source = "Prob. Task Encounter")
 tallySumFluct <- as.data.frame(tallySumFluct)
 tallySumFluct <- tallySumFluct %>% 
   mutate(GroupSizeFactor = factor(GroupSizeFactor, levels = sort(unique(n))))
@@ -292,7 +292,7 @@ tallySumFluct_all <- rbind(tallySumFluct_all, tallySumFluct)
 
 # Plot
 tallySumFluct_all$Source <- factor(tallySumFluct_all$Source, levels = c("Deterministic",
-                                                                        "Prob. Updating",
+                                                                        "Prob. Task Encounter",
                                                                         "Prob. Quitting",
                                                                         "Prob. Thresholds",
                                                                         "Threshold Variation",

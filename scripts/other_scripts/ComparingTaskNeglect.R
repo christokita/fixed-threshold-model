@@ -208,7 +208,7 @@ noTaskPerf <- noTaskPerf %>%
          noTaskAvg = noTaskAvg / 10000) %>% 
   summarise(TaskNegelectMean = mean(noTaskAvg, na.rm = TRUE),
             TaskNegelectSE = ( sd(noTaskAvg) / sqrt(length(noTaskAvg)) )) %>% 
-  mutate(Source = "Prob. Updating")
+  mutate(Source = "Prob. Task Encounter")
 
 taskNeglect_all <- rbind(taskNeglect_all, noTaskPerf)
 
@@ -315,7 +315,7 @@ noTaskPerf <- noTaskPerf %>%
 taskNeglect_all <- rbind(taskNeglect_all, noTaskPerf)
 
 taskNeglect_all$Source <- factor(taskNeglect_all$Source, levels = c("Deterministic",
-                                                                    "Prob. Updating",
+                                                                    "Prob. Task Encounter",
                                                                     "Prob. Quitting",
                                                                     "Prob. Thresholds",
                                                                     "Threshold Variation",
