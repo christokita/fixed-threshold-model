@@ -201,7 +201,7 @@ gg_mean <- ggplot() +
              position = position_dodge(width = 2)) +
   theme_classic() +
   xlab("Group size") +
-  ylab("Relative task performance") +
+  ylab("Relative behavioral mean") +
   scale_x_continuous(breaks = unique(taskVarMean$n)) +
   scale_y_continuous(breaks = seq(0, 1.5, 0.05)) +
   scale_size_manual(values = c(2, 2, 2, 2, 2, 2, 2, 2, -1, -1, 2)) +
