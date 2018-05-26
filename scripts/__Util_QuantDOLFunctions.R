@@ -18,13 +18,13 @@ mutualEntropy <- function(TotalStateMat) {
   total <- sum(normMat)
   # Shannon's entropy of individuals H(X)
   H_x <- apply(normMat, MARGIN = 1, function(ind) {
-    p_x <- sum(ind) / total
-    h_x <- p_x * log2(p_x)
+    p_x <- sum(ind)
+    h_x <- p_x * log(p_x)
   })
   # Shannon's entropy of tasks H(Y)
   H_y <- apply(normMat, MARGIN = 2, function(task) {
-    p_y <- sum(task) / total
-    h_y <- p_y * log2(p_y)
+    p_y <- sum(task)
+    h_y <- p_y * log(p_y)
   })
   # Mutual entropy I(X,Y)
   I_xy <- lapply(1:n, function(ind) {
@@ -32,11 +32,11 @@ mutualEntropy <- function(TotalStateMat) {
     mutualEntr <- rep(NA, m)
     for (task in 1:m) {
       # joint probability p(x,y)
-      p_xy <- normMat[ind, task] / total
+      p_xy <- normMat[ind, task]
       # calculate log portion
-      p_x <- sum(normMat[ind, ]) / total
-      p_y <- sum(normMat[ , task]) / total
-      logVal <- log2(p_xy / (p_x * p_y))
+      p_x <- sum(normMat[ind, ])
+      p_y <- sum(normMat[ , task])
+      logVal <- log(p_xy / (p_x * p_y))
       # If entry has zero probability, set total value to zero (instead of NA/-Inf)
       entry <- p_xy * logVal
       if (is.na(entry)) {
