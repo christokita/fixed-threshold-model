@@ -105,7 +105,7 @@ gg_metric <- ggplot(data = metrics, aes(x = n, y = Mean, group = metric)) +
 
 gg_metric
 
-ggsave(gg_metric, file = "output/SpecializationMetrics/Plots/AllMetricsComparison_TEST.png", height = 2.1, width = 5, units = "in", dpi = 800)
+ggsave(gg_metric, file = "output/SpecializationMetrics/Plots/AllMetricsComparison.png", height = 2.2, width = 6, units = "in", dpi = 800)
 
 
 ####################
