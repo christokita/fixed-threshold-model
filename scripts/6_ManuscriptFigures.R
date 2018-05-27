@@ -302,13 +302,13 @@ gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
   geom_point(aes(colour = n), size = 0.2) +
   theme_classic() +
   labs(x = "Group size",
-       y = "Task 1 frequency") +
+       y = "Task 1 performance freq.") +
   scale_color_manual(values = palette) +
   scale_y_continuous(limits = c(0, 0.72), breaks = seq(0, 1, 0.1), expand = c(0, 0)) +
   theme( axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
          axis.text.x = element_blank(),
          axis.ticks.x = element_blank(), 
-         axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
+         axis.title.y = element_text(size = 8, margin = margin(0, 7, 0, 0)),
          axis.title.x = element_text(size = 10, margin = margin(15, 0, 0, 0)),
          axis.ticks.length = unit(-0.1, "cm"),
          legend.position = "none")
