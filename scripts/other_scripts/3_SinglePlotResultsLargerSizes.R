@@ -44,16 +44,16 @@ taskSum <- taskDistTot %>%
 # Plot
 plot_TaskMat <- as.data.frame(taskDistTot)
 gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
-  geom_point(aes(colour = n), size = 0.05) +
+  geom_point(aes(colour = n), size = 0.025) +
   theme_classic() +
   labs(x = "Group size",
-       y = "Task 1 frequency") +
+       y = "Task 1\nperformance frequency") +
   scale_color_manual(values = palette) +
   scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
   theme(axis.text.x = element_text(size = 0),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 8, colour = "black"),
-        axis.title.y = element_text(size = 10, margin = margin(0, 10, 0, 0)),
+        axis.title.y = element_text(size = 8, margin = margin(0, 3, 0, 0)),
         axis.title.x = element_text(size = 10, margin = margin(11, 0, 0, 0)),
         legend.position = "none") 
 
@@ -182,7 +182,7 @@ gg_varNorm <- ggplot() +
   theme(legend.position = "none",
         axis.text = element_text(size = 8),
         axis.title.x = element_text(size = 10),
-        axis.title.y = element_text(size = 10, margin = margin(0, 10, 0, 0)), #so it aligns with text in large plot
+        axis.title.y = element_text(size = 8, margin = margin(0, 10, 0, 0)), #so it aligns with text in large plot
         strip.text = element_blank(),
         strip.background = element_blank(),
         panel.spacing = unit(0.25, "cm")) +
@@ -547,9 +547,20 @@ gg_fluct <- ggplot() +
 png(filename = paste0("output/_ComprehnsivePlots/", filename, ".png"), width = 6, height = 4, units = "in", res = 800)
 multiplot(gg_dist, gg_mean,
           gg_corr, gg_varNorm,
+          cols = 2)
+dev.off()
+
+
+png(filename = paste0("output/_ComprehnsivePlots/PartsBC", filename, ".png"), width = 6, height = 2, units = "in", res = 800)
+multiplot(gg_varNorm,
+          gg_corr,
           cols = 2)  
 dev.off()
 
+png(filename = paste0("output/_ComprehnsivePlots/PartsA", filename, ".png"), width = 6, height = 2, units = "in", res = 800)
+multiplot(gg_dist,
+          cols = 1)  
+dev.off()
 
 
 ####################
