@@ -134,8 +134,8 @@ for (i in 1:length(Ns)) {
           # stepNorm <- X_step / corrStep
           # prevNorm <- X_prev / corrStep
           # Calculate ranks
-          step_ranks <- calculateTaskRank(TaskStepMat = X_step)
-          prev_ranks <- calculateTaskRank(TaskStepMat = X_prev)
+          step_ranks <- calculateTaskRank(TaskStepMat = X_step) #note: not using normalized performance
+          prev_ranks <- calculateTaskRank(TaskStepMat = X_prev) #note: not using normalized performance
           # Calculate Correlation
           rankCorr <- cor(prev_ranks, step_ranks, method = "spearman")
           # Put in list

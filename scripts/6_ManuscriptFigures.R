@@ -61,6 +61,8 @@ spec.fit <- expand.grid(list(sigma = seq(0, max(improve06$sigma), (max(improve06
                              threshSlope = seq(1, max(improve06$threshSlope), (max(improve06$threshSlope) - min(improve06$threshSlope)) / 1000)))
 z <- predict(spec.loess, newdata = spec.fit)
 spec.fit$spec <- as.numeric(z)
+# Approximated +/- 10% of experimental data
+# Experimental slope: 0.5915000 - 0.2663750 = 0.325125
 spec.fit$CloseIncrease <- ifelse(spec.fit$spec >= 0.2926124 & spec.fit$spec <= 0.3576374, 0.5, 0) 
 
 # Graph 
