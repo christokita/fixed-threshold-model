@@ -242,7 +242,7 @@ gg_fixedProb <- ggplot(data = allFixedProbCorr) +
   geom_point(aes(x = n, y = SpecMean, colour = Set, fill = Set, shape = Set),
              position = position_dodge(width = 0.5),
              size = 1) +
-  theme(legend.position = "right",
+  theme(legend.position = "none",
         legend.justification = c(1, 1),
         legend.title = element_blank(),
         legend.key.height = unit(0.3, "cm"),
@@ -251,15 +251,16 @@ gg_fixedProb <- ggplot(data = allFixedProbCorr) +
         legend.text = element_text(size = 6),
         legend.text.align = 0,
         # legend.box.background = element_rect(),
-        axis.text.y = element_text(size = 6, margin = margin(0, 6, 0, -4), color = "black"),
-        axis.text.x = element_text(size = 6, margin = margin(6, 0, -4, 0), color = "black"),
+        axis.text.y = element_text(size = 6, margin = margin(0, 5, 0, -4), color = "black"),
+        axis.text.x = element_text(size = 6, margin = margin(5, 0, -4, 0), color = "black"),
         axis.title = element_text(size = 7, margin = margin(0, 0, 0, 0)),
         plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"),
-        axis.ticks = element_line(colour = "black"),
-        axis.ticks.length = unit(-0.1, "cm"))
+        axis.ticks = element_line(colour = "black", size = 0.3),
+        axis.ticks.length = unit(-0.06, "cm"),
+        axis.line = element_line(size = 0.3))
 
 
-ggsave("output/MSFigures/FixedProbSpecializationFitsLegend_OneColumn.svg", width = 44.5, height = 45, units = "mm")
+ggsave("output/MSFigures/FixedProbSpecializationFits_OneColumn.svg", width = 44.5, height = 45, units = "mm")
 
 
 ####################
@@ -309,14 +310,15 @@ gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
        y = "Task 1 performance frequency") +
   scale_color_manual(values = palette) +
   scale_y_continuous(limits = c(0, 0.72), breaks = seq(0, 1, 0.1), expand = c(0, 0)) +
-  theme( axis.text.y = element_text(size = 6, margin = margin(0, 6, 0, -4), color = "black"),
+  theme( axis.text.y = element_text(size = 6, margin = margin(0, 5, 0, -4), color = "black"),
          axis.text.x = element_blank(),
          axis.ticks.x = element_blank(), 
          axis.title.y = element_text(size = 7, margin = margin(0, 4, 0, 0)),
-         axis.title.x = element_text(size = 7, margin = margin(12, 0, 0, 0)),
-         axis.ticks.length = unit(-0.1, "cm"),
-         axis.ticks = element_line(colour = "black"),
+         axis.title.x = element_text(size = 7, margin = margin(11, 0, 0, 0)),
+         axis.ticks.length = unit(-0.06, "cm"),
+         axis.ticks = element_line(colour = "black", size = 0.3),
          plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"),
+         axis.line = element_line(size = 0.3),
          legend.position = "none")
 
 # svg("output/MSFigures/TaskDistExample.svg", width = 2.8, height = 2.07)
@@ -410,11 +412,12 @@ gg_noTask <- ggplot(data = neglectSum) +
         legend.text = element_text(size = 6),
         legend.text.align = 0,
         # legend.box.background = element_rect(),
-        axis.text.y = element_text(size = 6, margin = margin(t = 0, r =  6, b =  0, l = -4), color = "black"),
-        axis.text.x = element_text(size = 6, margin = margin(6, 0, -4, 0), color = "black"),
+        axis.text.y = element_text(size = 6, margin = margin(t = 0, r =  5, b =  0, l = -4), color = "black"),
+        axis.text.x = element_text(size = 6, margin = margin(5, 0, -4, 0), color = "black"),
         axis.title = element_text(size = 7, margin = margin(0, 0, 0, 0)),
-        axis.ticks.length = unit(-0.1, "cm"),
-        axis.ticks = element_line(colour = "black"),
+        axis.ticks.length = unit(-0.06, "cm"),
+        axis.ticks = element_line(colour = "black", size = 0.3),
+        axis.line = element_line(size = 0.3),
         plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"))
 
 # svg("output/MSFigures/TaskNeglectCombined.svg",  width = 1.44, height = 2.08)
@@ -463,11 +466,12 @@ gg_specPerfNorm <- ggplot(data = merged_specperf) +
   scale_x_continuous(breaks = seq(0, 1, 0.5), 
                      expand = c(0, 0.03)) +
   scale_color_manual(values = palette) +
-  theme(axis.text.y = element_text(size = 6, margin = margin(0, 6, 0, -4), color = "black"),
-        axis.text.x = element_text(size = 6, margin = margin(6, 0, -4, 0), color = "black"),
+  theme(axis.text.y = element_text(size = 6, margin = margin(0, 5, 0, -4), color = "black"),
+        axis.text.x = element_text(size = 6, margin = margin(5, 0, -4, 0), color = "black"),
         axis.title = element_text(size = 7, margin = margin(0, 0, 0, 0)),
-        axis.ticks.length = unit(-0.1, "cm"),
-        axis.ticks = element_line(colour = "black"),
+        axis.ticks.length = unit(-0.06, "cm"),
+        axis.ticks = element_line(colour = "black", size = 0.3),
+        axis.line = element_line(size = 0.3),
         plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"))
 gg_specPerfNorm
 
