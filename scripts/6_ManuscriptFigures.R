@@ -11,6 +11,7 @@ rm(list = ls())
 source("scripts/__Util__MASTER.R")
 library(RColorBrewer)
 library(scales)
+rescale <- 1.25 #outputs plots at 80% size into inkscape
 
 
 ##### Delta 06 #####
@@ -67,10 +68,15 @@ spec.fit$CloseIncrease <- ifelse(spec.fit$spec >= 0.2926124 & spec.fit$spec <= 0
 
 # Graph 
 gg_abslope <- ggplot() +
-  geom_raster(data = improve06, 
+  # geom_raster(data = improve06, 
+  #             aes(x = sigma, 
+  #                 y = threshSlope, 
+  #                 fill = Increase)) +
+  geom_tile(data = improve06, 
               aes(x = sigma, 
                   y = threshSlope, 
-                  fill = Increase)) +
+                  fill = Increase,
+                  color = Increase)) +
   stat_contour(data = spec.fit,
                aes(x = sigma,
                    y = threshSlope,
@@ -104,25 +110,24 @@ gg_abslope <- ggplot() +
   xlab(expression(sigma)) +
   ylab(expression(eta)) +
   theme(legend.position = "none", 
-        # legend.key.height = unit(0.84, "cm"),
-        legend.key.height = unit(0.17, "npc"),
+        # legend.key.height = unit(0.5, "cm"),
+        legend.key.height = unit(0.195, "npc"),
         legend.key.width= unit(0.2, "cm"),
         legend.key = element_rect(colour = "black", size = 0.5),
         legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
         legend.text = element_text(size = 6),
         legend.title = element_blank(),
-        axis.text.y = element_text(size = 8, margin = margin(5, 2, 5, -2), color = "black"),
-        axis.text.x = element_text(size = 8, margin = margin(2, 5, -2, 5), color = "black"),
-        axis.title = element_text(size = 11, margin = margin(0, 0, 0, 0)),
+        axis.text.y = element_text(size = 6, margin = margin(t = 0, r = 3, b = 0, l = -5), color = "black"),
+        axis.text.x = element_text(size = 6, margin = margin(3, 0, -4, 0), color = "black"),
+        axis.title = element_text(size = 9, margin = margin(0, 0, 0, 0)),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"),
         axis.ticks.length = unit(0, "cm"),
-        panel.border = element_rect(fill = "NA", size = 1))
+        panel.border = element_rect(colour = "black")) 
 
 gg_abslope
 
-ggsave("output/MSFigures/ParameterSpaceDelta06wContourfill.png", width = 2.4, height = 2.05, units = "in", dpi = 600)
-
-ggsave("output/MSFigures/ParameterSpaceDelta06wContourfillNarrow.png", width = 2.1, height = 2, units = "in", dpi = 600)
-
+ggsave("output/MSFigures/ParameterSpaceDelta06wContour_OneColumn_Legend.svg", width = (rescale * 44.5), height = (rescale * 45), units = 'mm')
+ggsave("output/MSFigures/ParameterSpaceDelta06wContour_OneColumn.svg", width = 39, height = 44, units = 'mm')
 
 
 ####################
@@ -230,35 +235,32 @@ gg_fixedProb <- ggplot(data = allFixedProbCorr) +
   # Mean and SE portion of plot
   geom_errorbar(aes(x = n, ymin = SpecMean - SpecSE, ymax = SpecMean + SpecSE, colour = Set, width = 1.5),
                 position = position_dodge(width = 0.5),
-                size = 0.25) +
+                size = 0.2) +
   geom_line(aes(x = n, y = SpecMean,  colour = Set),
-            size = 0.3,
+            size = 0.2,
             position = position_dodge(width = 0.5)) +
   geom_point(aes(x = n, y = SpecMean, colour = Set, fill = Set, shape = Set),
              position = position_dodge(width = 0.5),
-             size = 1.5) +
-  theme(legend.position = "none",
+             size = 1) +
+  theme(legend.position = "right",
         legend.justification = c(1, 1),
         legend.title = element_blank(),
         legend.key.height = unit(0.3, "cm"),
         legend.key.width= unit(0.4, "cm"),
         legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
-        legend.text = element_text(size = 8),
+        legend.text = element_text(size = 6),
         legend.text.align = 0,
         # legend.box.background = element_rect(),
-        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
-        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
-        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
+        axis.text.y = element_text(size = 6, margin = margin(0, 6, 0, -4), color = "black"),
+        axis.text.x = element_text(size = 6, margin = margin(6, 0, -4, 0), color = "black"),
+        axis.title = element_text(size = 7, margin = margin(0, 0, 0, 0)),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"),
+        axis.ticks = element_line(colour = "black"),
         axis.ticks.length = unit(-0.1, "cm"))
 
-# svg("output/MSFigures/FixedProbSpecializationFits.svg", width = 2.65, height = 2.05)
-svg("output/MSFigures/FixedProbSpecializationFitsNarrow.svg", width = 2.34, height = 2.07)
-gg_fixedProb
-dev.off()
 
-svg("output/MSFigures/FixedProbSpecializationFits.svg", width = 2.7, height = 2.07)
-gg_fixedProb
-dev.off()
+ggsave("output/MSFigures/FixedProbSpecializationFitsLegend_OneColumn.svg", width = 44.5, height = 45, units = "mm")
+
 
 ####################
 # Task Distribution 
@@ -301,23 +303,25 @@ taskSum <- taskDistTot %>%
 # Plot
 plot_TaskMat <- as.data.frame(taskDistTot)
 gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
-  geom_point(aes(colour = n), size = 0.2) +
+  geom_point(aes(colour = n), size = 0.1) +
   theme_classic() +
   labs(x = "Group size",
-       y = "Task 1 performance freq.") +
+       y = "Task 1 performance frequency") +
   scale_color_manual(values = palette) +
   scale_y_continuous(limits = c(0, 0.72), breaks = seq(0, 1, 0.1), expand = c(0, 0)) +
-  theme( axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
+  theme( axis.text.y = element_text(size = 6, margin = margin(0, 6, 0, -4), color = "black"),
          axis.text.x = element_blank(),
          axis.ticks.x = element_blank(), 
-         axis.title.y = element_text(size = 8, margin = margin(0, 7, 0, 0)),
-         axis.title.x = element_text(size = 10, margin = margin(15, 0, 0, 0)),
+         axis.title.y = element_text(size = 7, margin = margin(0, 4, 0, 0)),
+         axis.title.x = element_text(size = 7, margin = margin(12, 0, 0, 0)),
          axis.ticks.length = unit(-0.1, "cm"),
+         axis.ticks = element_line(colour = "black"),
+         plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"),
          legend.position = "none")
 
-svg("output/MSFigures/TaskDistExample.svg", width = 2.8, height = 2.07)
-gg_dist
-dev.off()
+# svg("output/MSFigures/TaskDistExample.svg", width = 2.8, height = 2.07)
+ggsave("output/MSFigures/TaskDistExample_OneColumn.svg", width = 45, height = 45, units = "mm")
+
 
 
 ####################
@@ -384,16 +388,16 @@ gg_noTask <- ggplot(data = neglectSum) +
   geom_errorbar(aes(x = n, 
                     ymin = TaskNegelectMean - TaskNegelectSE, 
                     ymax = TaskNegelectMean + TaskNegelectSE),
-                colour = "#F23619",
+                colour = "black",
                 size = 0.25) +
   geom_point(aes(x = n, y = TaskNegelectMean),
-             colour = "#F23619",
-             size = 1.5) +
+             colour = "black",
+             size = 1) +
   theme_classic() +
   labs(x = "Group size",
        y = "Avg. task neglect") +
   scale_x_continuous(breaks = unique(neglectSum$n),
-                     labels = c(1, "", 4, "", 8, "", 16)) +
+                     labels = c(1, "", 4, "", 8, 12, 16)) +
   scale_y_continuous(breaks = seq(0, 1, 0.1),
                      limits = c(0, 0.825),
                      expand = c(0, 0)) +
@@ -406,14 +410,15 @@ gg_noTask <- ggplot(data = neglectSum) +
         legend.text = element_text(size = 6),
         legend.text.align = 0,
         # legend.box.background = element_rect(),
-        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
-        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
-        axis.title = element_text(size = 10, margin = margin(0, 0, 0, 0)),
-        axis.ticks.length = unit(-0.1, "cm"))
+        axis.text.y = element_text(size = 6, margin = margin(t = 0, r =  6, b =  0, l = -4), color = "black"),
+        axis.text.x = element_text(size = 6, margin = margin(6, 0, -4, 0), color = "black"),
+        axis.title = element_text(size = 7, margin = margin(0, 0, 0, 0)),
+        axis.ticks.length = unit(-0.1, "cm"),
+        axis.ticks = element_line(colour = "black"),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"))
 
-svg("output/MSFigures/TaskNeglectCombined.svg",  width = 1.44, height = 2.08)
-gg_noTask
-dev.off()
+# svg("output/MSFigures/TaskNeglectCombined.svg",  width = 1.44, height = 2.08)
+ggsave("output/MSFigures/TaskNeglectCombined_OneColumn.svg",  width = 22.5, height = 45, units = "mm")
 
 
 ####################
@@ -458,22 +463,14 @@ gg_specPerfNorm <- ggplot(data = merged_specperf) +
   scale_x_continuous(breaks = seq(0, 1, 0.5), 
                      expand = c(0, 0.03)) +
   scale_color_manual(values = palette) +
-  theme(legend.position = "none",
-        legend.justification = c(1, 1),
-        legend.title = element_blank(),
-        legend.key.height = unit(0.3, "cm"),
-        legend.key.width= unit(0.4, "cm"),
-        legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
-        legend.text = element_text(size = 6),
-        legend.text.align = 0,
-        # legend.box.background = element_rect(),
-        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
-        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
-        axis.title = element_text(size = 8, margin = margin(0, 0, 0, 0)),
-        axis.ticks.length = unit(-0.1, "cm"))
+  theme(axis.text.y = element_text(size = 6, margin = margin(0, 6, 0, -4), color = "black"),
+        axis.text.x = element_text(size = 6, margin = margin(6, 0, -4, 0), color = "black"),
+        axis.title = element_text(size = 7, margin = margin(0, 0, 0, 0)),
+        axis.ticks.length = unit(-0.1, "cm"),
+        axis.ticks = element_line(colour = "black"),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"))
 gg_specPerfNorm
 
-svg("output/MSFigures/TaskNeglect_WithinGroup_Normalized_Color.svg",  width = 1.45, height = 2.068)
-gg_specPerfNorm
-dev.off()
+# svg("output/MSFigures/TaskNeglect_WithinGroup_Normalized_Color.svg",  width = 1.45, height = 2.068)
+ggsave("output/MSFigures/TaskNeglect_WithinGroup_Normalized_Color_OneColumn.svg",  width = 22.5, height = 45, units = "mm")
 
