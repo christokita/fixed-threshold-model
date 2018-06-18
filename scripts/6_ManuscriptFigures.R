@@ -126,7 +126,8 @@ gg_abslope <- ggplot() +
 gg_abslope
 
 ggsave("output/MSFigures/ParameterSpaceDelta06wContour_OneColumn.svg", width = 39, height = 44, units = 'mm')
-ggsave("output/MSFigures/ParameterSpaceDelta06wContour.svg", width = 50, height = 44, units = 'mm')
+ggsave("output/MSFigures/ParameterSpaceDelta06wContour.svg", width = 50, height = 40, units = 'mm')
+ggsave("output/MSFigures/ParameterSpaceDelta06wContour_ThreePerRow.svg", width = 36, height = 33.8, units = 'mm')
 
 
 ####################
@@ -260,7 +261,9 @@ gg_fixedProb <- ggplot(data = allFixedProbCorr) +
 
 
 ggsave("output/MSFigures/FixedProbSpecializationFits_OneColumn.svg", width = 44.5, height = 45, units = "mm")
-ggsave("output/MSFigures/FixedProbSpecializationFits.svg", width = 60, height = 45, units = "mm")
+ggsave("output/MSFigures/FixedProbSpecializationFits.svg", width = 60, height = 40, units = "mm")
+ggsave("output/MSFigures/FixedProbSpecializationFits_ThreePerRow.svg", width = 45, height = 35, units = 'mm')
+
 
 ####################
 # Task Distribution 
@@ -303,7 +306,7 @@ taskSum <- taskDistTot %>%
 # Plot
 plot_TaskMat <- as.data.frame(taskDistTot)
 gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
-  geom_point(aes(colour = n), size = 0.1) +
+  geom_point(aes(colour = n), size = 0.1, stroke = 0.4) +
   theme_classic() +
   labs(x = "Group size",
        y = "Task 1 performance freq.") +
@@ -322,7 +325,8 @@ gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
 
 # svg("output/MSFigures/TaskDistExample.svg", width = 2.8, height = 2.07)
 ggsave("output/MSFigures/TaskDistExample_OneColumn.svg", width = 45, height = 35, units = "mm")
-ggsave("output/MSFigures/TaskDistExample.svg", width = 50.5, height = 35, units = "mm")
+ggsave("output/MSFigures/TaskDistExample.svg", width = 50.5, height = 30, units = "mm")
+ggsave("output/MSFigures/TaskDistExample_threeperrow.svg", width = 45, height = 35, units = "mm")
 
 ####################
 # Task Neglect 
@@ -389,10 +393,11 @@ gg_noTask <- ggplot(data = neglectSum) +
                     ymin = TaskNegelectMean - TaskNegelectSE, 
                     ymax = TaskNegelectMean + TaskNegelectSE),
                 colour = "black",
-                size = 0.25) +
+                size = 0.25,
+                width = 0.1) +
   geom_point(aes(x = n, y = TaskNegelectMean),
              colour = "black",
-             size = 1) +
+             size = 0.7) +
   theme_classic() +
   labs(x = "Group size",
        y = "Avg. task neglect") +
@@ -420,7 +425,8 @@ gg_noTask <- ggplot(data = neglectSum) +
 
 # svg("output/MSFigures/TaskNeglectCombined.svg",  width = 1.44, height = 2.08)
 ggsave("output/MSFigures/TaskNeglectCombined_OneColumn.svg",  width = 22.5, height = 45, units = "mm")
-ggsave("output/MSFigures/TaskNeglectCombined.svg",  width = 23.5, height = 35, units = "mm")
+ggsave("output/MSFigures/TaskNeglectCombined.svg",  width = 23.5, height = 30, units = "mm")
+ggsave("output/MSFigures/TaskNeglectCombined_ThreePerRow.svg", width = 45, height = 35, units = 'mm')
 
 ####################
 # Task Neglect vs. Specialization within group
@@ -454,7 +460,8 @@ gg_specPerfNorm <- ggplot(data = merged_specperf) +
                  colour = as.factor(n),
                  y = noTaskAvgNorm), 
              # colour = "black",
-             size = 0.1) +
+             size = 0.1,
+             stroke = 0.4) +
   theme_classic() +
   theme(legend.position = "none") +
   ylab("Normalized task neglect") +
@@ -462,7 +469,7 @@ gg_specPerfNorm <- ggplot(data = merged_specperf) +
   scale_y_continuous(breaks = seq(0, 1, 0.2), 
                      expand = c(0, 0.01)) +
   scale_x_continuous(breaks = seq(0, 1, 0.5), 
-                     expand = c(0, 0.03)) +
+                     expand = c(0, 0.01)) +
   scale_color_manual(values = palette) +
   theme(axis.text.y = element_text(size = 6, margin = margin(0, 5, 0, -4), color = "black"),
         axis.text.x = element_text(size = 6, margin = margin(5, 0, -4, 0), color = "black"),
@@ -475,5 +482,62 @@ gg_specPerfNorm
 
 # svg("output/MSFigures/TaskNeglect_WithinGroup_Normalized_Color.svg",  width = 1.45, height = 2.068)
 ggsave("output/MSFigures/TaskNeglect_WithinGroup_Normalized_Color_OneColumn.svg",  width = 22.5, height = 45, units = "mm")
-ggsave("output/MSFigures/TaskNeglect_WithinGroup_Normalized_Color.svg",  width = 23.5, height = 35, units = "mm")
+ggsave("output/MSFigures/TaskNeglect_WithinGroup_Normalized_Color.svg",  width = 23.5, height = 30, units = "mm")
+ggsave("output/MSFigures/TaskNeglect_WithinGroup_Normalized_Color_threeperrow.svg",  width = 45, height = 35, units = "mm")
+
+
+####################
+# Experiments: Min RMSD
+####################
+rm(list = ls())
+source("scripts/__Util__MASTER.R")
+source("scripts/3_PrepPlotExperimentData.R")
+
+min_rmsd <- read.csv(file = "data/minRMSD.csv", header = TRUE)
+
+min_rmsd_summary <- min_rmsd %>% 
+  group_by(GroupSize) %>% 
+  summarise(MeanMinRMSD = mean(minRMSD),
+            MeanMinRMSDSE = ( sd(minRMSD) / sqrt(length(minRMSD))))
+blank_row <- data.frame("colonyID" = 'blah', "GroupSize" = 1.0, "minRMSD" = NA)
+min_rmsd <- rbind(min_rmsd, blank_row)
+
+gg_RMSD <- ggplot() +
+  geom_point(data = min_rmsd, 
+             aes(x = GroupSize, y = minRMSD),
+             col = "grey60", 
+             size = 0.4,
+             shape = 8,
+             stroke = 0.2) +
+  geom_errorbar(data = min_rmsd_summary, 
+                aes(x = GroupSize, 
+                    ymin = MeanMinRMSD - MeanMinRMSDSE, 
+                    ymax = MeanMinRMSD + MeanMinRMSDSE),
+                colour = "black",
+                size = 0.25, 
+                width = 0) +
+  geom_point(data = min_rmsd_summary, 
+             aes(x = GroupSize, y = MeanMinRMSD),
+             size = 0.7) +
+  theme_classic() +
+  xlab("Group Size") +
+  ylab("Min. RMSD (mm)") +
+  scale_y_continuous(breaks = seq(9, 19, 1),
+                     expand = c(0, 0.05),
+                     labels = c('', '10', '', '12', '', '14', '', '16', '', '18', '')) +
+  scale_x_continuous(breaks = c(0, 2, 4, 6, 8, 12, 16),
+                     expand = c(0, 0.0),
+                     labels = c('', '2', '', '6', '', '12', '16')) +
+  scale_color_manual(values = palette) +
+  theme(axis.text.y = element_text(size = 6, margin = margin(0, 5, 0, -4), color = "black"),
+        axis.text.x = element_text(size = 6, margin = margin(5, 0, -4, 0), color = "black"),
+        axis.title = element_text(size = 7, margin = margin(0, 0, 0, 0)),
+        axis.ticks.length = unit(-0.06, "cm"),
+        axis.ticks = element_line(colour = "black", size = 0.3),
+        axis.line = element_line(size = 0.3),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"))
+gg_RMSD
+
+ggsave("output/MSFigures/MinRMSDFigure.svg",  width = 23.5, height = 30, units = "mm")
+ggsave("output/MSFigures/MinRMSDFigure_threeperrow.svg", width = 45, height = 35, units = "mm")
 
