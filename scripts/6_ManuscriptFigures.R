@@ -11,7 +11,6 @@ rm(list = ls())
 source("scripts/__Util__MASTER.R")
 library(RColorBrewer)
 library(scales)
-rescale <- 1.25 #outputs plots at 80% size into inkscape
 
 
 ##### Delta 06 #####
@@ -126,8 +125,8 @@ gg_abslope <- ggplot() +
 
 gg_abslope
 
-ggsave("output/MSFigures/ParameterSpaceDelta06wContour_OneColumn_Legend.svg", width = (rescale * 44.5), height = (rescale * 45), units = 'mm')
 ggsave("output/MSFigures/ParameterSpaceDelta06wContour_OneColumn.svg", width = 39, height = 44, units = 'mm')
+ggsave("output/MSFigures/ParameterSpaceDelta06wContour.svg", width = 50, height = 44, units = 'mm')
 
 
 ####################
@@ -261,7 +260,7 @@ gg_fixedProb <- ggplot(data = allFixedProbCorr) +
 
 
 ggsave("output/MSFigures/FixedProbSpecializationFits_OneColumn.svg", width = 44.5, height = 45, units = "mm")
-
+ggsave("output/MSFigures/FixedProbSpecializationFits.svg", width = 60, height = 45, units = "mm")
 
 ####################
 # Task Distribution 
@@ -307,7 +306,7 @@ gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
   geom_point(aes(colour = n), size = 0.1) +
   theme_classic() +
   labs(x = "Group size",
-       y = "Task 1 performance frequency") +
+       y = "Task 1 performance freq.") +
   scale_color_manual(values = palette) +
   scale_y_continuous(limits = c(0, 0.72), breaks = seq(0, 1, 0.1), expand = c(0, 0)) +
   theme( axis.text.y = element_text(size = 6, margin = margin(0, 5, 0, -4), color = "black"),
@@ -322,9 +321,8 @@ gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
          legend.position = "none")
 
 # svg("output/MSFigures/TaskDistExample.svg", width = 2.8, height = 2.07)
-ggsave("output/MSFigures/TaskDistExample_OneColumn.svg", width = 45, height = 45, units = "mm")
-
-
+ggsave("output/MSFigures/TaskDistExample_OneColumn.svg", width = 45, height = 35, units = "mm")
+ggsave("output/MSFigures/TaskDistExample.svg", width = 50.5, height = 35, units = "mm")
 
 ####################
 # Task Neglect 
@@ -422,7 +420,7 @@ gg_noTask <- ggplot(data = neglectSum) +
 
 # svg("output/MSFigures/TaskNeglectCombined.svg",  width = 1.44, height = 2.08)
 ggsave("output/MSFigures/TaskNeglectCombined_OneColumn.svg",  width = 22.5, height = 45, units = "mm")
-
+ggsave("output/MSFigures/TaskNeglectCombined.svg",  width = 23.5, height = 35, units = "mm")
 
 ####################
 # Task Neglect vs. Specialization within group
@@ -477,4 +475,5 @@ gg_specPerfNorm
 
 # svg("output/MSFigures/TaskNeglect_WithinGroup_Normalized_Color.svg",  width = 1.45, height = 2.068)
 ggsave("output/MSFigures/TaskNeglect_WithinGroup_Normalized_Color_OneColumn.svg",  width = 22.5, height = 45, units = "mm")
+ggsave("output/MSFigures/TaskNeglect_WithinGroup_Normalized_Color.svg",  width = 23.5, height = 35, units = "mm")
 
