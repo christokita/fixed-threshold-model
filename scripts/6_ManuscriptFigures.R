@@ -126,7 +126,7 @@ gg_abslope <- ggplot() +
 gg_abslope
 
 ggsave("output/MSFigures/ParameterSpaceDelta06wContour_OneColumn.svg", width = 39, height = 44, units = 'mm')
-ggsave("output/MSFigures/ParameterSpaceDelta06wContour.svg", width = 50, height = 40, units = 'mm')
+ggsave("output/MSFigures/ParameterSpaceDelta06wContour.svg", width = 50, height = 38.5, units = 'mm')
 ggsave("output/MSFigures/ParameterSpaceDelta06wContour_ThreePerRow.svg", width = 36, height = 33.8, units = 'mm')
 
 
@@ -404,6 +404,7 @@ gg_noTask <- ggplot(data = neglectSum) +
   scale_x_continuous(breaks = unique(neglectSum$n),
                      labels = c(1, "", 4, "", 8, 12, 16)) +
   scale_y_continuous(breaks = seq(0, 1, 0.1),
+                     labels = c("0.0", "", "0.2", "", "0.4", "", "0.6", "", "0.8", "", ""),
                      limits = c(0, 0.825),
                      expand = c(0, 0)) +
   theme(legend.position = "none",
@@ -425,7 +426,7 @@ gg_noTask <- ggplot(data = neglectSum) +
 
 # svg("output/MSFigures/TaskNeglectCombined.svg",  width = 1.44, height = 2.08)
 ggsave("output/MSFigures/TaskNeglectCombined_OneColumn.svg",  width = 22.5, height = 45, units = "mm")
-ggsave("output/MSFigures/TaskNeglectCombined.svg",  width = 23.5, height = 30, units = "mm")
+ggsave("output/MSFigures/TaskNeglectCombined.svg",  width = 23.5, height = 29.5, units = "mm")
 ggsave("output/MSFigures/TaskNeglectCombined_ThreePerRow.svg", width = 45, height = 35, units = 'mm')
 
 ####################
@@ -514,7 +515,7 @@ gg_RMSD <- ggplot() +
                     ymin = MeanMinRMSD - MeanMinRMSDSE, 
                     ymax = MeanMinRMSD + MeanMinRMSDSE),
                 colour = "black",
-                size = 0.25, 
+                size = 0.3, 
                 width = 0) +
   geom_point(data = min_rmsd_summary, 
              aes(x = GroupSize, y = MeanMinRMSD),
@@ -538,6 +539,6 @@ gg_RMSD <- ggplot() +
         plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"))
 gg_RMSD
 
-ggsave("output/MSFigures/MinRMSDFigure.svg",  width = 23.5, height = 30, units = "mm")
+ggsave("output/MSFigures/MinRMSDFigure.svg",  width = 23.5, height = 29.5, units = "mm")
 ggsave("output/MSFigures/MinRMSDFigure_threeperrow.svg", width = 45, height = 35, units = "mm")
 
