@@ -315,21 +315,12 @@ gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
   theme( axis.text.y = element_text(size = 6, margin = margin(0, 5, 0, -4), color = "black"),
          axis.text.x = element_blank(),
          axis.ticks.x = element_blank(), 
-<<<<<<< HEAD
-<<<<<<< HEAD
          axis.title.y = element_text(size = 7, margin = margin(0, 4, 0, 0)),
          axis.title.x = element_text(size = 7, margin = margin(11, 0, 0, 0)),
          axis.ticks.length = unit(-0.06, "cm"),
          axis.ticks = element_line(colour = "black", size = 0.3),
          plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"),
          axis.line = element_line(size = 0.3),
-=======
-=======
->>>>>>> fb50a7e0ccbe47df16bd716273749bdfd7fadd3b
-         axis.title.y = element_text(size = 8, margin = margin(0, 7, 0, 0)),
-         axis.title.x = element_text(size = 10, margin = margin(15, 0, 0, 0)),
-         axis.ticks.length = unit(-0.1, "cm"),
->>>>>>> fb50a7e0ccbe47df16bd716273749bdfd7fadd3b
          legend.position = "none")
 
 # svg("output/MSFigures/TaskDistExample.svg", width = 2.8, height = 2.07)
@@ -469,16 +460,8 @@ gg_specPerfNorm <- ggplot(data = merged_specperf) +
   geom_point(aes(x = TaskMeanNorm,
                  colour = as.factor(n),
                  y = noTaskAvgNorm), 
-             # colour = "black",
-<<<<<<< HEAD
-<<<<<<< HEAD
              size = 0.1,
              stroke = 0.4) +
-=======
-=======
->>>>>>> fb50a7e0ccbe47df16bd716273749bdfd7fadd3b
-             size = 0.1) +
->>>>>>> fb50a7e0ccbe47df16bd716273749bdfd7fadd3b
   theme_classic() +
   theme(legend.position = "none") +
   ylab("Normalized task neglect") +
@@ -486,7 +469,6 @@ gg_specPerfNorm <- ggplot(data = merged_specperf) +
   scale_y_continuous(breaks = seq(0, 1, 0.2), 
                      expand = c(0, 0.01)) +
   scale_x_continuous(breaks = seq(0, 1, 0.5), 
-<<<<<<< HEAD
                      expand = c(0, 0.01)) +
   scale_color_manual(values = palette) +
   theme(axis.text.y = element_text(size = 6, margin = margin(0, 5, 0, -4), color = "black"),
@@ -558,26 +540,3 @@ gg_RMSD
 
 ggsave("output/MSFigures/MinRMSDFigure.svg",  width = 23.5, height = 29.5, units = "mm")
 ggsave("output/MSFigures/MinRMSDFigure_threeperrow.svg", width = 45, height = 35, units = "mm")
-=======
-                     expand = c(0, 0.03)) +
-  scale_color_manual(values = palette) +
-  theme(legend.position = "none",
-        legend.justification = c(1, 1),
-        legend.title = element_blank(),
-        legend.key.height = unit(0.3, "cm"),
-        legend.key.width= unit(0.4, "cm"),
-        legend.margin =  margin(t = 0, r = 0, b = 0, l = -0.2, "cm"),
-        legend.text = element_text(size = 6),
-        legend.text.align = 0,
-        # legend.box.background = element_rect(),
-        axis.text.y = element_text(size = 8, margin = margin(5, 6, 5, -2), color = "black"),
-        axis.text.x = element_text(size = 8, margin = margin(6, 5, -2, 5), color = "black"),
-        axis.title = element_text(size = 8, margin = margin(0, 0, 0, 0)),
-        axis.ticks.length = unit(-0.1, "cm"))
-gg_specPerfNorm
-
-svg("output/MSFigures/TaskNeglect_WithinGroup_Normalized_Color.svg",  width = 1.45, height = 2.068)
-gg_specPerfNorm
-dev.off()
->>>>>>> fb50a7e0ccbe47df16bd716273749bdfd7fadd3b
-
