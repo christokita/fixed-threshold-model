@@ -316,6 +316,7 @@ gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
          axis.text.x = element_blank(),
          axis.ticks.x = element_blank(), 
 <<<<<<< HEAD
+<<<<<<< HEAD
          axis.title.y = element_text(size = 7, margin = margin(0, 4, 0, 0)),
          axis.title.x = element_text(size = 7, margin = margin(11, 0, 0, 0)),
          axis.ticks.length = unit(-0.06, "cm"),
@@ -323,6 +324,8 @@ gg_dist <- ggplot(data = plot_TaskMat, aes(y = Task1, x = set)) +
          plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"),
          axis.line = element_line(size = 0.3),
 =======
+=======
+>>>>>>> fb50a7e0ccbe47df16bd716273749bdfd7fadd3b
          axis.title.y = element_text(size = 8, margin = margin(0, 7, 0, 0)),
          axis.title.x = element_text(size = 10, margin = margin(15, 0, 0, 0)),
          axis.ticks.length = unit(-0.1, "cm"),
@@ -468,9 +471,12 @@ gg_specPerfNorm <- ggplot(data = merged_specperf) +
                  y = noTaskAvgNorm), 
              # colour = "black",
 <<<<<<< HEAD
+<<<<<<< HEAD
              size = 0.1,
              stroke = 0.4) +
 =======
+=======
+>>>>>>> fb50a7e0ccbe47df16bd716273749bdfd7fadd3b
              size = 0.1) +
 >>>>>>> fb50a7e0ccbe47df16bd716273749bdfd7fadd3b
   theme_classic() +
