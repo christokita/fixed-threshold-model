@@ -3,7 +3,7 @@
 ## Overview 
 Theoretical simulation scripts and data for: 
 
-Ulrich Y, Saragosti J, Tokita CK, Tarnita CE, Kronauer DJC. (In Revision). Fitness Benefits and Emergent Division of Labor at the Onset of Group-Living.
+Ulrich Y, Saragosti J, Tokita CK, Tarnita CE, Kronauer DJC. (2018). Fitness benefits and emergent division of labor at the onset of group-living. Nature, 560 (7720), 635-638. doi:10.1038/s41586-018-0422-6
 
 This is the living repository of this code. For the public release/archive of the code used in the paper please see [![DOI](https://zenodo.org/badge/92619774.svg)](https://zenodo.org/badge/latestdoi/92619774)
 
